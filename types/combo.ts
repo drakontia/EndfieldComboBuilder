@@ -49,3 +49,16 @@ export interface CharacterState {
   ultimateCharge: number // 0-100
   cooldowns: Map<AttackType, number> // remaining cooldown in ms
 }
+
+export interface EnemyStatusEffect {
+  id: string
+  effect: StatusEffect
+  startTime: number // milliseconds from start
+  duration: number // milliseconds
+  sourceActionId: string
+}
+
+export interface UltimateChargePoint {
+  timing: number // milliseconds from start
+  charge: number // 0-100
+}
