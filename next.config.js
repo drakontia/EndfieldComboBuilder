@@ -1,4 +1,12 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {}
+const nextConfig = {
+  experimental: {
+    // Enable experimental features if needed
+  },
+}
 
-module.exports = nextConfig
+const withNextIntl = require('next-intl/plugin')(
+  './i18n.ts'
+);
+
+module.exports = withNextIntl(nextConfig)

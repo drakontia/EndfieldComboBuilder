@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useTranslations } from 'next-intl'
 import CharacterSelector from '@/components/CharacterSelector'
 import ComboTimeline from '@/components/ComboTimeline'
 import ControlPanel from '@/components/ControlPanel'
@@ -11,7 +12,8 @@ import { saveCombo, getSavedCombos, deleteCombo, generateShareUrl, loadComboFrom
 import { exportAsImage } from '@/lib/export'
 
 export default function Home() {
-  const [comboName, setComboName] = useState('新しいコンボ')
+  const t = useTranslations()
+  const [comboName, setComboName] = useState(t('dialog.comboNamePlaceholder'))
   const [characters, setCharacters] = useState<(Character | null)[]>(Array(4).fill(null))
   const [actions, setActions] = useState<Action[]>([])
   const [showLoadDialog, setShowLoadDialog] = useState(false)
@@ -89,7 +91,7 @@ export default function Home() {
       actions,
     }
     saveCombo(combo)
-    alert('コンボを保存しました！')
+    alert(t('messages.saved'))
   }
 
   const handleLoadOpen = () => {
@@ -105,7 +107,7 @@ export default function Home() {
 
   const handleLoad = (combo: ComboState) => {
     loadComboState(combo)
-    alert('コンボを読み込みました！')
+    alert(t('messages.loaded'))
   }
 
   const handleDelete = (name: string) => {
@@ -116,9 +118,9 @@ export default function Home() {
   const handleExportImage = async () => {
     try {
       await exportAsImage('combo-timeline', `${comboName}.png`)
-      alert('画像をエクスポートしました！')
+      alert(t('messages.exported'))
     } catch (error) {
-      alert('画像のエクスポートに失敗しました')
+      alert(t('messages.exportFailed'))
     }
   }
 
@@ -130,12 +132,12 @@ export default function Home() {
     }
     const url = generateShareUrl(combo)
     navigator.clipboard.writeText(url)
-    alert('共有URLをクリップボードにコピーしました！')
+    alert(t('messages.urlCopied'))
   }
 
   const handleClear = () => {
-    if (confirm('すべてのデータをクリアしますか？')) {
-      setComboName('新しいコンボ')
+    if (confirm(t('dialog.confirmClear'))) {
+      setComboName(t('dialog.comboNamePlaceholder'))
       setCharacters(Array(4).fill(null))
       setActions([])
     }
@@ -144,7 +146,7 @@ export default function Home() {
   return (
     <main className="min-h-screen p-8">
       <h1 className="text-4xl font-bold mb-6 text-center">
-        アークナイツ：エンドフィールド コンボビルダー
+        {t('app.title')}
       </h1>
       
       <ControlPanel

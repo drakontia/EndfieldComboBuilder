@@ -1,0 +1,62 @@
+{
+  "app": {
+    "title": "アークナイツ：エンドフィールド コンボビルダー",
+    "description": "ゲーム「アークナイツ：エンドフィールド」でのチームでのコンボを視覚的に構築するツール"
+  },
+  "team": {
+    "title": "チーム編成",
+    "slot": "スロット {number}",
+    "playerControlled": "自操作",
+    "selectCharacter": "選択...",
+    "remove": "削除"
+  },
+  "timeline": {
+    "title": "コンボタイムライン",
+    "enemyStatus": "敵の状態",
+    "statusEffects": "状態異常"
+  },
+  "attackTypes": {
+    "normal": "通常攻撃",
+    "battleSkill": "戦技",
+    "synergySkill": "連携技",
+    "ultimate": "必殺技"
+  },
+  "statusEffects": {
+    "burn": "炎上",
+    "freeze": "凍結",
+    "shock": "感電",
+    "poison": "中毒",
+    "stun": "スタン",
+    "weakness": "脆弱",
+    "none": "なし"
+  },
+  "actions": {
+    "save": "保存",
+    "load": "読込",
+    "export": "画像エクスポート",
+    "share": "共有",
+    "clear": "クリア",
+    "close": "閉じる",
+    "edit": "編集",
+    "delete": "削除",
+    "clickToDelete": "左クリック: 削除 / 右クリック: 編集"
+  },
+  "dialog": {
+    "loadTitle": "コンボを読み込む",
+    "editTitle": "アクション編集",
+    "noSavedCombos": "保存されたコンボがありません",
+    "comboNamePlaceholder": "コンボ名を入力...",
+    "confirmClear": "すべてのデータをクリアしますか？"
+  },
+  "messages": {
+    "saved": "コンボを保存しました！",
+    "loaded": "コンボを読み込みました！",
+    "exported": "画像をエクスポートしました！",
+    "exportFailed": "画像のエクスポートに失敗しました",
+    "urlCopied": "共有URLをクリップボードにコピーしました！"
+  },
+  "stats": {
+    "characters": "{count} キャラ",
+    "actions": "{count} アクション"
+  }
+}
