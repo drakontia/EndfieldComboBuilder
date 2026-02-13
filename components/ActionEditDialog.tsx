@@ -1,6 +1,6 @@
 'use client'
 
-import { Action, StatusEffect } from '@/types/combo'
+import { Action, PhysicalStatus, ArtsInfliction } from '@/types/combo'
 
 interface ActionEditDialogProps {
   isOpen: boolean
@@ -10,12 +10,12 @@ interface ActionEditDialogProps {
 }
 
 const STATUS_EFFECT_OPTIONS = [
-  { value: StatusEffect.BURN, label: '炎上' },
-  { value: StatusEffect.FREEZE, label: '凍結' },
-  { value: StatusEffect.SHOCK, label: '感電' },
-  { value: StatusEffect.POISON, label: '中毒' },
-  { value: StatusEffect.STUN, label: 'スタン' },
-  { value: StatusEffect.WEAKNESS, label: '脆弱' },
+  { value: ArtsInfliction.BURN, label: '炎上' },
+  { value: ArtsInfliction.FREEZE, label: '凍結' },
+  { value: ArtsInfliction.SHOCK, label: '感電' },
+  { value: ArtsInfliction.POISON, label: '中毒' },
+  { value: ArtsInfliction.STUN, label: 'スタン' },
+  { value: ArtsInfliction.WEAKNESS, label: '脆弱' },
 ]
 
 export default function ActionEditDialog({
@@ -30,7 +30,7 @@ export default function ActionEditDialog({
     const value = e.target.value
     const updatedAction = {
       ...action,
-      statusEffect: value ? (value as StatusEffect) : undefined,
+      statusEffect: value ? (value as ArtsInfliction) : undefined,
     }
     onSave(updatedAction)
   }

@@ -7,7 +7,7 @@ import ComboTimeline from '@/components/ComboTimeline'
 import ControlPanel from '@/components/ControlPanel'
 import LoadDialog from '@/components/LoadDialog'
 import ActionEditDialog from '@/components/ActionEditDialog'
-import { Character, Action, AttackType, ComboState } from '@/types/combo'
+import { Character, Action, SkillType, ComboState } from '@/types/combo'
 import { saveCombo, getSavedCombos, deleteCombo, generateShareUrl, loadComboFromUrl } from '@/lib/storage'
 import { exportAsImage } from '@/lib/export'
 
@@ -61,7 +61,7 @@ export default function Home() {
       characterId,
       type,
       timing,
-      hitCount: type === AttackType.NORMAL ? 1 : undefined,
+      hitCount: type === SkillType.COMBO_SKILL ? 1 : undefined,
     }
     setActions([...actions, newAction])
   }

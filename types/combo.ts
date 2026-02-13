@@ -1,19 +1,24 @@
 // Core game types for Arknights: Endfield combo builder
 
-export enum AttackType {
-  NORMAL = 'normal',
+export enum SkillType {
   BATTLE_SKILL = 'battleSkill',
-  SYNERGY_SKILL = 'synergySkill',
+  COMBO_SKILL = 'comboSkill',
   ULTIMATE = 'ultimate',
 }
 
-export enum StatusEffect {
-  BURN = 'burn',
-  FREEZE = 'freeze',
-  SHOCK = 'shock',
-  POISON = 'poison',
-  STUN = 'stun',
-  WEAKNESS = 'weakness',
+export enum PhysicalStatus {
+  VULNERABLE = 'vulnerable',
+  LIFT = 'lift',
+  KNOCKDOWN = 'knockdown',
+  CRUSH = 'crush',
+  BREACH = 'breach',
+}
+
+export enum ArtsInfliction {
+  HEAT = 'heat',
+  CRYO = 'cryo',
+  ELECTRIC = 'electric',
+  NATURE = 'nature',
 }
 
 export interface Character {
@@ -23,17 +28,17 @@ export interface Character {
 }
 
 export interface ActionRequirement {
-  statusEffects?: StatusEffect[]
+  statusEffects?: PhysicalStatus[] | ArtsInfliction[]
   synergyActivated?: boolean
 }
 
-export interface Action {
+export interface Skill {
   id: string
   characterId: string
-  type: AttackType
+  type: SkillType
   timing: number // milliseconds from start
   hitCount?: number // for normal attacks (1-5)
-  statusEffect?: StatusEffect
+  statusEffect?: PhysicalStatus | ArtsInfliction
   cooldown?: number // milliseconds
   requirement?: ActionRequirement
 }
@@ -41,18 +46,18 @@ export interface Action {
 export interface ComboState {
   name: string
   characters: (Character | null)[]
-  actions: Action[]
+  actions: Skill[]
 }
 
 export interface CharacterState {
   characterId: string
   ultimateCharge: number // 0-100
-  cooldowns: Map<AttackType, number> // remaining cooldown in ms
+  cooldowns: Map<SkillType, number> // remaining cooldown in ms
 }
 
 export interface EnemyStatusEffect {
   id: string
-  effect: StatusEffect
+  effect: PhysicalStatus | ArtsInfliction
   startTime: number // milliseconds from start
   duration: number // milliseconds
   sourceActionId: string

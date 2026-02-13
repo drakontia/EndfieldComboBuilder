@@ -1,46 +1,46 @@
 'use client'
 
-import { Character, Action, AttackType, StatusEffect, EnemyStatusEffect } from '@/types/combo'
+import { Character, Action, SkillType, PhysicalStatus, ArtsInfliction, EnemyStatusEffect } from '@/types/combo'
 import { useState, useEffect } from 'react'
 
 interface ComboTimelineProps {
   characters: (Character | null)[]
   actions: Action[]
-  onAddAction: (characterId: string, type: AttackType, timing: number) => void
+  onAddAction: (characterId: string, type: SkillType, timing: number) => void
   onRemoveAction: (actionId: string) => void
   onEditAction: (action: Action) => void
 }
 
-const ATTACK_TYPE_LABELS = {
-  [AttackType.NORMAL]: '通常攻撃',
-  [AttackType.BATTLE_SKILL]: '戦技',
-  [AttackType.SYNERGY_SKILL]: '連携技',
-  [AttackType.ULTIMATE]: '必殺技',
+const SKILL_TYPE_LABELS = {
+  [SkillType.NORMAL]: '通常攻撃',
+  [SkillType.BATTLE_SKILL]: '戦技',
+  [SkillType.SYNERGY_SKILL]: '連携技',
+  [SkillType.ULTIMATE]: '必殺技',
 }
 
-const ATTACK_TYPE_COLORS = {
-  [AttackType.NORMAL]: 'bg-blue-500',
-  [AttackType.BATTLE_SKILL]: 'bg-green-500',
-  [AttackType.SYNERGY_SKILL]: 'bg-purple-500',
-  [AttackType.ULTIMATE]: 'bg-red-500',
+const SKILL_TYPE_COLORS = {
+  [SkillType.NORMAL]: 'bg-blue-500',
+  [SkillType.BATTLE_SKILL]: 'bg-green-500',
+  [SkillType.SYNERGY_SKILL]: 'bg-purple-500',
+  [SkillType.ULTIMATE]: 'bg-red-500',
 }
 
 const STATUS_EFFECT_COLORS = {
-  [StatusEffect.BURN]: 'bg-orange-500',
-  [StatusEffect.FREEZE]: 'bg-cyan-500',
-  [StatusEffect.SHOCK]: 'bg-yellow-500',
-  [StatusEffect.POISON]: 'bg-purple-700',
-  [StatusEffect.STUN]: 'bg-gray-500',
-  [StatusEffect.WEAKNESS]: 'bg-pink-500',
+  [ArtsInfliction.BURN]: 'bg-orange-500',
+  [ArtsInfliction.FREEZE]: 'bg-cyan-500',
+  [ArtsInfliction.SHOCK]: 'bg-yellow-500',
+  [ArtsInfliction.POISON]: 'bg-purple-700',
+  [ArtsInfliction.STUN]: 'bg-gray-500',
+  [ArtsInfliction.WEAKNESS]: 'bg-pink-500',
 }
 
 const STATUS_EFFECT_LABELS = {
-  [StatusEffect.BURN]: '炎上',
-  [StatusEffect.FREEZE]: '凍結',
-  [StatusEffect.SHOCK]: '感電',
-  [StatusEffect.POISON]: '中毒',
-  [StatusEffect.STUN]: 'スタン',
-  [StatusEffect.WEAKNESS]: '脆弱',
+  [ArtsInfliction.BURN]: '炎上',
+  [ArtsInfliction.FREEZE]: '凍結',
+  [ArtsInfliction.SHOCK]: '感電',
+  [ArtsInfliction.POISON]: '中毒',
+  [ArtsInfliction.STUN]: 'スタン',
+  [ArtsInfliction.WEAKNESS]: '脆弱',
 }
 
 const DEFAULT_STATUS_EFFECT_DURATION_MS = 3000
@@ -72,13 +72,13 @@ export default function ComboTimeline({
     
     let charge = 0
     charActions.forEach(action => {
-      if (action.type === AttackType.NORMAL) {
+      if (action.type === SkillType.NORMAL) {
         charge += 5
-      } else if (action.type === AttackType.BATTLE_SKILL) {
+      } else if (action.type === SkillType.BATTLE_SKILL) {
         charge += 15
-      } else if (action.type === AttackType.SYNERGY_SKILL) {
+      } else if (action.type === SkillType.SYNERGY_SKILL) {
         charge += 20
-      } else if (action.type === AttackType.ULTIMATE) {
+      } else if (action.type === SkillType.ULTIMATE) {
         charge = 0 // Reset after using ultimate
       }
     })
@@ -102,13 +102,13 @@ export default function ComboTimeline({
     setEnemyStatusEffects(effects)
   }, [actions])
 
-  const getAttackTypesForCharacter = (index: number) => {
-    // First character (player-controlled) has all attack types
+  const getSkillTypesForCharacter = (index: number) => {
+    // First character (player-controlled) has all skill types
     if (index === 0) {
-      return [AttackType.NORMAL, AttackType.BATTLE_SKILL, AttackType.SYNERGY_SKILL, AttackType.ULTIMATE]
+      return [SkillType.NORMAL, SkillType.BATTLE_SKILL, SkillType.SYNERGY_SKILL, SkillType.ULTIMATE]
     }
     // Other characters don't have normal attack
-    return [AttackType.BATTLE_SKILL, AttackType.SYNERGY_SKILL, AttackType.ULTIMATE]
+    return [SkillType.BATTLE_SKILL, SkillType.COMBO_SKILL, SkillType.ULTIMATE]
   }
 
   return (
@@ -122,15 +122,15 @@ export default function ComboTimeline({
             {index === 0 && <span className="text-yellow-400 text-xs">(自操作)</span>}
           </div>
           
-          {getAttackTypesForCharacter(index).map((type) => (
+          {getSkillTypesForCharacter(index).map((type) => (
             <div key={type} className="mb-2">
               <div className="flex items-center">
                 <div className="w-24 text-sm text-gray-400">
-                  {ATTACK_TYPE_LABELS[type]}
+                  {SKILL_TYPE_LABELS[type]}
                 </div>
                 <div className="relative flex-1 h-12 bg-gray-700 rounded">
                   {/* Ultimate charge background for ultimate lines */}
-                  {type === AttackType.ULTIMATE && (
+                  {type === SkillType.ULTIMATE && (
                     <div className="absolute inset-0 flex">
                       {[...Array(TIMELINE_WIDTH / CHARGE_SEGMENT_WIDTH)].map((_, i) => {
                         const time = (i * CHARGE_SEGMENT_WIDTH / TIMELINE_WIDTH) * TIMELINE_DURATION
@@ -166,7 +166,7 @@ export default function ComboTimeline({
                     .map(action => (
                       <div
                         key={action.id}
-                        className={`absolute top-1 h-10 ${ATTACK_TYPE_COLORS[type]} rounded px-2 text-xs flex items-center justify-between cursor-pointer hover:opacity-80`}
+                        className={`absolute top-1 h-10 ${SKILL_TYPE_COLORS[type]} rounded px-2 text-xs flex items-center justify-between cursor-pointer hover:opacity-80`}
                         style={{
                           left: `${getActionPosition(action.timing)}px`,
                           width: '60px',
