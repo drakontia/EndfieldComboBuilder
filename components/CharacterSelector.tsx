@@ -31,7 +31,7 @@ export default function CharacterSelector({
           <div className="bg-gray-700 p-2 rounded">
             {selectedCharacters[slotIndex] ? (
               <div className="flex items-center justify-between">
-                <span>{selectedCharacters[slotIndex].name}</span>
+                <span>{selectedCharacters[slotIndex]?.name}</span>
                 <button
                   onClick={() => onCharacterSelect(null, slotIndex)}
                   className="text-red-400 hover:text-red-300 text-sm"
