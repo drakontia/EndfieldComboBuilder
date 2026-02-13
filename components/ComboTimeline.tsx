@@ -43,6 +43,11 @@ const STATUS_EFFECT_LABELS = {
   [StatusEffect.WEAKNESS]: '脆弱',
 }
 
+const DEFAULT_STATUS_EFFECT_DURATION_MS = 3000
+const CHARGE_SEGMENT_WIDTH = 10
+const ULTIMATE_CHARGE_COLOR_RGB = '239, 68, 68'
+const ULTIMATE_CHARGE_OPACITY_MULTIPLIER = 0.3
+
 export default function ComboTimeline({
   characters,
   actions,
@@ -89,7 +94,7 @@ export default function ComboTimeline({
           id: `${action.id}-effect`,
           effect: action.statusEffect,
           startTime: action.timing,
-          duration: 3000, // 3 seconds default duration
+          duration: DEFAULT_STATUS_EFFECT_DURATION_MS,
           sourceActionId: action.id,
         })
       }
@@ -127,16 +132,16 @@ export default function ComboTimeline({
                   {/* Ultimate charge background for ultimate lines */}
                   {type === AttackType.ULTIMATE && (
                     <div className="absolute inset-0 flex">
-                      {[...Array(TIMELINE_WIDTH / 10)].map((_, i) => {
-                        const time = (i * 10 / TIMELINE_WIDTH) * TIMELINE_DURATION
+                      {[...Array(TIMELINE_WIDTH / CHARGE_SEGMENT_WIDTH)].map((_, i) => {
+                        const time = (i * CHARGE_SEGMENT_WIDTH / TIMELINE_WIDTH) * TIMELINE_DURATION
                         const charge = calculateUltimateCharge(character.id, time)
                         return (
                           <div
                             key={i}
                             className="relative"
                             style={{ 
-                              width: '10px',
-                              background: `linear-gradient(to top, rgba(239, 68, 68, ${charge / 100 * 0.3}), transparent)`
+                              width: `${CHARGE_SEGMENT_WIDTH}px`,
+                              background: `linear-gradient(to top, rgba(${ULTIMATE_CHARGE_COLOR_RGB}, ${charge / 100 * ULTIMATE_CHARGE_OPACITY_MULTIPLIER}), transparent)`
                             }}
                           />
                         )
