@@ -1,0 +1,62 @@
+{
+  "app": {
+    "title": "Arknights: Endfield Combo Builder",
+    "description": "Visual combo builder for Arknights: Endfield team compositions"
+  },
+  "team": {
+    "title": "Team Composition",
+    "slot": "Slot {number}",
+    "playerControlled": "Player",
+    "selectCharacter": "Select...",
+    "remove": "Remove"
+  },
+  "timeline": {
+    "title": "Combo Timeline",
+    "enemyStatus": "Enemy Status",
+    "statusEffects": "Status Effects"
+  },
+  "attackTypes": {
+    "normal": "Normal Attack",
+    "battleSkill": "Battle Skill",
+    "synergySkill": "Synergy Skill",
+    "ultimate": "Ultimate"
+  },
+  "statusEffects": {
+    "burn": "Burn",
+    "freeze": "Freeze",
+    "shock": "Shock",
+    "poison": "Poison",
+    "stun": "Stun",
+    "weakness": "Weakness",
+    "none": "None"
+  },
+  "actions": {
+    "save": "Save",
+    "load": "Load",
+    "export": "Export Image",
+    "share": "Share",
+    "clear": "Clear",
+    "close": "Close",
+    "edit": "Edit",
+    "delete": "Delete",
+    "clickToDelete": "Left-click: Delete / Right-click: Edit"
+  },
+  "dialog": {
+    "loadTitle": "Load Combo",
+    "editTitle": "Edit Action",
+    "noSavedCombos": "No saved combos",
+    "comboNamePlaceholder": "Enter combo name...",
+    "confirmClear": "Clear all data?"
+  },
+  "messages": {
+    "saved": "Combo saved!",
+    "loaded": "Combo loaded!",
+    "exported": "Image exported!",
+    "exportFailed": "Failed to export image",
+    "urlCopied": "Share URL copied to clipboard!"
+  },
+  "stats": {
+    "characters": "{count} characters",
+    "actions": "{count} actions"
+  }
+}
