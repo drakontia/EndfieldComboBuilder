@@ -23,6 +23,9 @@
     "url": "https://github.com/drakontia/EndfieldComboBuilder/issues"
   },
   "homepage": "https://github.com/drakontia/EndfieldComboBuilder#readme",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "dependencies": {
     "html2canvas": "^1.4.1",
     "next": "^16.1.6",
