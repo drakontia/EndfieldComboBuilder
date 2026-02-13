@@ -3,8 +3,8 @@
 import { Character } from '@/types/combo'
 
 interface CharacterSelectorProps {
-  selectedCharacters: Character[]
-  onCharacterSelect: (character: Character, index: number) => void
+  selectedCharacters: (Character | null)[]
+  onCharacterSelect: (character: Character | null, index: number) => void
 }
 
 // Sample characters - in a real app, these would come from a database
@@ -33,7 +33,7 @@ export default function CharacterSelector({
               <div className="flex items-center justify-between">
                 <span>{selectedCharacters[slotIndex].name}</span>
                 <button
-                  onClick={() => onCharacterSelect(null as any, slotIndex)}
+                  onClick={() => onCharacterSelect(null, slotIndex)}
                   className="text-red-400 hover:text-red-300 text-sm"
                 >
                   削除

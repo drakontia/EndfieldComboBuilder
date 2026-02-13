@@ -62,8 +62,11 @@ export const exportComboAsJson = (combo: ComboState): void => {
 }
 
 export const generateShareUrl = (combo: ComboState): string => {
-  const compressed = btoa(JSON.stringify(combo))
-  return `${window.location.origin}${window.location.pathname}?combo=${compressed}`
+  // Properly handle Unicode characters by encoding to UTF-8 first
+  const jsonStr = JSON.stringify(combo)
+  const utf8Bytes = new TextEncoder().encode(jsonStr)
+  const base64 = btoa(String.fromCharCode(...utf8Bytes))
+  return `${window.location.origin}${window.location.pathname}?combo=${base64}`
 }
 
 export const loadComboFromUrl = (): ComboState | null => {
@@ -73,8 +76,11 @@ export const loadComboFromUrl = (): ComboState | null => {
     
     if (!comboData) return null
     
+    // Properly decode Unicode characters from base64
     const decoded = atob(comboData)
-    return JSON.parse(decoded)
+    const utf8Array = Uint8Array.from(decoded, c => c.charCodeAt(0))
+    const jsonStr = new TextDecoder().decode(utf8Array)
+    return JSON.parse(jsonStr)
   } catch (error) {
     console.error('Failed to load combo from URL:', error)
     return null

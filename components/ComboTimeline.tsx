@@ -3,7 +3,7 @@
 import { Character, Action, AttackType } from '@/types/combo'
 
 interface ComboTimelineProps {
-  characters: Character[]
+  characters: (Character | null)[]
   actions: Action[]
   onAddAction: (characterId: string, type: AttackType, timing: number) => void
   onRemoveAction: (actionId: string) => void
@@ -40,7 +40,7 @@ export default function ComboTimeline({
     <div className="flex-1 bg-gray-800 p-4 rounded-lg overflow-x-auto">
       <h2 className="text-xl font-bold mb-4">コンボタイムライン</h2>
       
-      {characters.filter(c => c).map((character, index) => (
+      {characters.filter((c): c is Character => c !== null).map((character, index) => (
         <div key={character.id} className="mb-8">
           <div className="text-lg font-semibold mb-2">{character.name}</div>
           

@@ -11,7 +11,7 @@ import { exportAsImage } from '@/lib/export'
 
 export default function Home() {
   const [comboName, setComboName] = useState('新しいコンボ')
-  const [characters, setCharacters] = useState<Character[]>(Array(4).fill(null))
+  const [characters, setCharacters] = useState<(Character | null)[]>(Array(4).fill(null))
   const [actions, setActions] = useState<Action[]>([])
   const [showLoadDialog, setShowLoadDialog] = useState(false)
   const [savedCombos, setSavedCombos] = useState<ComboState[]>([])
@@ -24,7 +24,7 @@ export default function Home() {
     }
   }, [])
 
-  const handleCharacterSelect = (character: Character, index: number) => {
+  const handleCharacterSelect = (character: Character | null, index: number) => {
     const newCharacters = [...characters]
     newCharacters[index] = character
     setCharacters(newCharacters)

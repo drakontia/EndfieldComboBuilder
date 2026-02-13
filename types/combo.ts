@@ -40,7 +40,7 @@ export interface Action {
 
 export interface ComboState {
   name: string
-  characters: Character[]
+  characters: (Character | null)[]
   actions: Action[]
 }
 
