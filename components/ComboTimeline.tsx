@@ -1,67 +1,109 @@
 'use client'
 
-import { Character, Action, SkillType, PhysicalStatus, ArtsInfliction, EnemyStatusEffect } from '@/types/combo'
-import { useState, useEffect } from 'react'
+import { type DragEvent, type MouseEvent, useMemo, useState } from 'react'
+import Image from 'next/image'
+import { useTranslations } from 'next-intl'
+
+import CharacterSelectDialog from '@/components/CharacterSelectDialog'
+import { OPERATORS, getOperatorIdByName } from '@/lib/data/operators'
+import { COMBO_SKILLS, ULTIMATES, getStatusEffectForAction } from '@/lib/data/skills'
+import {
+  CHARGE_SEGMENT_WIDTH,
+  SECOND_MARKER_WIDTH_PX,
+  TIMELINE_DURATION,
+  TIMELINE_ROW_HEIGHT_PX,
+  TIMELINE_WIDTH,
+  ULTIMATE_CHARGE_COLOR_RGB,
+  ULTIMATE_CHARGE_OPACITY_MULTIPLIER,
+} from '@/lib/timeline'
+
+import { SkillType } from '@/types/combo'
+import type { Operator } from '@/types/combo'
+import type { ComboAction } from '@/types/combo'
 
 interface ComboTimelineProps {
-  characters: (Character | null)[]
-  actions: Action[]
+  characters: (Operator | null)[]
+  actions: ComboAction[]
+  onCharacterSelect: (character: Operator | null, index: number) => void
+  onCharacterReorder: (fromIndex: number, toIndex: number) => void
   onAddAction: (characterId: string, type: SkillType, timing: number) => void
   onRemoveAction: (actionId: string) => void
-  onEditAction: (action: Action) => void
 }
 
-const SKILL_TYPE_LABELS = {
+export const SKILL_TYPE_LABELS = {
   [SkillType.NORMAL]: '通常攻撃',
   [SkillType.BATTLE_SKILL]: '戦技',
-  [SkillType.SYNERGY_SKILL]: '連携技',
+  [SkillType.COMBO_SKILL]: '連携技',
   [SkillType.ULTIMATE]: '必殺技',
 }
 
-const SKILL_TYPE_COLORS = {
-  [SkillType.NORMAL]: 'bg-blue-500',
+export const SKILL_TYPE_COLORS = {
+  [SkillType.NORMAL]: 'bg-slate-500',
   [SkillType.BATTLE_SKILL]: 'bg-green-500',
-  [SkillType.SYNERGY_SKILL]: 'bg-purple-500',
+  [SkillType.COMBO_SKILL]: 'bg-purple-500',
   [SkillType.ULTIMATE]: 'bg-red-500',
 }
 
-const STATUS_EFFECT_COLORS = {
-  [ArtsInfliction.BURN]: 'bg-orange-500',
-  [ArtsInfliction.FREEZE]: 'bg-cyan-500',
-  [ArtsInfliction.SHOCK]: 'bg-yellow-500',
-  [ArtsInfliction.POISON]: 'bg-purple-700',
-  [ArtsInfliction.STUN]: 'bg-gray-500',
-  [ArtsInfliction.WEAKNESS]: 'bg-pink-500',
+export const SKILL_TYPE_BG_COLORS = {
+  [SkillType.NORMAL]: '#64748b',
+  [SkillType.BATTLE_SKILL]: '#22c55e',
+  [SkillType.COMBO_SKILL]: '#a855f7',
+  [SkillType.ULTIMATE]: '#ef4444',
 }
-
-const STATUS_EFFECT_LABELS = {
-  [ArtsInfliction.BURN]: '炎上',
-  [ArtsInfliction.FREEZE]: '凍結',
-  [ArtsInfliction.SHOCK]: '感電',
-  [ArtsInfliction.POISON]: '中毒',
-  [ArtsInfliction.STUN]: 'スタン',
-  [ArtsInfliction.WEAKNESS]: '脆弱',
-}
-
-const DEFAULT_STATUS_EFFECT_DURATION_MS = 3000
-const CHARGE_SEGMENT_WIDTH = 10
-const ULTIMATE_CHARGE_COLOR_RGB = '239, 68, 68'
-const ULTIMATE_CHARGE_OPACITY_MULTIPLIER = 0.3
 
 export default function ComboTimeline({
   characters,
   actions,
+  onCharacterSelect,
+  onCharacterReorder,
   onAddAction,
   onRemoveAction,
-  onEditAction,
 }: ComboTimelineProps) {
-  const TIMELINE_WIDTH = 1000 // pixels
-  const TIMELINE_DURATION = 10000 // 10 seconds in ms
+  const t = useTranslations()
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null)
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null)
+  const [isSelectorOpen, setIsSelectorOpen] = useState(false)
+  const [selectingSlotIndex, setSelectingSlotIndex] = useState<number | null>(null)
 
-  const [enemyStatusEffects, setEnemyStatusEffects] = useState<EnemyStatusEffect[]>([])
+  const availableCharacters = useMemo(
+    () =>
+      Object.entries(OPERATORS).map(([id, operator]) => ({
+        id,
+        operator,
+      })),
+    []
+  )
+
+  const selectableCharacters = useMemo(
+    () =>
+      availableCharacters.filter(
+        (character) => !characters.some((selectedCharacter) => selectedCharacter?.name === character.operator.name)
+      ),
+    [availableCharacters, characters]
+  )
 
   const getActionPosition = (timing: number) => {
     return (timing / TIMELINE_DURATION) * TIMELINE_WIDTH
+  }
+
+  const getOperatorKey = (operator: Operator | null) => {
+    if (!operator) return null
+    return getOperatorIdByName(operator.name)
+  }
+
+  const getComboSkillCooldownMs = (operator: Operator | null) => {
+    const operatorKey = getOperatorKey(operator)
+    if (!operatorKey) return null
+    const comboSkill =
+      COMBO_SKILLS[`${operatorKey}_combo_skill`] ?? COMBO_SKILLS[`${operatorKey}.combo_skill`]
+    return comboSkill?.cooldown ?? null
+  }
+
+  const getUltimateCooldownMs = (operator: Operator | null) => {
+    const operatorKey = getOperatorKey(operator)
+    if (!operatorKey) return null
+    const ultimate = ULTIMATES[`${operatorKey}_ultimate`] ?? ULTIMATES[`${operatorKey}.ultimate`]
+    return ultimate?.cooldown ?? null
   }
 
   // Calculate ultimate charge for each character over time
@@ -72,11 +114,9 @@ export default function ComboTimeline({
     
     let charge = 0
     charActions.forEach(action => {
-      if (action.type === SkillType.NORMAL) {
-        charge += 5
-      } else if (action.type === SkillType.BATTLE_SKILL) {
+      if (action.type === SkillType.BATTLE_SKILL) {
         charge += 15
-      } else if (action.type === SkillType.SYNERGY_SKILL) {
+      } else if (action.type === SkillType.COMBO_SKILL) {
         charge += 20
       } else if (action.type === SkillType.ULTIMATE) {
         charge = 0 // Reset after using ultimate
@@ -85,56 +125,168 @@ export default function ComboTimeline({
     return Math.min(charge, 100)
   }
 
-  // Update enemy status effects when actions change
-  useEffect(() => {
-    const effects: EnemyStatusEffect[] = []
-    actions.forEach(action => {
-      if (action.statusEffect) {
-        effects.push({
-          id: `${action.id}-effect`,
-          effect: action.statusEffect,
-          startTime: action.timing,
-          duration: DEFAULT_STATUS_EFFECT_DURATION_MS,
-          sourceActionId: action.id,
-        })
-      }
-    })
-    setEnemyStatusEffects(effects)
-  }, [actions])
-
-  const getSkillTypesForCharacter = (index: number) => {
-    // First character (player-controlled) has all skill types
-    if (index === 0) {
-      return [SkillType.NORMAL, SkillType.BATTLE_SKILL, SkillType.SYNERGY_SKILL, SkillType.ULTIMATE]
-    }
-    // Other characters don't have normal attack
+  const getSkillTypesForCharacter = () => {
     return [SkillType.BATTLE_SKILL, SkillType.COMBO_SKILL, SkillType.ULTIMATE]
   }
 
+  const handleDragStart = (e: DragEvent, index: number) => {
+    setDraggedIndex(index)
+    e.dataTransfer.effectAllowed = 'move'
+  }
+
+  const handleDragOver = (e: DragEvent, index: number) => {
+    e.preventDefault()
+    e.dataTransfer.dropEffect = 'move'
+    setDragOverIndex(index)
+  }
+
+  const handleDragLeave = () => {
+    setDragOverIndex(null)
+  }
+
+  const handleDrop = (e: DragEvent, index: number) => {
+    e.preventDefault()
+    if (draggedIndex !== null && draggedIndex !== index) {
+      onCharacterReorder(draggedIndex, index)
+    }
+    setDraggedIndex(null)
+    setDragOverIndex(null)
+  }
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null)
+    setDragOverIndex(null)
+  }
+
+  const handleOpenSelector = (slotIndex: number) => {
+    setSelectingSlotIndex(slotIndex)
+    setIsSelectorOpen(true)
+  }
+
+  const handleSelectCharacter = (character: Operator) => {
+    if (selectingSlotIndex === null) return
+    onCharacterSelect(character, selectingSlotIndex)
+    setIsSelectorOpen(false)
+    setSelectingSlotIndex(null)
+  }
+
+  const handleTimelineClick = (e: MouseEvent<HTMLDivElement>, character: Operator | null, type: SkillType) => {
+    if (!character) return
+    const target = e.target as HTMLElement
+    if (target.closest('[data-action-id]')) return
+    const lineElement = e.currentTarget.querySelector('[data-timeline-line]') as HTMLDivElement | null
+    if (!lineElement) return
+    const rect = lineElement.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const clampedX = Math.max(0, Math.min(x, rect.width))
+    const timing = Math.round(((clampedX / rect.width) * TIMELINE_DURATION) / 100) * 100
+    onAddAction(character.name, type, timing)
+  }
+
   return (
-    <div className="flex-1 bg-gray-800 p-4 rounded-lg overflow-x-auto">
-      <h2 className="text-xl font-bold mb-4">コンボタイムライン</h2>
-      
-      {characters.filter((c): c is Character => c !== null).map((character, index) => (
-        <div key={character.id} className="mb-8">
-          <div className="text-lg font-semibold mb-2 flex items-center gap-2">
-            {character.name}
-            {index === 0 && <span className="text-yellow-400 text-xs">(自操作)</span>}
-          </div>
-          
-          {getSkillTypesForCharacter(index).map((type) => (
-            <div key={type} className="mb-2">
-              <div className="flex items-center">
-                <div className="w-24 text-sm text-gray-400">
-                  {SKILL_TYPE_LABELS[type]}
-                </div>
-                <div className="relative flex-1 h-12 bg-gray-700 rounded">
+    <>
+      <div className="space-y-8">
+        {characters.map((character, index) => (
+          <div
+            key={character?.name ?? `slot-${index}`}
+            className={`flex gap-4 items-stretch ${dragOverIndex === index ? 'border-2 border-blue-500 rounded' : ''}`}
+            style={{ height: TIMELINE_ROW_HEIGHT_PX }}
+          >
+            <div
+              className="w-40 shrink-0"
+              draggable={!!character}
+              onDragStart={(e) => handleDragStart(e, index)}
+              onDragOver={(e) => handleDragOver(e, index)}
+              onDragLeave={handleDragLeave}
+              onDrop={(e) => handleDrop(e, index)}
+              onDragEnd={handleDragEnd}
+            >
+              <div className={`bg-gray-700 p-2 rounded h-40 ${character ? 'cursor-move' : ''}`}>
+                {character ? (
+                  <div className="h-full flex items-center justify-center">
+                    <div className="flex flex-col items-center gap-2">
+                      <div className="h-12 w-12 rounded bg-gray-600 overflow-hidden flex items-center justify-center">
+                        {character.imageUrl ? (
+                          <Image
+                            src={character.imageUrl}
+                            alt={character?.name ? t(character.name) : ''}
+                            width={48}
+                            height={48}
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <span className="text-xs text-gray-200">{t('team.noImage')}</span>
+                        )}
+                      </div>
+                      <span className="text-sm text-gray-100 text-center">
+                        {character?.name ? t(character.name) : ''}
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => handleOpenSelector(index)}
+                    className="w-full h-full bg-gray-600 hover:bg-gray-500 text-white rounded px-2 py-2"
+                  >
+                    <div className="flex flex-col items-center gap-2">
+                      <div className="h-12 w-12 rounded bg-gray-500/60 flex items-center justify-center">
+                        <span className="text-xs text-gray-200">{t('team.noImage')}</span>
+                      </div>
+                      <span className="text-sm text-gray-100 text-center">{t('team.selectCharacter')}</span>
+                    </div>
+                  </button>
+                )}
+              </div>
+            </div>
+
+            <div className="flex-1 h-full flex flex-col gap-2 bg-black/20">
+              {getSkillTypesForCharacter().map((type) => (
+                <div key={type}>
+                  <div className="flex items-center" onClick={(e) => handleTimelineClick(e, character, type)}>
+                    <div className="w-24 text-sm text-gray-400">
+                      {SKILL_TYPE_LABELS[type]}
+                    </div>
+                    <div
+                      className={`relative h-12 bg-gray-700 rounded ${character ? 'cursor-crosshair' : 'cursor-not-allowed'}`}
+                      style={{ width: `${TIMELINE_WIDTH}px`, minHeight: '48px', position: 'relative' }}
+                      data-timeline-line
+                    >
+                  {type === SkillType.COMBO_SKILL && (
+                    <>
+                      {actions
+                        .filter((action) => character && action.characterId === character.name && action.type === SkillType.COMBO_SKILL)
+                        .map((action) => {
+                          const cooldownMs = getComboSkillCooldownMs(character)
+                          if (!cooldownMs) return null
+                          const left = getActionPosition(action.timing)
+                          const width = Math.min(
+                            (cooldownMs / TIMELINE_DURATION) * TIMELINE_WIDTH,
+                            TIMELINE_WIDTH - left
+                          )
+                          if (width <= 0) return null
+
+                          return (
+                            <div
+                              key={`${action.id}-cooldown`}
+                              className="absolute inset-y-0 z-5 pointer-events-none"
+                              style={{
+                                left: `${left}px`,
+                                width: `${width}px`,
+                                backgroundColor: SKILL_TYPE_BG_COLORS[SkillType.COMBO_SKILL],
+                                opacity: 0.18,
+                              }}
+                            />
+                          )
+                        })}
+                    </>
+                  )}
                   {/* Ultimate charge background for ultimate lines */}
-                  {type === SkillType.ULTIMATE && (
-                    <div className="absolute inset-0 flex">
+                  {character && type === SkillType.ULTIMATE && (
+                    <div className="absolute inset-0 flex z-0">
                       {[...Array(TIMELINE_WIDTH / CHARGE_SEGMENT_WIDTH)].map((_, i) => {
                         const time = (i * CHARGE_SEGMENT_WIDTH / TIMELINE_WIDTH) * TIMELINE_DURATION
-                        const charge = calculateUltimateCharge(character.id, time)
+                        const charge = calculateUltimateCharge(character.name, time)
                         return (
                           <div
                             key={i}
@@ -148,111 +300,106 @@ export default function ComboTimeline({
                       })}
                     </div>
                   )}
+
+                  {type === SkillType.ULTIMATE && (
+                    <>
+                      {actions
+                        .filter((action) => character && action.characterId === character.name && action.type === SkillType.ULTIMATE)
+                        .map((action) => {
+                          const cooldownMs = getUltimateCooldownMs(character)
+                          if (!cooldownMs) return null
+                          const left = getActionPosition(action.timing)
+                          const width = Math.min(
+                            (cooldownMs / TIMELINE_DURATION) * TIMELINE_WIDTH,
+                            TIMELINE_WIDTH - left
+                          )
+                          if (width <= 0) return null
+
+                          return (
+                            <div
+                              key={`${action.id}-ultimate-cooldown`}
+                              className="absolute inset-y-0 z-5 pointer-events-none"
+                              style={{
+                                left: `${left}px`,
+                                width: `${width}px`,
+                                backgroundColor: SKILL_TYPE_BG_COLORS[SkillType.ULTIMATE],
+                                opacity: 0.16,
+                              }}
+                            />
+                          )
+                        })}
+                    </>
+                  )}
                   
                   {/* Timeline markers */}
-                  <div className="absolute inset-0 flex">
-                    {[...Array(11)].map((_, i) => (
-                      <div
-                        key={i}
-                        className="flex-1 border-r border-gray-600"
-                        style={{ width: `${100 / 10}%` }}
-                      />
-                    ))}
-                  </div>
+                  <div
+                    className="absolute inset-0 pointer-events-none z-10"
+                    style={{
+                      backgroundImage: 'linear-gradient(to right, rgba(255, 255, 255, 0.2) 1px, transparent 1px)',
+                      backgroundSize: `${SECOND_MARKER_WIDTH_PX}px 100%`,
+                    }}
+                  />
+
+                  <div
+                    className="absolute inset-0 z-5"
+                    style={{ position: 'absolute', inset: 0 }}
+                  />
                   
                   {/* Actions */}
                   {actions
-                    .filter(a => a.characterId === character.id && a.type === type)
-                    .map(action => (
+                    .filter(a => character && a.characterId === character.name && a.type === type)
+                    .map((action) => {
+                      const statusEffect = getStatusEffectForAction(
+                        getOperatorIdByName(action.characterId),
+                        action.type
+                      )
+                      return (
                       <div
                         key={action.id}
-                        className={`absolute top-1 h-10 ${SKILL_TYPE_COLORS[type]} rounded px-2 text-xs flex items-center justify-between cursor-pointer hover:opacity-80`}
+                        className={`absolute top-1 z-20 h-10 ${SKILL_TYPE_COLORS[type]} rounded px-2 text-xs flex items-center justify-between cursor-pointer hover:opacity-80`}
+                        data-action-id={action.id}
                         style={{
+                          position: 'absolute',
+                          top: '4px',
                           left: `${getActionPosition(action.timing)}px`,
                           width: '60px',
+                          height: '40px',
+                          backgroundColor: SKILL_TYPE_BG_COLORS[type],
+                          borderRadius: '6px',
+                          padding: '0 8px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          color: '#ffffff',
                         }}
-                        onClick={() => onRemoveAction(action.id)}
-                        onContextMenu={(e) => {
-                          e.preventDefault()
-                          onEditAction(action)
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          onRemoveAction(action.id)
                         }}
-                        title="左クリック: 削除 / 右クリック: 編集"
+                        title="左クリック: 削除"
                       >
                         <span>{action.timing / 1000}s</span>
-                        {action.hitCount && <span>x{action.hitCount}</span>}
-                        {action.statusEffect && <span className="text-yellow-300">⚡</span>}
+                        {statusEffect && <span className="text-yellow-300">⚡</span>}
                       </div>
-                    ))}
-                  
-                  {/* Click to add action */}
-                  <div
-                    className="absolute inset-0 cursor-crosshair"
-                    onClick={(e) => {
-                      const rect = e.currentTarget.getBoundingClientRect()
-                      const x = e.clientX - rect.left
-                      const timing = Math.round((x / TIMELINE_WIDTH) * TIMELINE_DURATION / 100) * 100
-                      onAddAction(character.id, type, timing)
-                    }}
-                  />
+                    )})}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      ))}
-      
-      {/* Enemy Status Line */}
-      <div className="mb-8 border-t-2 border-red-700 pt-4">
-        <div className="text-lg font-semibold mb-2 text-red-400">敵の状態</div>
-        <div className="flex items-center">
-          <div className="w-24 text-sm text-gray-400">
-            状態異常
-          </div>
-          <div className="relative flex-1 h-12 bg-gray-900 rounded border border-red-700">
-            {/* Timeline markers */}
-            <div className="absolute inset-0 flex">
-              {[...Array(11)].map((_, i) => (
-                <div
-                  key={i}
-                  className="flex-1 border-r border-gray-600"
-                  style={{ width: `${100 / 10}%` }}
-                />
               ))}
             </div>
-            
-            {/* Status effects */}
-            {enemyStatusEffects.map(effect => (
-              <div
-                key={effect.id}
-                className={`absolute top-1 h-10 ${STATUS_EFFECT_COLORS[effect.effect]} rounded px-2 text-xs flex items-center justify-center opacity-80`}
-                style={{
-                  left: `${getActionPosition(effect.startTime)}px`,
-                  width: `${(effect.duration / TIMELINE_DURATION) * TIMELINE_WIDTH}px`,
-                }}
-                title={`${STATUS_EFFECT_LABELS[effect.effect]} (${effect.duration / 1000}s)`}
-              >
-                {STATUS_EFFECT_LABELS[effect.effect]}
-              </div>
-            ))}
           </div>
-        </div>
+        ))}
       </div>
-      
-      {/* Timeline scale */}
-      <div className="flex items-center mt-4">
-        <div className="w-24" />
-        <div className="relative flex-1 h-6">
-          {[...Array(11)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute text-xs text-gray-400"
-              style={{ left: `${(i / 10) * TIMELINE_WIDTH}px` }}
-            >
-              {i}s
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
+
+      <CharacterSelectDialog
+        isOpen={isSelectorOpen}
+        options={selectableCharacters}
+        onClose={() => {
+          setIsSelectorOpen(false)
+          setSelectingSlotIndex(null)
+        }}
+        onSelect={handleSelectCharacter}
+      />
+    </>
   )
 }

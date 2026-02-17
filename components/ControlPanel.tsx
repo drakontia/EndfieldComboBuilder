@@ -1,7 +1,7 @@
 'use client'
 
-import { ComboState } from '@/types/combo'
-import { useState } from 'react'
+import { Button } from './ui/button'
+import { Input } from './ui/input'
 
 interface ControlPanelProps {
   comboName: string
@@ -25,7 +25,7 @@ export default function ControlPanel({
   return (
     <div className="bg-gray-800 p-4 rounded-lg mb-4">
       <div className="flex items-center gap-4 flex-wrap">
-        <input
+        <Input
           type="text"
           value={comboName}
           onChange={(e) => onComboNameChange(e.target.value)}
@@ -33,40 +33,40 @@ export default function ControlPanel({
           className="flex-1 min-w-[200px] px-4 py-2 bg-gray-700 text-white rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         
-        <button
+        <Button
           onClick={onSave}
           className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition"
         >
           保存
-        </button>
+        </Button>
         
-        <button
+        <Button
           onClick={onLoad}
           className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded transition"
         >
           読込
-        </button>
+        </Button>
         
-        <button
+        <Button
           onClick={onExportImage}
           className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded transition"
         >
           画像エクスポート
-        </button>
+        </Button>
         
-        <button
+        <Button
           onClick={onShare}
           className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded transition"
         >
           共有
-        </button>
+        </Button>
         
-        <button
+        <Button
           onClick={onClear}
           className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition"
         >
           クリア
-        </button>
+        </Button>
       </div>
     </div>
   )
