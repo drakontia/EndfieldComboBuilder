@@ -1,20 +1,22 @@
 import { create } from 'zustand'
-import { Character, Action, AttackType, ComboState } from '@/types/combo'
+import { SkillType } from '@/types/combo'
+import type { ComboAction, ComboState, Operator } from '@/types/combo'
 
 interface ComboStore {
   // State
   comboName: string
-  characters: (Character | null)[]
-  actions: Action[]
+  characters: (Operator | null)[]
+  actions: ComboAction[]
   
   // Actions
   setComboName: (name: string) => void
-  setCharacters: (characters: (Character | null)[]) => void
-  setCharacter: (character: Character | null, index: number) => void
+  setCharacters: (characters: (Operator | null)[] | ((prev: (Operator | null)[]) => (Operator | null)[])) => void
+  setActions: (actions: ComboAction[] | ((prev: ComboAction[]) => ComboAction[])) => void
+  setCharacter: (character: Operator | null, index: number) => void
   reorderCharacters: (fromIndex: number, toIndex: number) => void
-  addAction: (characterId: string, type: AttackType, timing: number) => void
+  addAction: (characterId: string, type: SkillType, timing: number) => void
   removeAction: (actionId: string) => void
-  updateAction: (action: Action) => void
+  updateAction: (action: ComboAction) => void
   clearCombo: () => void
   loadCombo: (combo: ComboState) => void
   getComboState: () => ComboState
@@ -29,7 +31,13 @@ export const useComboStore = create<ComboStore>((set, get) => ({
   // Actions
   setComboName: (name) => set({ comboName: name }),
   
-  setCharacters: (characters) => set({ characters }),
+  setCharacters: (characters) => set((state) => ({
+    characters: typeof characters === 'function' ? characters(state.characters) : characters,
+  })),
+
+  setActions: (actions) => set((state) => ({
+    actions: typeof actions === 'function' ? actions(state.actions) : actions,
+  })),
   
   setCharacter: (character, index) => set((state) => {
     const newCharacters = [...state.characters]
@@ -45,12 +53,11 @@ export const useComboStore = create<ComboStore>((set, get) => ({
   }),
   
   addAction: (characterId, type, timing) => set((state) => {
-    const newAction: Action = {
+    const newAction: ComboAction = {
       id: `${Date.now()}-${Math.random()}`,
       characterId,
       type,
       timing,
-      hitCount: type === AttackType.NORMAL ? 1 : undefined,
     }
     return { actions: [...state.actions, newAction] }
   }),
