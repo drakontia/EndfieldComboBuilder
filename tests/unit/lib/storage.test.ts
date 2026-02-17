@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { saveCombo, loadCombo, getSavedCombos, deleteCombo, generateShareUrl, loadComboFromUrl } from '@/lib/storage'
-import { ComboState, AttackType } from '@/types/combo'
+import { CharacterElement, CharcterType, ComboState, SkillType } from '@/types/combo'
 
 // Mock localStorage
 const localStorageMock = (() => {
@@ -30,21 +30,20 @@ describe('Storage Functions', () => {
   const mockCombo: ComboState = {
     name: 'Test Combo',
     characters: [
-      { id: '1', name: 'Character 1' },
-      { id: '2', name: 'Character 2' },
+      { name: 'Character 1', type: CharcterType.GUARD, element: CharacterElement.PHYSICS, rarity: 4 },
+      { name: 'Character 2', type: CharcterType.CASTER, element: CharacterElement.HEAT, rarity: 5 },
     ],
     actions: [
       {
         id: '1',
-        characterId: '1',
-        type: AttackType.NORMAL,
+        characterId: 'Character 1',
+        type: SkillType.NORMAL,
         timing: 1000,
-        hitCount: 1,
       },
       {
         id: '2',
-        characterId: '2',
-        type: AttackType.BATTLE_SKILL,
+        characterId: 'Character 2',
+        type: SkillType.BATTLE_SKILL,
         timing: 2000,
       },
     ],
