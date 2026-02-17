@@ -8,12 +8,23 @@
     "slot": "Slot {number}",
     "playerControlled": "Player",
     "selectCharacter": "Select...",
-    "remove": "Remove"
+    "remove": "Remove",
+    "selectTitle": "Select Operator",
+    "noAvailable": "No operators available",
+    "noImage": "No image",
+    "searchPlaceholder": "Search by name",
+    "filterType": "Type",
+    "filterElement": "Element",
+    "filterRarity": "Rarity",
+    "filterAll": "All",
+    "changeCharacter": "Change"
   },
   "timeline": {
     "title": "Combo Timeline",
     "enemyStatus": "Enemy Status",
-    "statusEffects": "Status Effects"
+    "statusEffects": "Status Effects",
+    "spLabel": "SP",
+    "spInitial": "Initial {value} / Max {max} / Regen {regen}/s / Battle Skill {cost}"
   },
   "attackTypes": {
     "normal": "Normal Attack",
@@ -53,10 +64,57 @@
     "loaded": "Combo loaded!",
     "exported": "Image exported!",
     "exportFailed": "Failed to export image",
-    "urlCopied": "Share URL copied to clipboard!"
+    "urlCopied": "Share URL copied to clipboard!",
+    "spInsufficient": "Not enough SP (Battle Skill: {cost}).",
+    "normalAttackOverlap": "Normal attacks overlap.",
+    "comboSkillOverlap": "Combo skill is on cooldown.",
+    "ultimateOverlap": "Ultimate is on cooldown."
   },
   "stats": {
     "characters": "{count} characters",
     "actions": "{count} actions"
+  },
+  "character": {
+    "endministrator": {
+      "name": "Endministrator"
+    },
+    "ardelia": {
+      "name": "Ardelia"
+    },
+    "pogranichnik": {
+      "name": "Pogranichnik"
+    },
+    "last_rite": {
+      "name": "Last Rite"
+    },
+    "ember": {
+      "name": "Ember"
+    },
+    "lifeng": {
+      "name": "Lifeng"
+    },
+    "chen_qianyu": {
+      "name": "Chen Qianyu"
+    }
+  },
+  "characterType": {
+    "guard": "Guard",
+    "caster": "Caster",
+    "striker": "Striker",
+    "vanguard": "Vanguard",
+    "defender": "Defender",
+    "supporter": "Supporter"
+  },
+  "characterElement": {
+    "physics": "Physical",
+    "heat": "Heat",
+    "cryo": "Cryo",
+    "electric": "Electric",
+    "nature": "Nature"
+  },
+  "rarity": {
+    "star6": "6-Star",
+    "star5": "5-Star",
+    "star4": "4-Star"
   }
 }
