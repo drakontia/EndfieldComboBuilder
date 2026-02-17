@@ -1,0 +1,108 @@
+import { useTranslations } from 'next-intl'
+import type { Dispatch, SetStateAction } from 'react'
+
+import { getNormalAttackDurationMs } from '@/lib/data/attacks'
+import { COMBO_SKILLS, ULTIMATES } from '@/lib/data/skills'
+import { BATTLE_SKILL_SP_COST, buildSpTimeline } from '@/lib/timeline'
+import { SkillType } from '@/types/combo'
+
+import type { ComboAction } from '@/types/combo'
+
+type GetOperatorIdFromCharacterId = (characterId: string) => string | null
+
+interface UseComboActionsOptions {
+  setActions: Dispatch<SetStateAction<ComboAction[]>>
+  getOperatorIdFromCharacterId: GetOperatorIdFromCharacterId
+}
+
+export const useComboActions = ({ setActions, getOperatorIdFromCharacterId }: UseComboActionsOptions) => {
+  const t = useTranslations()
+  const handleAddAction = (characterId: string, type: SkillType, timing: number) => {
+    setActions((prev) => {
+      const operatorId = getOperatorIdFromCharacterId(characterId)
+      const newAction: ComboAction = {
+        id: `${Date.now()}-${Math.random()}`,
+        characterId,
+        type,
+        timing,
+      }
+
+      if (type === SkillType.NORMAL) {
+        if (operatorId) {
+          const durationMs = getNormalAttackDurationMs(operatorId)
+          const newStart = timing
+          const newEnd = timing + durationMs
+          const hasOverlap = prev
+            .filter((action) => action.type === SkillType.NORMAL)
+            .some((action) => {
+              const existingStart = action.timing
+              const existingEnd = action.timing + durationMs
+              return newStart < existingEnd && existingStart < newEnd
+            })
+          if (hasOverlap) {
+            alert(t('messages.normalAttackOverlap'))
+            return prev
+          }
+        }
+      }
+
+      if (type === SkillType.COMBO_SKILL && operatorId) {
+        const cooldownMs =
+          COMBO_SKILLS[`${operatorId}_combo_skill`]?.cooldown ??
+          COMBO_SKILLS[`${operatorId}.combo_skill`]?.cooldown
+        if (cooldownMs) {
+          const newStart = timing
+          const newEnd = timing + cooldownMs
+          const hasOverlap = prev
+            .filter((action) => action.type === SkillType.COMBO_SKILL && action.characterId === characterId)
+            .some((action) => {
+              const existingStart = action.timing
+              const existingEnd = action.timing + cooldownMs
+              return newStart < existingEnd && existingStart < newEnd
+            })
+          if (hasOverlap) {
+            alert(t('messages.comboSkillOverlap'))
+            return prev
+          }
+        }
+      }
+
+      if (type === SkillType.ULTIMATE && operatorId) {
+        const cooldownMs =
+          ULTIMATES[`${operatorId}_ultimate`]?.cooldown ?? ULTIMATES[`${operatorId}.ultimate`]?.cooldown
+        if (cooldownMs) {
+          const newStart = timing
+          const newEnd = timing + cooldownMs
+          const hasOverlap = prev
+            .filter((action) => action.type === SkillType.ULTIMATE && action.characterId === characterId)
+            .some((action) => {
+              const existingStart = action.timing
+              const existingEnd = action.timing + cooldownMs
+              return newStart < existingEnd && existingStart < newEnd
+            })
+          if (hasOverlap) {
+            alert(t('messages.ultimateOverlap'))
+            return prev
+          }
+        }
+      }
+
+      if (type === SkillType.BATTLE_SKILL) {
+        const { minSp } = buildSpTimeline([...prev, newAction])
+        if (minSp < 0) {
+          alert(t('messages.spInsufficient', { cost: BATTLE_SKILL_SP_COST }))
+          return prev
+        }
+      }
+
+      return [...prev, newAction]
+    })
+  }
+
+  const handleRemoveAction = (actionId: string) => setActions((prev) => prev.filter((action) => action.id !== actionId))
+
+  return {
+    handleAddAction,
+    handleRemoveAction,
+  }
+}
