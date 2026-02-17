@@ -2,11 +2,13 @@
 
 import { type MouseEvent, useCallback, useEffect, useMemo } from 'react'
 import { useTranslations } from 'next-intl'
-import ComboTimeline, {
+import CharacterColumn from '@/components/CharacterColumn'
+import TimelineColumn from '@/components/TimelineColumn'
+import {
   SKILL_TYPE_BG_COLORS,
   SKILL_TYPE_COLORS,
   SKILL_TYPE_LABELS,
-} from '@/components/ComboTimeline'
+} from '@/components/combo-timeline/skillTypeConfig'
 import { EnemyStatusTimeline } from '@/components/EnemyStatusTimeline'
 import { NormalAttackTimeline } from '@/components/NormalAttackTimeline'
 import { SpTimelineChart } from '@/components/SpTimelineChart'
@@ -85,7 +87,7 @@ export const ComboBuilder = () => {
   }, [loadComboState])
 
   const { handleCharacterSelect, handleCharacterReorder } = useComboCharacters(setCharacters)
-  const { handleAddAction, handleRemoveAction } = useComboActions({
+  const { handleAddAction, handleRemoveAction, handleMoveAction } = useComboActions({
     setActions,
     getOperatorIdFromCharacterId,
   })
@@ -150,35 +152,86 @@ export const ComboBuilder = () => {
 
       <div id="combo-timeline" className="space-y-4">
         <div className="flex-1 bg-gray-800 p-4 rounded-lg overflow-x-auto">
-          <SpTimelineChart
-            spChartData={spChartData}
-            initialSp={INITIAL_TEAM_SP}
-            maxSp={MAX_TEAM_SP}
-            regenPerSecond={TEAM_SP_REGEN_PER_SECOND}
-            battleSkillCost={BATTLE_SKILL_SP_COST}
-          />
-          <TimelineScale withCharacterOffset />
-          <NormalAttackTimeline
-            playerCharacter={playerCharacter}
-            actions={actions}
-            skillTypeLabels={SKILL_TYPE_LABELS}
-            skillTypeColors={SKILL_TYPE_COLORS}
-            skillTypeBgColors={SKILL_TYPE_BG_COLORS}
-            getActionPosition={getActionPosition}
-            getNormalAttackDurationMsForPlayer={getNormalAttackDurationMsForPlayer}
-            onTimelineClick={handleTimelineClick}
-            onRemoveAction={handleRemoveAction}
-          />
-          <ComboTimeline
-            characters={characters}
-            actions={actions}
-            onCharacterSelect={handleCharacterSelect}
-            onCharacterReorder={handleCharacterReorder}
-            onAddAction={handleAddAction}
-            onRemoveAction={handleRemoveAction}
-          />
-          <EnemyStatusTimeline actions={actions} />
-          <TimelineScale withCharacterOffset />
+          <div className="flex gap-4 items-center mb-6">
+            <div className="w-40 shrink-0 text-sm text-gray-300 font-medium">
+              {t('timeline.spLabel')}
+              <div className="text-xs text-gray-300">
+                {t('timeline.spInitial', {
+                  value: INITIAL_TEAM_SP,
+                  max: MAX_TEAM_SP,
+                  regen: TEAM_SP_REGEN_PER_SECOND,
+                  cost: BATTLE_SKILL_SP_COST,
+                })}
+              </div>
+            </div>
+            <div className="flex-1">
+              <SpTimelineChart
+                spChartData={spChartData}
+                initialSp={INITIAL_TEAM_SP}
+                maxSp={MAX_TEAM_SP}
+                regenPerSecond={TEAM_SP_REGEN_PER_SECOND}
+                battleSkillCost={BATTLE_SKILL_SP_COST}
+                showLabel={false}
+              />
+            </div>
+          </div>
+          <div className="flex gap-4">
+            <div className="w-40 shrink-0" />
+            <div className="flex-1">
+              <TimelineScale withCharacterOffset={false} />
+            </div>
+          </div>
+          <div className="flex gap-4 mb-4 items-center">
+            <div className="w-40 shrink-0">
+              <div className="bg-gray-700 px-3 py-2 rounded h-12 flex flex-col justify-center">
+                <span className="text-xs text-gray-300">{t('team.playerControlled')}</span>
+                <span className="text-sm text-gray-100">
+                  {playerCharacter?.name ? t(playerCharacter.name) : t('team.selectCharacter')}
+                </span>
+              </div>
+            </div>
+            <div className="flex-1">
+              <NormalAttackTimeline
+                playerCharacter={playerCharacter}
+                actions={actions}
+                skillTypeLabels={SKILL_TYPE_LABELS}
+                skillTypeColors={SKILL_TYPE_COLORS}
+                skillTypeBgColors={SKILL_TYPE_BG_COLORS}
+                getActionPosition={getActionPosition}
+                getNormalAttackDurationMsForPlayer={getNormalAttackDurationMsForPlayer}
+                onTimelineClick={handleTimelineClick}
+                onRemoveAction={handleRemoveAction}
+                onMoveAction={handleMoveAction}
+                showCharacterLabel={false}
+              />
+            </div>
+          </div>
+          <div className="flex gap-4">
+            <CharacterColumn
+              characters={characters}
+              onCharacterSelect={handleCharacterSelect}
+              onCharacterReorder={handleCharacterReorder}
+            />
+            <TimelineColumn
+              characters={characters}
+              actions={actions}
+              onAddAction={handleAddAction}
+              onRemoveAction={handleRemoveAction}
+              onMoveAction={handleMoveAction}
+            />
+          </div>
+          <div className="flex gap-4 mt-4">
+            <div className="w-40 shrink-0 text-lg font-semibold text-red-400">敵の状態</div>
+            <div className="flex-1">
+              <EnemyStatusTimeline actions={actions} withCharacterOffset={false} showHeader={false} />
+            </div>
+          </div>
+          <div className="flex gap-4">
+            <div className="w-40 shrink-0" />
+            <div className="flex-1">
+              <TimelineScale withCharacterOffset={false} />
+            </div>
+          </div>
         </div>
       </div>
 

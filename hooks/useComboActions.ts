@@ -17,6 +17,59 @@ interface UseComboActionsOptions {
 
 export const useComboActions = ({ setActions, getOperatorIdFromCharacterId }: UseComboActionsOptions) => {
   const t = useTranslations()
+  const getActionOverlapDurationMs = (action: ComboAction) => {
+    if (action.type === SkillType.NORMAL) {
+      const operatorId = getOperatorIdFromCharacterId(action.characterId)
+      if (!operatorId) return 0
+      return getNormalAttackDurationMs(operatorId)
+    }
+
+    if (action.type === SkillType.COMBO_SKILL) {
+      const operatorId = getOperatorIdFromCharacterId(action.characterId)
+      if (!operatorId) return 1000
+      return (
+        COMBO_SKILLS[`${operatorId}_combo_skill`]?.cooldown ??
+        COMBO_SKILLS[`${operatorId}.combo_skill`]?.cooldown ??
+        1000
+      )
+    }
+
+    if (action.type === SkillType.ULTIMATE) {
+      const operatorId = getOperatorIdFromCharacterId(action.characterId)
+      if (!operatorId) return 1000
+      return (
+        ULTIMATES[`${operatorId}_ultimate`]?.cooldown ??
+        ULTIMATES[`${operatorId}.ultimate`]?.cooldown ??
+        1000
+      )
+    }
+
+    return 1000
+  }
+
+  const hasOverlapInLane = (candidate: ComboAction, actions: ComboAction[]) => {
+    const candidateDuration = getActionOverlapDurationMs(candidate)
+    if (candidateDuration <= 0) return false
+
+    const isSameLane = (action: ComboAction) => {
+      if (candidate.type !== action.type) return false
+      if (candidate.type === SkillType.NORMAL) return true
+      return candidate.characterId === action.characterId
+    }
+
+    const candidateStart = candidate.timing
+    const candidateEnd = candidate.timing + candidateDuration
+
+    return actions.some((action) => {
+      if (action.id === candidate.id) return false
+      if (!isSameLane(action)) return false
+      const duration = getActionOverlapDurationMs(action)
+      if (duration <= 0) return false
+      const start = action.timing
+      const end = action.timing + duration
+      return candidateStart < end && start < candidateEnd
+    })
+  }
   const handleAddAction = (characterId: string, type: SkillType, timing: number) => {
     setActions((prev) => {
       const operatorId = getOperatorIdFromCharacterId(characterId)
@@ -88,6 +141,11 @@ export const useComboActions = ({ setActions, getOperatorIdFromCharacterId }: Us
       }
 
       if (type === SkillType.BATTLE_SKILL) {
+        const hasOverlap = hasOverlapInLane(newAction, prev)
+        if (hasOverlap) {
+          alert(t('messages.battleSkillOverlap'))
+          return prev
+        }
         const { minSp } = buildSpTimeline([...prev, newAction])
         if (minSp < 0) {
           alert(t('messages.spInsufficient', { cost: BATTLE_SKILL_SP_COST }))
@@ -101,8 +159,43 @@ export const useComboActions = ({ setActions, getOperatorIdFromCharacterId }: Us
 
   const handleRemoveAction = (actionId: string) => setActions((prev) => prev.filter((action) => action.id !== actionId))
 
+  const handleMoveAction = (actionId: string, nextTiming: number) => {
+    setActions((prev) => {
+      const target = prev.find((action) => action.id === actionId)
+      if (!target) return prev
+      if (target.timing === nextTiming) return prev
+
+      const updatedAction = { ...target, timing: nextTiming }
+      const nextActions = prev.map((action) => (action.id === actionId ? updatedAction : action))
+
+      if (hasOverlapInLane(updatedAction, prev)) {
+        if (updatedAction.type === SkillType.NORMAL) {
+          alert(t('messages.normalAttackOverlap'))
+        } else if (updatedAction.type === SkillType.COMBO_SKILL) {
+          alert(t('messages.comboSkillOverlap'))
+        } else if (updatedAction.type === SkillType.ULTIMATE) {
+          alert(t('messages.ultimateOverlap'))
+        } else if (updatedAction.type === SkillType.BATTLE_SKILL) {
+          alert(t('messages.battleSkillOverlap'))
+        }
+        return prev
+      }
+
+      if (updatedAction.type === SkillType.BATTLE_SKILL) {
+        const { minSp } = buildSpTimeline(nextActions)
+        if (minSp < 0) {
+          alert(t('messages.spInsufficient', { cost: BATTLE_SKILL_SP_COST }))
+          return prev
+        }
+      }
+
+      return nextActions
+    })
+  }
+
   return {
     handleAddAction,
     handleRemoveAction,
+    handleMoveAction,
   }
 }

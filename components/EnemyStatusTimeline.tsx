@@ -18,9 +18,15 @@ import type { ComboAction } from '@/types/combo'
 
 interface EnemyStatusTimelineProps {
   actions: ComboAction[]
+  withCharacterOffset?: boolean
+  showHeader?: boolean
 }
 
-export const EnemyStatusTimeline = ({ actions }: EnemyStatusTimelineProps) => {
+export const EnemyStatusTimeline = ({
+  actions,
+  withCharacterOffset = true,
+  showHeader = true,
+}: EnemyStatusTimelineProps) => {
   const getActionPosition = (timing: number) => {
     return (timing / TIMELINE_DURATION) * TIMELINE_WIDTH
   }
@@ -90,10 +96,9 @@ export const EnemyStatusTimeline = ({ actions }: EnemyStatusTimelineProps) => {
     sorted.forEach((item) => {
       const effect = item.effect as PhysicalStatus
       const endTime = item.startTime + item.duration
-      const hasActiveCrash = current && item.startTime < current.endTime
 
       if (isConsumeEffect(effect)) {
-        if (hasActiveCrash) {
+        if (current && item.startTime < current.endTime) {
           current.endTime = item.startTime
           if (current.endTime > current.startTime) {
             segments.push(current)
@@ -114,7 +119,7 @@ export const EnemyStatusTimeline = ({ actions }: EnemyStatusTimelineProps) => {
 
       if (!isStackEffect(effect)) return
 
-      if (hasActiveCrash) {
+      if (current && item.startTime < current.endTime) {
         current.endTime = Math.max(current.endTime, endTime)
         current.count = Math.min(4, current.count + 1)
         current.starts.push(item.startTime)
@@ -234,12 +239,12 @@ export const EnemyStatusTimeline = ({ actions }: EnemyStatusTimelineProps) => {
   }, [actions])
 
   return (
-    <div className="bg-gray-800 p-4 rounded-lg overflow-x-auto">
-      <div className="text-lg font-semibold mb-2 text-red-400">敵の状態</div>
+    <div className="bg-gray-800 rounded-lg overflow-x-auto">
+      {showHeader && <div className="text-lg font-semibold mb-2 text-red-400">敵の状態</div>}
       <div className="flex flex-col gap-2">
         {statusEffectRows.map((row) => (
-          <div key={row.effect} className="flex items-center gap-4">
-            <div className="w-40 shrink-0" />
+          <div key={row.effect} className="flex items-center">
+            {withCharacterOffset && <div className="w-40 shrink-0" />}
             <div className="w-24 text-sm text-gray-400">{STATUS_EFFECT_LABELS[row.effect]}</div>
             <div className="relative flex-1 h-10 bg-gray-900 rounded border border-red-700">
               {/* Timeline markers */}

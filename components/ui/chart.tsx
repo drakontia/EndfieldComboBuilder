@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { useLocale } from "next-intl"
 import * as RechartsPrimitive from "recharts"
 
 import { cn } from "@/lib/utils"
@@ -131,6 +132,8 @@ const ChartTooltipContent = React.forwardRef<
     },
     ref
   ) => {
+    const locale = useLocale()
+    const numberFormatter = React.useMemo(() => new Intl.NumberFormat(locale), [locale])
     const { config } = useChart()
 
     const tooltipLabel = React.useMemo(() => {
@@ -240,9 +243,9 @@ const ChartTooltipContent = React.forwardRef<
                             {itemConfig?.label || item.name}
                           </span>
                         </div>
-                        {item.value && (
+                        {item.value !== undefined && item.value !== null && (
                           <span className="font-mono font-medium tabular-nums text-foreground">
-                            {item.value.toLocaleString()}
+                            {numberFormatter.format(item.value)}
                           </span>
                         )}
                       </div>

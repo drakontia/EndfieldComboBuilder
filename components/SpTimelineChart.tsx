@@ -12,6 +12,7 @@ interface SpTimelineChartProps {
   maxSp: number
   regenPerSecond: number
   battleSkillCost: number
+  showLabel?: boolean
 }
 
 export const SpTimelineChart = ({
@@ -20,22 +21,12 @@ export const SpTimelineChart = ({
   maxSp,
   regenPerSecond,
   battleSkillCost,
+  showLabel = true,
 }: SpTimelineChartProps) => {
   const t = useTranslations()
 
-  return (
-    <div className="flex gap-4 items-center mb-6">
-      <div className="w-40 shrink-0 text-sm text-gray-300 font-medium">
-        {t('timeline.spLabel')}
-        <div className="absolute right-2 top-1 text-xs text-gray-300">
-          {t('timeline.spInitial', {
-            value: initialSp,
-            max: maxSp,
-            regen: regenPerSecond,
-            cost: battleSkillCost,
-          })}
-        </div>
-      </div>
+  const chartContent = (
+    <>
       <div className="w-24 shrink-0" />
       <div className="relative" style={{ width: `${TIMELINE_WIDTH}px`, height: '96px' }}>
         <ChartContainer
@@ -76,6 +67,27 @@ export const SpTimelineChart = ({
           </BarChart>
         </ChartContainer>
       </div>
+    </>
+  )
+
+  if (!showLabel) {
+    return <div className="flex items-center">{chartContent}</div>
+  }
+
+  return (
+    <div className="flex gap-4 items-center mb-6">
+      <div className="w-40 shrink-0 text-sm text-gray-300 font-medium">
+        {t('timeline.spLabel')}
+        <div className="text-xs text-gray-300">
+          {t('timeline.spInitial', {
+            value: initialSp,
+            max: maxSp,
+            regen: regenPerSecond,
+            cost: battleSkillCost,
+          })}
+        </div>
+      </div>
+      {chartContent}
     </div>
   )
 }

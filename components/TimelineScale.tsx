@@ -10,7 +10,7 @@ export const TimelineScale = ({ withCharacterOffset = false }: TimelineScaleProp
   const totalSeconds = Math.round(TIMELINE_DURATION / 1000)
 
   return (
-    <div className="flex items-center px-4">
+    <div className="flex items-center">
       {withCharacterOffset && (
         <>
           <div className="w-40 shrink-0" />

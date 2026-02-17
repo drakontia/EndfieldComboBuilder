@@ -67,6 +67,7 @@
     "urlCopied": "Share URL copied to clipboard!",
     "spInsufficient": "Not enough SP (Battle Skill: {cost}).",
     "normalAttackOverlap": "Normal attacks overlap.",
+    "battleSkillOverlap": "Battle skills overlap.",
     "comboSkillOverlap": "Combo skill is on cooldown.",
     "ultimateOverlap": "Ultimate is on cooldown."
   },

@@ -67,6 +67,7 @@
     "urlCopied": "共有URLをクリップボードにコピーしました！",
     "spInsufficient": "SPが不足しています（戦技: {cost}）",
     "normalAttackOverlap": "通常攻撃が重なっています",
+    "battleSkillOverlap": "戦技が重なっています",
     "comboSkillOverlap": "連携技がクールタイム中です",
     "ultimateOverlap": "必殺技がクールタイム中です"
   },
