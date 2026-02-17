@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import {NextIntlClientProvider} from 'next-intl';
 import {getLocale, getMessages} from 'next-intl/server';
-import {locales} from '@/i18n/request';
 import { Analytics } from '@vercel/analytics/react';
 import './globals.css'
 
