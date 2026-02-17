@@ -1,133 +1,148 @@
-import { SkillType, PhysicalStatus, ArtsInfliction } from '@/types/combo'
-
-export interface SkillData {
-  id: string
-  operatorId: string
-  type: SkillType
-  name: {
-    ja: string
-    en: string
-  }
-  description: {
-    ja: string
-    en: string
-  }
-  cooldown?: number // in milliseconds
-  chargeGain?: number // ultimate charge gained
-  statusEffect?: PhysicalStatus | ArtsInfliction
-  damage?: number
-  duration?: number
-}
+import { getNormalAttackStatusEffect } from '@/lib/data/attacks'
+import { SkillType, PhysicalStatus, ArtsInfliction, ArtsReaction, BattleSkill, Ultimate, ComboSkill, SpecialEffect } from '@/types/combo'
 
 // Battle Skills (戦技)
-export const BATTLE_SKILLS: SkillData[] = [
-  {
-    id: 'skill_1_1',
-    operatorId: '1',
+export const BATTLE_SKILLS: Record<string, BattleSkill> = {
+  'endministrator_battle_skill': {
+    operatorId: 'endministrator',
     type: SkillType.BATTLE_SKILL,
-    name: {
-      ja: '突進斬り',
-      en: 'Rush Slash'
-    },
-    description: {
-      ja: '前方に突進して敵を斬る',
-      en: 'Rush forward and slash enemies'
-    },
-    cooldown: 5000,
-    chargeGain: 15,
-    damage: 250
+    name: 'skill.endministrator_battle_skill.name',
+    description: 'skill.endministrator_battle_skill.description',
+    statusEffect: PhysicalStatus.CRUSH,
+    skillPoints: 100
   },
-  {
-    id: 'skill_2_1',
-    operatorId: '2',
+  'chen_qianyu_battle_skill': {
+    operatorId: 'chen_qianyu',
     type: SkillType.BATTLE_SKILL,
-    name: {
-      ja: '連続斬り',
-      en: 'Rapid Slash'
-    },
-    description: {
-      ja: '素早く連続攻撃',
-      en: 'Quick consecutive attacks'
-    },
-    cooldown: 4000,
-    chargeGain: 15,
-    statusEffect: PhysicalStatus.WEAKNESS,
-    damage: 200
-  }
-]
-
-// Synergy Skills (連携技)
-export const SYNERGY_SKILLS: SkillData[] = [
-  {
-    id: 'synergy_1_1',
-    operatorId: '1',
-    type: SkillType.COMBO_SKILL,
-    name: {
-      ja: '炎の連携',
-      en: 'Fire Synergy'
-    },
-    description: {
-      ja: '味方と連携して炎属性攻撃',
-      en: 'Coordinate with allies for fire attack'
-    },
-    cooldown: 8000,
-    chargeGain: 20,
+    name: 'skill.chen_qianyu_battle_skill.name',
+    description: 'skill.chen_qianyu_battle_skill.description',
+    statusEffect: PhysicalStatus.LIFT,
+    skillPoints: 100
+  },
+  'alderia_battle_skill': {
+    operatorId: 'alderia',
+    type: SkillType.BATTLE_SKILL,
+    name: 'skill.alderia_battle_skill.name',
+    description: 'skill.alderia_battle_skill.description',
+    statusEffect: PhysicalStatus.VULNERABLE,
+    skillPoints: 100
+  },
+  'wolfgard_battle_skill': {
+    operatorId: 'wolfgard',
+    type: SkillType.BATTLE_SKILL,
+    name: 'skill.wolfgard_battle_skill.name',
+    description: 'skill.wolfgard_battle_skill.description',
     statusEffect: ArtsInfliction.HEAT,
-    damage: 400
-  },
-  {
-    id: 'synergy_2_1',
-    operatorId: '2',
-    type: SkillType.COPMBO_SKILL,
-    name: {
-      ja: '氷結連携',
-      en: 'Freeze Synergy'
-    },
-    description: {
-      ja: '味方と連携して氷結攻撃',
-      en: 'Coordinate with allies for freeze attack'
-    },
-    cooldown: 8000,
-    chargeGain: 20,
-    statusEffect: ArtsInfliction.CRYO,
-    damage: 400
+    skillPoints: 100
   }
-]
+}
+
+// Combo Skills (連携技)
+export const COMBO_SKILLS: Record<string, ComboSkill> = {
+  'endministrator_combo_skill': {
+    operatorId: 'endministrator',
+    type: SkillType.COMBO_SKILL,
+    name: 'endministrator.combo_skill.name',
+    description: 'endministrator.combo_skill.description',
+    cooldown: 16000,
+    statusEffect: SpecialEffect.ORIGINIUM_CRYSTALS,
+    requirement: {
+      synergyActivated: true
+    }
+  },
+  'chen_qianyu_combo_skill': {
+    operatorId: 'chen_qianyu',
+    type: SkillType.COMBO_SKILL,
+    name: 'chen_qianyu.combo_skill.name',
+    description: 'chen_qianyu.combo_skill.description',
+    cooldown: 16000,
+    statusEffect: PhysicalStatus.LIFT,
+    requirement: {
+      synergyActivated: true,
+      statusEffects: [PhysicalStatus.VULNERABLE]
+    }
+  },
+  'alderia_combo_skill': {
+    operatorId: 'alderia',
+    type: SkillType.COMBO_SKILL,
+    name: 'alderia.combo_skill.name',
+    description: 'alderia.combo_skill.description',
+    cooldown: 16000,
+    statusEffect: ArtsInfliction.NATURE,
+    requirement: {
+      synergyActivated: true
+    },
+  },
+  'wolfgard_combo_skill': {
+    operatorId: 'wolfgard',
+    type: SkillType.COMBO_SKILL,
+    name: 'wolfgard.combo_skill.name',
+    description: 'wolfgard.combo_skill.description',
+    cooldown: 20000,
+    statusEffect: ArtsInfliction.HEAT,
+    requirement: {
+      synergyActivated: true,
+      statusEffects: [ArtsInfliction.HEAT, ArtsInfliction.CRYO, ArtsInfliction.ELECTRIC, ArtsInfliction.NATURE]
+    },
+  }
+}
 
 // Ultimates (必殺技)
-export const ULTIMATES: SkillData[] = [
-  {
-    id: 'ultimate_1_1',
-    operatorId: '1',
+export const ULTIMATES: Record<string, Ultimate> = {
+  'endministrator_ultimate': {
+    operatorId: 'endministrator',
     type: SkillType.ULTIMATE,
-    name: {
-      ja: '烈火の一閃',
-      en: 'Blazing Flash'
-    },
-    description: {
-      ja: '全力で炎を纏った一撃を放つ',
-      en: 'Unleash a powerful flame-wrapped strike'
-    },
-    chargeGain: 0, // Ultimates consume charge
-    statusEffect: StatusEffect.BURN,
-    damage: 1000,
-    duration: 3000
+    name: 'endministrator.ultimate.name',
+    description:'endministrator.ultimate.description',
+    chargeGain: 80, // Ultimates consume charge
+    cooldown: 10000
   },
-  {
-    id: 'ultimate_2_1',
-    operatorId: '2',
+  'chen_qianyu_ultimate': {
+    operatorId: 'chen_qianyu',
     type: SkillType.ULTIMATE,
-    name: {
-      ja: '絶対零度',
-      en: 'Absolute Zero'
-    },
-    description: {
-      ja: '周囲を凍てつかせる必殺技',
-      en: 'Freeze the surroundings with ultimate power'
-    },
-    chargeGain: 0,
-    statusEffect: StatusEffect.FREEZE,
-    damage: 1200,
-    duration: 4000
+    name: 'chen_qianyu.ultimate.name',
+    description:'chen_qianyu.ultimate.description',
+    chargeGain: 70, // Ultimates consume charge
+    cooldown: 10000
+  },
+  'alderia_ultimate': {
+    operatorId: 'alderia',
+    type: SkillType.ULTIMATE,
+    name: 'alderia.ultimate.name',
+    description: 'alderia.ultimate.description',
+    chargeGain: 80, // Ultimates consume charge
+    statusEffect: ArtsInfliction.NATURE,
+    cooldown: 10000
+  },
+  'wolfgard_ultimate': {
+    operatorId: 'wolfgard',
+    type: SkillType.ULTIMATE,
+    name: 'wolfgard.ultimate.name',
+    description: 'wolfgard.ultimate.description',
+    chargeGain: 80, // Ultimates consume charge
+    statusEffect: ArtsReaction.COMBUSTION,
+    cooldown: 10000
   }
-]
+}
+
+export const getStatusEffectForAction = (operatorId: string | null, type: SkillType) => {
+  if (!operatorId) return undefined
+
+  if (type === SkillType.NORMAL) {
+    return getNormalAttackStatusEffect(operatorId)
+  }
+
+  if (type === SkillType.BATTLE_SKILL) {
+    return Object.values(BATTLE_SKILLS).find((skill) => skill.operatorId === operatorId)?.statusEffect
+  }
+
+  if (type === SkillType.COMBO_SKILL) {
+    return Object.values(COMBO_SKILLS).find((skill) => skill.operatorId === operatorId)?.statusEffect
+  }
+
+  if (type === SkillType.ULTIMATE) {
+    return Object.values(ULTIMATES).find((skill) => skill.operatorId === operatorId)?.statusEffect
+  }
+
+  return undefined
+}
