@@ -13,9 +13,16 @@ type GetOperatorIdFromCharacterId = (characterId: string) => string | null
 interface UseComboActionsOptions {
   setActions: Dispatch<SetStateAction<ComboAction[]>>
   getOperatorIdFromCharacterId: GetOperatorIdFromCharacterId
+  initialTeamSp: number
+  timelineDurationMs: number
 }
 
-export const useComboActions = ({ setActions, getOperatorIdFromCharacterId }: UseComboActionsOptions) => {
+export const useComboActions = ({
+  setActions,
+  getOperatorIdFromCharacterId,
+  initialTeamSp,
+  timelineDurationMs,
+}: UseComboActionsOptions) => {
   const t = useTranslations()
   const getActionOverlapDurationMs = (action: ComboAction) => {
     if (action.type === SkillType.NORMAL) {
@@ -146,7 +153,7 @@ export const useComboActions = ({ setActions, getOperatorIdFromCharacterId }: Us
           alert(t('messages.battleSkillOverlap'))
           return prev
         }
-        const { minSp } = buildSpTimeline([...prev, newAction])
+        const { minSp } = buildSpTimeline([...prev, newAction], initialTeamSp, BATTLE_SKILL_SP_COST, timelineDurationMs)
         if (minSp < 0) {
           alert(t('messages.spInsufficient', { cost: BATTLE_SKILL_SP_COST }))
           return prev
@@ -182,7 +189,7 @@ export const useComboActions = ({ setActions, getOperatorIdFromCharacterId }: Us
       }
 
       if (updatedAction.type === SkillType.BATTLE_SKILL) {
-        const { minSp } = buildSpTimeline(nextActions)
+        const { minSp } = buildSpTimeline(nextActions, initialTeamSp, BATTLE_SKILL_SP_COST, timelineDurationMs)
         if (minSp < 0) {
           alert(t('messages.spInsufficient', { cost: BATTLE_SKILL_SP_COST }))
           return prev

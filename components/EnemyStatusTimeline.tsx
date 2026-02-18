@@ -4,11 +4,10 @@ import { useMemo } from 'react'
 
 import {
   DEFAULT_STATUS_EFFECT_DURATION_MS,
-  SECOND_MARKER_WIDTH_PX,
   STATUS_EFFECT_COLORS,
   STATUS_EFFECT_LABELS,
-  TIMELINE_DURATION,
   TIMELINE_WIDTH,
+  getSecondMarkerWidthPx,
 } from '@/lib/timeline'
 import { getOperatorIdByName } from '@/lib/data/operators'
 import { getStatusEffectForAction } from '@/lib/data/skills'
@@ -20,15 +19,18 @@ interface EnemyStatusTimelineProps {
   actions: ComboAction[]
   withCharacterOffset?: boolean
   showHeader?: boolean
+  timelineDurationMs: number
 }
 
 export const EnemyStatusTimeline = ({
   actions,
   withCharacterOffset = true,
   showHeader = true,
+  timelineDurationMs,
 }: EnemyStatusTimelineProps) => {
+  const secondMarkerWidthPx = getSecondMarkerWidthPx(timelineDurationMs)
   const getActionPosition = (timing: number) => {
-    return (timing / TIMELINE_DURATION) * TIMELINE_WIDTH
+    return (timing / timelineDurationMs) * TIMELINE_WIDTH
   }
 
   const isDisplayableStatusEffect = (
@@ -252,7 +254,7 @@ export const EnemyStatusTimeline = ({
                 className="absolute inset-0 pointer-events-none z-10"
                 style={{
                   backgroundImage: 'linear-gradient(to right, rgba(255, 255, 255, 0.2) 1px, transparent 1px)',
-                  backgroundSize: `${SECOND_MARKER_WIDTH_PX}px 100%`,
+                  backgroundSize: `${secondMarkerWidthPx}px 100%`,
                 }}
               />
 
@@ -263,7 +265,7 @@ export const EnemyStatusTimeline = ({
                   className={`absolute top-1 z-20 h-8 ${STATUS_EFFECT_COLORS[row.effect]} rounded px-2 text-xs flex items-center justify-center opacity-80`}
                   style={{
                     left: `${getActionPosition(segment.startTime)}px`,
-                    width: `${((segment.endTime - segment.startTime) / TIMELINE_DURATION) * TIMELINE_WIDTH}px`,
+                    width: `${((segment.endTime - segment.startTime) / timelineDurationMs) * TIMELINE_WIDTH}px`,
                   }}
                   title={`${STATUS_EFFECT_LABELS[row.effect]} (${segment.endTime - segment.startTime}ms)`}
                 >

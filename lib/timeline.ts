@@ -4,11 +4,15 @@ import { ArtsInfliction, ArtsReaction, PhysicalStatus, SkillType, SpecialEffect 
 export const DEFAULT_STATUS_EFFECT_DURATION_MS = 3000
 export const TIMELINE_WIDTH = 1000
 export const TIMELINE_DURATION = 30000
+export const MIN_TIMELINE_DURATION = 10000
+export const MAX_TIMELINE_DURATION = 60000
 export const CHARGE_SEGMENT_WIDTH = 10
 export const ULTIMATE_CHARGE_COLOR_RGB = '239, 68, 68'
 export const ULTIMATE_CHARGE_OPACITY_MULTIPLIER = 0.3
 export const TIMELINE_ROW_HEIGHT_PX = 160
-export const SECOND_MARKER_WIDTH_PX = TIMELINE_WIDTH / (TIMELINE_DURATION / 1000)
+export const getSecondMarkerWidthPx = (durationMs: number) => {
+  return TIMELINE_WIDTH / (durationMs / 1000)
+}
 export const INITIAL_TEAM_SP = 200
 export const MAX_TEAM_SP = 300
 export const TEAM_SP_REGEN_PER_SECOND = 10
@@ -68,7 +72,8 @@ interface TimelineActionLike {
 export const buildSpTimeline = (
   actions: TimelineActionLike[],
   initialSp: number = INITIAL_TEAM_SP,
-  battleSkillCost: number = BATTLE_SKILL_SP_COST
+  battleSkillCost: number = BATTLE_SKILL_SP_COST,
+  timelineDurationMs: number = TIMELINE_DURATION
 ) => {
   const sortedActions = [...actions].sort((a, b) => a.timing - b.timing)
   const points: SpTimelinePoint[] = []
@@ -113,7 +118,7 @@ export const buildSpTimeline = (
 
   const sortedEvents = timelineEvents.sort((a, b) => a.timing - b.timing)
 
-  for (let nextStep = SP_TIMELINE_STEP_MS; nextStep <= TIMELINE_DURATION; nextStep += SP_TIMELINE_STEP_MS) {
+  for (let nextStep = SP_TIMELINE_STEP_MS; nextStep <= timelineDurationMs; nextStep += SP_TIMELINE_STEP_MS) {
     while (sortedEvents.length > 0 && sortedEvents[0].timing <= nextStep) {
       const event = sortedEvents.shift()
       if (!event) break

@@ -7,12 +7,11 @@ import { CSS } from '@dnd-kit/utilities'
 
 import {
   CHARGE_SEGMENT_WIDTH,
-  SECOND_MARKER_WIDTH_PX,
-  TIMELINE_DURATION,
   TIMELINE_ROW_HEIGHT_PX,
   TIMELINE_WIDTH,
   ULTIMATE_CHARGE_COLOR_RGB,
   ULTIMATE_CHARGE_OPACITY_MULTIPLIER,
+  getSecondMarkerWidthPx,
 } from '@/lib/timeline'
 import { getOperatorIdByName } from '@/lib/data/operators'
 import { getStatusEffectForAction } from '@/lib/data/skills'
@@ -35,8 +34,10 @@ interface TimelineRowProps {
   getActionPosition: (timing: number) => number
   getComboSkillCooldownMs: (operator: Operator | null) => number | null
   getUltimateCooldownMs: (operator: Operator | null) => number | null
-  calculateUltimateCharge: (characterId: string, upToTime: number) => number
+  calculateUltimateCharge: (characterId: string, upToTime: number, initialCharge: number) => number
   getSkillTypesForCharacter: () => SkillType[]
+  timelineDurationMs: number
+  initialUltimateCharge: number
 }
 
 interface DraggableActionProps {
@@ -124,7 +125,10 @@ export default function TimelineRow({
   calculateUltimateCharge,
   getSkillTypesForCharacter,
   onMoveAction,
+  timelineDurationMs,
+  initialUltimateCharge,
 }: TimelineRowProps) {
+  const secondMarkerWidthPx = getSecondMarkerWidthPx(timelineDurationMs)
   const getDisplayWidthMs = (type: SkillType) => {
     if (type === SkillType.BATTLE_SKILL) return 1000
     if (type === SkillType.COMBO_SKILL) return 1000
@@ -134,7 +138,7 @@ export default function TimelineRow({
 
   const clampTiming = (timing: number) => {
     if (timing <= 0) return 0
-    if (timing >= TIMELINE_DURATION) return TIMELINE_DURATION
+    if (timing >= timelineDurationMs) return timelineDurationMs
     return timing
   }
 
@@ -148,7 +152,7 @@ export default function TimelineRow({
     if (data.type !== type) return
     if (data.characterId !== character.name) return
 
-    const deltaMs = (delta.x / TIMELINE_WIDTH) * TIMELINE_DURATION
+    const deltaMs = (delta.x / TIMELINE_WIDTH) * timelineDurationMs
     const nextTimingRaw = data.timing + deltaMs
     const nextTiming = clampTiming(Math.round(nextTimingRaw / 100) * 100)
     onMoveAction(data.actionId, nextTiming)
@@ -183,7 +187,7 @@ export default function TimelineRow({
                       if (!cooldownMs) return null
                       const left = getActionPosition(action.timing)
                       const width = Math.min(
-                        (cooldownMs / TIMELINE_DURATION) * TIMELINE_WIDTH,
+                        (cooldownMs / timelineDurationMs) * TIMELINE_WIDTH,
                         TIMELINE_WIDTH - left
                       )
                       if (width <= 0) return null
@@ -206,8 +210,8 @@ export default function TimelineRow({
               {character && type === SkillType.ULTIMATE && (
                 <div className="absolute inset-0 flex z-0">
                   {[...Array(TIMELINE_WIDTH / CHARGE_SEGMENT_WIDTH)].map((_, i) => {
-                    const time = (i * CHARGE_SEGMENT_WIDTH / TIMELINE_WIDTH) * TIMELINE_DURATION
-                    const charge = calculateUltimateCharge(character.name, time)
+                    const time = (i * CHARGE_SEGMENT_WIDTH / TIMELINE_WIDTH) * timelineDurationMs
+                    const charge = calculateUltimateCharge(character.name, time, initialUltimateCharge)
                     return (
                       <div
                         key={i}
@@ -231,7 +235,7 @@ export default function TimelineRow({
                       if (!cooldownMs) return null
                       const left = getActionPosition(action.timing)
                       const width = Math.min(
-                        (cooldownMs / TIMELINE_DURATION) * TIMELINE_WIDTH,
+                        (cooldownMs / timelineDurationMs) * TIMELINE_WIDTH,
                         TIMELINE_WIDTH - left
                       )
                       if (width <= 0) return null
@@ -256,7 +260,7 @@ export default function TimelineRow({
                 className="absolute inset-0 pointer-events-none z-10"
                 style={{
                   backgroundImage: 'linear-gradient(to right, rgba(255, 255, 255, 0.2) 1px, transparent 1px)',
-                  backgroundSize: `${SECOND_MARKER_WIDTH_PX}px 100%`,
+                  backgroundSize: `${secondMarkerWidthPx}px 100%`,
                 }}
               />
 
@@ -275,7 +279,7 @@ export default function TimelineRow({
                   const widthMs = getDisplayWidthMs(type)
                   const left = getActionPosition(action.timing)
                   const widthPx = Math.min(
-                    (widthMs / TIMELINE_DURATION) * TIMELINE_WIDTH,
+                    (widthMs / timelineDurationMs) * TIMELINE_WIDTH,
                     TIMELINE_WIDTH - left
                   )
 

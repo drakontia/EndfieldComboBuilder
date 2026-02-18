@@ -1,13 +1,14 @@
 'use client'
 
-import { TIMELINE_DURATION, TIMELINE_WIDTH } from '@/lib/timeline'
+import { TIMELINE_WIDTH } from '@/lib/timeline'
 
 interface TimelineScaleProps {
   withCharacterOffset?: boolean
+  timelineDurationMs: number
 }
 
-export const TimelineScale = ({ withCharacterOffset = false }: TimelineScaleProps) => {
-  const totalSeconds = Math.round(TIMELINE_DURATION / 1000)
+export const TimelineScale = ({ withCharacterOffset = false, timelineDurationMs }: TimelineScaleProps) => {
+  const totalSeconds = Math.round(timelineDurationMs / 1000)
 
   return (
     <div className="flex items-center">

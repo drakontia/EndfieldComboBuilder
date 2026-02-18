@@ -8,11 +8,12 @@ export enum SkillType {
 }
 
 export enum PhysicalStatus {
-  VULNERABLE = 'vulnerable', // クラッシュ
+  VULNERABLE = 'vulnerable', // 脆弱
   LIFT = 'lift', // 浮遊
   KNOCKDOWN = 'knockdown', // 転倒
-  CRUSH = 'crush', // 猛撃
-  BREACH = 'breach', // 破砕
+  SMASH = 'smash', // 猛撃
+  SHATTER = 'shatter', // 破砕
+  CRUSH = 'crush', // クラッシュ
 }
 
 export enum ArtsInfliction { // アーツ付着
@@ -31,13 +32,15 @@ export enum ArtsBurst { // アーツ爆発
 
 export enum ArtsReaction { // アーツ異常
   COMBUSTION = 'combustion', // 燃焼
-  ELECTRIFICATION = 'electrification', // 感電
-  SOLIDIFICATION = 'solidification', // 凍結
+  SHOCK = 'shock', // 感電
+  FREEZE = 'freeze', // 凍結
   CORROSION = 'corrosion', // 腐食
 }
 
 export enum SpecialEffect {
   ORIGINIUM_CRYSTALS = 'originium_crystals', // 源石の結晶
+  SHIELD = 'shield', // シールド
+  LINK = 'link', // リンク
 }
 
 export enum BuffDebuff {
@@ -77,7 +80,7 @@ export interface Operator {
 }
 
 export interface ActionRequirement {
-  statusEffects?: PhysicalStatus[] | ArtsInfliction[] | ArtsReaction[]
+  statusEffects?: (PhysicalStatus | ArtsInfliction | ArtsReaction | SpecialEffect)[]
   synergyActivated?: boolean
 }
 
@@ -126,6 +129,9 @@ export interface ComboState {
   name: string
   characters: (Operator | null)[]
   actions: ComboAction[]
+  timelineDurationMs?: number
+  initialTeamSp?: number
+  initialUltimateCharges?: number[]
 }
 
 export interface CharacterState {

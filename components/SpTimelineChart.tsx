@@ -4,7 +4,7 @@ import { useTranslations } from 'next-intl'
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts'
 
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
-import { TIMELINE_DURATION, TIMELINE_WIDTH } from '@/lib/timeline'
+import { TIMELINE_WIDTH } from '@/lib/timeline'
 
 interface SpTimelineChartProps {
   spChartData: { timing: number; sp: number }[]
@@ -12,6 +12,7 @@ interface SpTimelineChartProps {
   maxSp: number
   regenPerSecond: number
   battleSkillCost: number
+  timelineDurationMs: number
   showLabel?: boolean
 }
 
@@ -21,6 +22,7 @@ export const SpTimelineChart = ({
   maxSp,
   regenPerSecond,
   battleSkillCost,
+  timelineDurationMs,
   showLabel = true,
 }: SpTimelineChartProps) => {
   const t = useTranslations()
@@ -44,7 +46,7 @@ export const SpTimelineChart = ({
             <XAxis
               dataKey="timing"
               type="number"
-              domain={[0, TIMELINE_DURATION]}
+              domain={[0, timelineDurationMs]}
               tickLine={false}
               axisLine={false}
               tickMargin={6}

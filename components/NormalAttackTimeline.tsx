@@ -6,11 +6,7 @@ import { restrictToHorizontalAxis, restrictToParentElement } from '@dnd-kit/modi
 import { CSS } from '@dnd-kit/utilities'
 import { useTranslations } from 'next-intl'
 
-import {
-  SECOND_MARKER_WIDTH_PX,
-  TIMELINE_DURATION,
-  TIMELINE_WIDTH,
-} from '@/lib/timeline'
+import { TIMELINE_WIDTH, getSecondMarkerWidthPx } from '@/lib/timeline'
 
 import { getOperatorIdByName } from '@/lib/data/operators'
 import { getStatusEffectForAction } from '@/lib/data/skills'
@@ -29,6 +25,7 @@ interface NormalAttackTimelineProps {
   onTimelineClick: (e: MouseEvent<HTMLDivElement>, character: Operator | null, type: SkillType) => void
   onRemoveAction: (actionId: string) => void
   onMoveAction: (actionId: string, nextTiming: number) => void
+  timelineDurationMs: number
   showCharacterLabel?: boolean
 }
 
@@ -119,13 +116,15 @@ export const NormalAttackTimeline = ({
   onTimelineClick,
   onRemoveAction,
   onMoveAction,
+  timelineDurationMs,
   showCharacterLabel = true,
 }: NormalAttackTimelineProps) => {
   const t = useTranslations()
+  const secondMarkerWidthPx = getSecondMarkerWidthPx(timelineDurationMs)
 
   const clampTiming = (timing: number) => {
     if (timing <= 0) return 0
-    if (timing >= TIMELINE_DURATION) return TIMELINE_DURATION
+    if (timing >= timelineDurationMs) return timelineDurationMs
     return timing
   }
 
@@ -137,7 +136,7 @@ export const NormalAttackTimeline = ({
     if (!data) return
     if (data.type !== SkillType.NORMAL) return
 
-    const deltaMs = (delta.x / TIMELINE_WIDTH) * TIMELINE_DURATION
+    const deltaMs = (delta.x / TIMELINE_WIDTH) * timelineDurationMs
     const nextTimingRaw = data.timing + deltaMs
     const nextTiming = clampTiming(Math.round(nextTimingRaw / 100) * 100)
     onMoveAction(data.actionId, nextTiming)
@@ -164,7 +163,7 @@ export const NormalAttackTimeline = ({
             className="absolute inset-0 pointer-events-none z-10"
             style={{
               backgroundImage: 'linear-gradient(to right, rgba(255, 255, 255, 0.2) 1px, transparent 1px)',
-              backgroundSize: `${SECOND_MARKER_WIDTH_PX}px 100%`,
+              backgroundSize: `${secondMarkerWidthPx}px 100%`,
             }}
           />
 
@@ -181,7 +180,7 @@ export const NormalAttackTimeline = ({
               const left = getActionPosition(action.timing)
               const width = durationMs
                 ? Math.min(
-                    (durationMs / TIMELINE_DURATION) * TIMELINE_WIDTH,
+                    (durationMs / timelineDurationMs) * TIMELINE_WIDTH,
                     TIMELINE_WIDTH - left
                   )
                 : 60

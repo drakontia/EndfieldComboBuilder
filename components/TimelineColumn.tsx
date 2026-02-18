@@ -5,7 +5,7 @@ import { type MouseEvent } from 'react'
 import TimelineRow from '@/components/combo-timeline/TimelineRow'
 import { getOperatorIdByName } from '@/lib/data/operators'
 import { COMBO_SKILLS, ULTIMATES } from '@/lib/data/skills'
-import { TIMELINE_DURATION, TIMELINE_WIDTH } from '@/lib/timeline'
+import { TIMELINE_WIDTH } from '@/lib/timeline'
 
 import { SkillType } from '@/types/combo'
 import type { ComboAction, Operator } from '@/types/combo'
@@ -16,6 +16,8 @@ interface TimelineColumnProps {
   onAddAction: (characterId: string, type: SkillType, timing: number) => void
   onRemoveAction: (actionId: string) => void
   onMoveAction: (actionId: string, nextTiming: number) => void
+  timelineDurationMs: number
+  initialUltimateCharges: number[]
 }
 
 export default function TimelineColumn({
@@ -24,9 +26,11 @@ export default function TimelineColumn({
   onAddAction,
   onRemoveAction,
   onMoveAction,
+  timelineDurationMs,
+  initialUltimateCharges,
 }: TimelineColumnProps) {
   const getActionPosition = (timing: number) => {
-    return (timing / TIMELINE_DURATION) * TIMELINE_WIDTH
+    return (timing / timelineDurationMs) * TIMELINE_WIDTH
   }
 
   const getOperatorKey = (operator: Operator | null) => {
@@ -49,12 +53,12 @@ export default function TimelineColumn({
     return ultimate?.cooldown ?? null
   }
 
-  const calculateUltimateCharge = (characterId: string, upToTime: number) => {
+  const calculateUltimateCharge = (characterId: string, upToTime: number, initialCharge: number) => {
     const charActions = actions
       .filter(a => a.characterId === characterId && a.timing <= upToTime)
       .sort((a, b) => a.timing - b.timing)
 
-    let charge = 0
+    let charge = Math.min(100, Math.max(0, Math.round(initialCharge)))
     charActions.forEach(action => {
       if (action.type === SkillType.BATTLE_SKILL) {
         charge += 15
@@ -80,7 +84,7 @@ export default function TimelineColumn({
     const rect = lineElement.getBoundingClientRect()
     const x = e.clientX - rect.left
     const clampedX = Math.max(0, Math.min(x, rect.width))
-    const timing = Math.round(((clampedX / rect.width) * TIMELINE_DURATION) / 100) * 100
+    const timing = Math.round(((clampedX / rect.width) * timelineDurationMs) / 100) * 100
     onAddAction(character.name, type, timing)
   }
 
@@ -99,6 +103,8 @@ export default function TimelineColumn({
           getUltimateCooldownMs={getUltimateCooldownMs}
           calculateUltimateCharge={calculateUltimateCharge}
           getSkillTypesForCharacter={getSkillTypesForCharacter}
+          timelineDurationMs={timelineDurationMs}
+          initialUltimateCharge={initialUltimateCharges[index] ?? 0}
         />
       ))}
     </div>
