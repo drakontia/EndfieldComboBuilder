@@ -29,22 +29,57 @@
     "initialSpLabel": "初期SP",
     "ultimateChargeLabel": "必殺チャージ (スロット {slot})",
     "spLabel": "SP",
-    "spInitial": "初期 {value} / 最大 {max} / 回復 {regen}/s / 戦技 {cost}"
+    "spInitial": "初期 {value} / 最大 {max} / 回復 {regen}/s"
   },
   "attackTypes": {
     "normal": "通常攻撃",
     "battleSkill": "戦技",
-    "synergySkill": "連携技",
+    "comboSkill": "連携技",
     "ultimate": "必殺技"
   },
-  "statusEffects": {
-    "burn": "炎上",
+  "physicalStatus": {
+    "vulnerable": "クラッシュ",
+    "lift": "浮遊",
+    "knockdown": "転倒",
+    "crush": "猛撃",
+    "shatter": "破砕"
+  },
+  "artsInfliction": {
+    "heat": "灼熱",
+    "cryo": "寒冷",
+    "electric": "電磁",
+    "nature": "自然"
+  },
+  "artsBurst": {
+    "heat": "灼熱",
+    "cryo": "寒冷",
+    "electric": "電磁",
+    "nature": "自然"
+  },
+  "artsReaction": {
+    "combustion": "燃焼",
     "freeze": "凍結",
     "shock": "感電",
-    "poison": "中毒",
-    "stun": "スタン",
-    "weakness": "脆弱",
-    "none": "なし"
+    "corrosion": "腐食"
+  },
+  "specialEffects": {
+    "originium_crystals": "源石の結晶"
+  },
+  "buff": {
+    "shield": "シールド",
+    "protect": "プロテクト",
+    "susceptible": "脆弱",
+    "amp": "増幅",
+    "link": "リンク",
+    "dispel": "浄化",
+    "support_crystal": "サポートクリスタル"
+  },
+  "debuff": {
+    "weaken": "弱体化",
+    "susceptible": "脆弱",
+    "slow": "スロー",
+    "physical_susceptibility": "物理脆弱",
+    "arts_susceptibility": "アーツ脆弱"
   },
   "actions": {
     "save": "保存",
