@@ -6,6 +6,7 @@ import {
   MAX_TIMELINE_DURATION,
   MIN_TIMELINE_DURATION,
   TIMELINE_DURATION,
+  INITIAL_ENEMY_STAGGER_METER,
 } from '@/lib/timeline'
 import type { ComboAction, ComboState, Operator } from '@/types/combo'
 
@@ -17,6 +18,8 @@ interface ComboStore {
   timelineDurationMs: number
   initialTeamSp: number
   initialUltimateCharges: number[]
+  operatorSupportCrystalRecoveryCount: number
+  initialEnemyStaggerMeter: number
   
   // Actions
   setComboName: (name: string) => void
@@ -31,6 +34,8 @@ interface ComboStore {
   addAction: (characterId: string, type: SkillType, timing: number) => void
   removeAction: (actionId: string) => void
   updateAction: (action: ComboAction) => void
+  setOperatorSupportCrystalRecoveryCount: (count: number) => void
+  setInitialEnemyStaggerMeter: (value: number) => void
   clearCombo: () => void
   loadCombo: (combo: ComboState) => void
   getComboState: () => ComboState
@@ -51,6 +56,8 @@ export const useComboStore = create<ComboStore>((set, get) => ({
   timelineDurationMs: TIMELINE_DURATION,
   initialTeamSp: INITIAL_TEAM_SP,
   initialUltimateCharges: Array(4).fill(0),
+  operatorSupportCrystalRecoveryCount: 0,
+  initialEnemyStaggerMeter: INITIAL_ENEMY_STAGGER_METER,
   
   // Actions
   setComboName: (name) => set({ comboName: name }),
@@ -118,6 +125,14 @@ export const useComboStore = create<ComboStore>((set, get) => ({
     actions: state.actions.map(a => a.id === updatedAction.id ? updatedAction : a)
   })),
   
+  setOperatorSupportCrystalRecoveryCount: (count) => set({
+    operatorSupportCrystalRecoveryCount: Math.max(0, count),
+  }),
+  
+  setInitialEnemyStaggerMeter: (value) => set({
+    initialEnemyStaggerMeter: Math.max(0, Math.round(value)),
+  }),
+  
   clearCombo: () => set({
     comboName: '',
     characters: Array(4).fill(null),
@@ -125,6 +140,8 @@ export const useComboStore = create<ComboStore>((set, get) => ({
     timelineDurationMs: TIMELINE_DURATION,
     initialTeamSp: INITIAL_TEAM_SP,
     initialUltimateCharges: Array(4).fill(0),
+    operatorSupportCrystalRecoveryCount: 0,
+    initialEnemyStaggerMeter: INITIAL_ENEMY_STAGGER_METER,
   }),
   
   loadCombo: (combo) => set({
@@ -134,6 +151,8 @@ export const useComboStore = create<ComboStore>((set, get) => ({
     timelineDurationMs: combo.timelineDurationMs ?? TIMELINE_DURATION,
     initialTeamSp: combo.initialTeamSp ?? INITIAL_TEAM_SP,
     initialUltimateCharges: normalizeUltimateCharges(combo.initialUltimateCharges ?? [], combo.characters.length),
+    operatorSupportCrystalRecoveryCount: combo.operatorSupportCrystalRecoveryCount ?? 0,
+    initialEnemyStaggerMeter: combo.initialEnemyStaggerMeter ?? INITIAL_ENEMY_STAGGER_METER,
   }),
   
   getComboState: () => {
@@ -145,6 +164,8 @@ export const useComboStore = create<ComboStore>((set, get) => ({
       timelineDurationMs: state.timelineDurationMs,
       initialTeamSp: state.initialTeamSp,
       initialUltimateCharges: state.initialUltimateCharges,
+      operatorSupportCrystalRecoveryCount: state.operatorSupportCrystalRecoveryCount,
+      initialEnemyStaggerMeter: state.initialEnemyStaggerMeter,
     }
   }
 }))
