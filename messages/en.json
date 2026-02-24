@@ -29,7 +29,9 @@
     "initialSpLabel": "Initial SP",
     "ultimateChargeLabel": "Ultimate Charge (Slot {slot})",
     "spLabel": "SP",
-    "spInitial": "Initial {value} / Max {max} / Regen {regen}/s / Battle Skill {cost}"
+    "spInitial": "Initial {value} / Max {max} / Regen {regen}/s / Battle Skill {cost}",
+    "staggerLabel": "Stagger",
+    "staggerInitial": "Initial {value}"
   },
   "attackTypes": {
     "normal": "Normal Attack",
@@ -37,14 +39,49 @@
     "synergySkill": "Synergy Skill",
     "ultimate": "Ultimate"
   },
-  "statusEffects": {
-    "burn": "Burn",
+  "physicalStatus": {
+    "vulnerable": "Crash",
+    "lift": "Lift",
+    "knockdown": "Knockdown",
+    "crush": "Smash",
+    "shatter": "Shatter"
+  },
+  "artsInfliction": {
+    "heat": "Heat",
+    "cryo": "Cryo",
+    "electric": "Electric",
+    "nature": "Nature"
+  },
+  "artsBurst": {
+    "heat": "Heat",
+    "cryo": "Cryo",
+    "electric": "Electric",
+    "nature": "Nature"
+  },
+  "artsReaction": {
+    "combustion": "Combustion",
     "freeze": "Freeze",
     "shock": "Shock",
-    "poison": "Poison",
-    "stun": "Stun",
-    "weakness": "Weakness",
-    "none": "None"
+    "corrosion": "Corrosion"
+  },
+  "specialEffects": {
+    "originium_crystals": "Originium Crystals"
+  },
+  "buff": {
+    "shield": "Shield",
+    "protect": "Protect",
+    "susceptible": "Fragile",
+    "amp": "Amplification",
+    "link": "Link",
+    "dispel": "Cleanse",
+    "support_crystal": "Support Crystal"
+  },
+  "debuff": {
+    "weaken": "Weaken",
+    "susceptible": "Fragile",
+    "slow": "Slow",
+    "physical_susceptibility": "Physical Fragile",
+    "arts_susceptibility": "Arts Fragile"
   },
   "actions": {
     "save": "Save",
@@ -55,7 +92,9 @@
     "close": "Close",
     "edit": "Edit",
     "delete": "Delete",
-    "clickToDelete": "Left-click: Delete / Right-click: Edit"
+    "clickToDelete": "Left-click: Delete / Right-click: Edit",
+    "deleteModeOff": "Delete Mode: OFF",
+    "deleteModeOn": "Delete Mode: ON"
   },
   "dialog": {
     "loadTitle": "Load Combo",

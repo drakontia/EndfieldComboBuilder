@@ -29,7 +29,9 @@
     "initialSpLabel": "初期SP",
     "ultimateChargeLabel": "必殺チャージ (スロット {slot})",
     "spLabel": "SP",
-    "spInitial": "初期 {value} / 最大 {max} / 回復 {regen}/s"
+    "spInitial": "初期 {value} / 最大 {max} / 回復 {regen}/s",
+    "staggerLabel": "スタッガー",
+    "staggerInitial": "初期 {value}"
   },
   "attackTypes": {
     "normal": "通常攻撃",
@@ -90,7 +92,9 @@
     "close": "閉じる",
     "edit": "編集",
     "delete": "削除",
-    "clickToDelete": "左クリック: 削除 / 右クリック: 編集"
+    "clickToDelete": "左クリック: 削除 / 右クリック: 編集",
+    "deleteModeOff": "削除モード: OFF",
+    "deleteModeOn": "削除モード: ON"
   },
   "dialog": {
     "loadTitle": "コンボを読み込む",
