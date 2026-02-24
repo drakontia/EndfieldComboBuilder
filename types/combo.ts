@@ -83,9 +83,9 @@ export interface Operator {
 }
 
 export interface ActionRequirement {
-  statusEffects?: (PhysicalStatus | ArtsInfliction | ArtsReaction | SpecialEffect | BuffDebuff)[]
+  statusEffects?: (PhysicalStatus | ArtsInfliction | ArtsReaction | SpecialEffect | Buff | Debuff)[]
   statusEffectStackRequirements?: StatusEffectStackRequirement[]
-  excludedStatusEffects?: (PhysicalStatus | ArtsInfliction | ArtsReaction | SpecialEffect | BuffDebuff)[]
+  excludedStatusEffects?: (PhysicalStatus | ArtsInfliction | ArtsReaction | SpecialEffect | Buff | Debuff)[]
   requiresHeavyAttack?: boolean
   requiresTeamComboSkillDamage?: boolean
   requiresCrashStackConsumptionBy?: PhysicalStatus[]
@@ -94,7 +94,7 @@ export interface ActionRequirement {
 }
 
 export interface StatusEffectStackRequirement {
-  effect: PhysicalStatus | ArtsInfliction | ArtsReaction | SpecialEffect | BuffDebuff
+  effect: PhysicalStatus | ArtsInfliction | ArtsReaction | SpecialEffect | Buff | Debuff
   minStacks: number
 }
 
@@ -104,7 +104,7 @@ export interface BaseAttack {
   description: string
   duration: number // milliseconds from start
   hitCount?: number // for normal attacks (1-5)
-  statusEffect?: PhysicalStatus | ArtsInfliction | ArtsReaction | BuffDebuff
+  statusEffect?: PhysicalStatus | ArtsInfliction | ArtsReaction | SpecialEffect | Buff | Debuff
   stagger?: number // スタッガーメーターダメージ
 }
 
@@ -113,8 +113,8 @@ export interface Skill {
   name: string
   description: string
   type: SkillType
-  statusEffect?: (PhysicalStatus | ArtsInfliction | ArtsReaction | SpecialEffect | BuffDebuff)[]
-  statusEffectForcibly?: (PhysicalStatus | ArtsInfliction | ArtsReaction | SpecialEffect | BuffDebuff)[]
+  statusEffect?: (PhysicalStatus | ArtsInfliction | ArtsReaction | SpecialEffect | Buff | Debuff)[]
+  statusEffectForcibly?: (PhysicalStatus | ArtsInfliction | ArtsReaction | SpecialEffect | Buff | Debuff)[]
   stagger?: number // スタッガーメーターダメージ
 }
 
@@ -161,7 +161,7 @@ export interface CharacterState {
 
 export interface EnemyStatusEffect {
   id: string
-  effect: PhysicalStatus | ArtsInfliction | ArtsReaction | SpecialEffect | BuffDebuff
+  effect: PhysicalStatus | ArtsInfliction | ArtsReaction | SpecialEffect | Buff | Debuff
   startTime: number // milliseconds from start
   duration: number // milliseconds
   sourceActionId: string
