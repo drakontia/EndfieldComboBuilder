@@ -5,7 +5,7 @@ import { Analytics } from '@vercel/analytics/react';
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Endfield Combo Builder',
+  title: 'エンドフィールドコンボビルダー',
   description: 'ゲーム「アークナイツ：エンドフィールド」でのチームでのコンボを視覚的に構築するツール',
 }
 
