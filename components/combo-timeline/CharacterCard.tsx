@@ -61,6 +61,7 @@ export default function CharacterCard({
                   onOpenSelector(index)
                 }
               }}
+              data-testid={`character-slot-${index}`}
               className="w-full h-full"
               aria-label={t('team.selectCharacter')}
             >
@@ -89,6 +90,7 @@ export default function CharacterCard({
             <button
               type="button"
               onClick={() => onOpenSelector(index)}
+              data-testid={`character-slot-${index}`}
               className="w-full h-full bg-gray-600 hover:bg-gray-500 text-white rounded px-2 py-2"
             >
               <div className="flex flex-col items-center gap-2">

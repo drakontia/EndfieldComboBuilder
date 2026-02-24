@@ -27,6 +27,7 @@ interface NormalAttackTimelineProps {
   onMoveAction: (actionId: string, nextTiming: number) => void
   timelineDurationMs: number
   showCharacterLabel?: boolean
+  deleteMode: boolean
 }
 
 interface DraggableNormalActionProps {
@@ -37,6 +38,7 @@ interface DraggableNormalActionProps {
   skillTypeColors: Record<SkillType, string>
   skillTypeBgColors: Record<SkillType, string>
   onRemoveAction: (actionId: string) => void
+  deleteMode: boolean
 }
 
 const DraggableNormalAction = ({
@@ -47,15 +49,16 @@ const DraggableNormalAction = ({
   skillTypeColors,
   skillTypeBgColors,
   onRemoveAction,
+  deleteMode,
 }: DraggableNormalActionProps) => {
   const {
     attributes,
     listeners,
     setNodeRef,
     transform,
-    isDragging,
   } = useDraggable({
     id: action.id,
+    disabled: deleteMode,
     data: {
       actionId: action.id,
       timing: action.timing,
@@ -66,14 +69,16 @@ const DraggableNormalAction = ({
 
   const style = {
     transform: CSS.Transform.toString(transform),
-    opacity: isDragging ? 0.7 : 1,
+    opacity: 1,
   }
 
   return (
     <div
       ref={setNodeRef}
-      className={`absolute top-1 z-20 h-10 ${skillTypeColors[SkillType.NORMAL]} rounded px-2 text-xs flex items-center justify-between cursor-grab hover:opacity-80`}
+      className={`absolute top-1 z-20 h-10 ${skillTypeColors[SkillType.NORMAL]} rounded px-2 text-xs flex items-center gap-2 hover:opacity-80 overflow-hidden ${deleteMode ? 'cursor-pointer' : 'cursor-grab'}`}
       data-action-id={action.id}
+      {...attributes}
+      {...listeners}
       style={{
         position: 'absolute',
         top: '4px',
@@ -85,21 +90,18 @@ const DraggableNormalAction = ({
         padding: '0 8px',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between',
         color: '#ffffff',
         touchAction: 'none',
         ...style,
       }}
-      onClick={(e) => {
-        if (isDragging) return
-        e.stopPropagation()
-        onRemoveAction(action.id)
+      onClick={(event) => {
+        event.stopPropagation()
+        if (deleteMode) {
+          onRemoveAction(action.id)
+        }
       }}
-      title="左クリック: 削除"
-      {...attributes}
-      {...listeners}
     >
-      <span>{action.timing / 1000}s</span>
+      <span className="flex-1 truncate">{action.timing / 1000}s</span>
       {statusEffect && <span className="text-yellow-300">⚡</span>}
     </div>
   )
@@ -118,6 +120,7 @@ export const NormalAttackTimeline = ({
   onMoveAction,
   timelineDurationMs,
   showCharacterLabel = true,
+  deleteMode,
 }: NormalAttackTimelineProps) => {
   const t = useTranslations()
   const secondMarkerWidthPx = getSecondMarkerWidthPx(timelineDurationMs)
@@ -195,6 +198,7 @@ export const NormalAttackTimeline = ({
                   skillTypeColors={skillTypeColors}
                   skillTypeBgColors={skillTypeBgColors}
                   onRemoveAction={onRemoveAction}
+                  deleteMode={deleteMode}
                 />
               )
             })}

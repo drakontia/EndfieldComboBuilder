@@ -1,46 +1,55 @@
 'use client'
 
 import { useMemo } from 'react'
+import { useTranslations } from 'next-intl'
 
 import {
-  DEFAULT_STATUS_EFFECT_DURATION_MS,
+  getStatusEffectDurationMs,
   STATUS_EFFECT_COLORS,
-  STATUS_EFFECT_LABELS,
   TIMELINE_WIDTH,
   getSecondMarkerWidthPx,
+  INITIAL_ENEMY_STAGGER_METER,
+  buildStaggerMeterTimeline,
 } from '@/lib/timeline'
-import { getOperatorIdByName } from '@/lib/data/operators'
-import { getStatusEffectForAction } from '@/lib/data/skills'
-import { ArtsInfliction, ArtsReaction, PhysicalStatus, SpecialEffect } from '@/types/combo'
+import { buildResolvedStatusEffectState } from '@/lib/statusEffects'
+import { getStatusEffectLabelKey } from '@/lib/statusEffectLabels'
+import { StaggerMeterChart } from '@/components/StaggerMeterChart'
+import { ArtsInfliction, ArtsReaction, PhysicalStatus, SpecialEffect, Debuff } from '@/types/combo'
 import type { EnemyStatusEffect } from '@/types/combo'
 import type { ComboAction } from '@/types/combo'
 
 interface EnemyStatusTimelineProps {
   actions: ComboAction[]
+  operatorIdMap?: Record<string, string>
   withCharacterOffset?: boolean
   showHeader?: boolean
   timelineDurationMs: number
+  initialEnemyStaggerMeter?: number
 }
 
 export const EnemyStatusTimeline = ({
   actions,
+  operatorIdMap = {},
   withCharacterOffset = true,
   showHeader = true,
   timelineDurationMs,
+  initialEnemyStaggerMeter = INITIAL_ENEMY_STAGGER_METER,
 }: EnemyStatusTimelineProps) => {
+  const t = useTranslations()
   const secondMarkerWidthPx = getSecondMarkerWidthPx(timelineDurationMs)
   const getActionPosition = (timing: number) => {
     return (timing / timelineDurationMs) * TIMELINE_WIDTH
   }
 
   const isDisplayableStatusEffect = (
-    effect: PhysicalStatus | ArtsInfliction | ArtsReaction | SpecialEffect
-  ): effect is PhysicalStatus | ArtsInfliction | ArtsReaction | SpecialEffect => {
+    effect: PhysicalStatus | ArtsInfliction | ArtsReaction | SpecialEffect | Debuff
+  ): effect is PhysicalStatus | ArtsInfliction | ArtsReaction | SpecialEffect | Debuff => {
     return (
       Object.values(ArtsInfliction).includes(effect as ArtsInfliction) ||
       Object.values(ArtsReaction).includes(effect as ArtsReaction) ||
       Object.values(PhysicalStatus).includes(effect as PhysicalStatus) ||
-      Object.values(SpecialEffect).includes(effect as SpecialEffect)
+      Object.values(SpecialEffect).includes(effect as SpecialEffect) ||
+      Object.values(Debuff).includes(effect as Debuff)
     )
   }
 
@@ -54,6 +63,48 @@ export const EnemyStatusTimeline = ({
   type StatusEffectRow = {
     effect: EnemyStatusEffect['effect']
     segments: StatusEffectSegment[]
+  }
+
+  const getEarliestConsumptionTime = (
+    effect: EnemyStatusEffect['effect'],
+    startTime: number,
+    consumedEvents: Array<{ effect: ArtsReaction | SpecialEffect; timing: number }>
+  ) => {
+    if (
+      !Object.values(ArtsReaction).includes(effect as ArtsReaction) &&
+      !Object.values(SpecialEffect).includes(effect as SpecialEffect)
+    ) {
+      return null
+    }
+
+    let earliest: number | null = null
+    consumedEvents.forEach((event) => {
+      if (event.effect !== effect) return
+      if (event.timing < startTime) return
+      if (earliest === null || event.timing < earliest) {
+        earliest = event.timing
+      }
+    })
+
+    return earliest
+  }
+
+  const applyConsumptionToEffects = (
+    items: EnemyStatusEffect[],
+    consumedEvents: Array<{ effect: ArtsReaction | SpecialEffect; timing: number }>
+  ) => {
+    return items.flatMap((item) => {
+      const consumedAt = getEarliestConsumptionTime(item.effect, item.startTime, consumedEvents)
+      if (consumedAt === null) return [item]
+
+      const endTime = item.startTime + item.duration
+      if (consumedAt >= endTime) return [item]
+
+      const truncatedDuration = Math.max(0, consumedAt - item.startTime)
+      if (truncatedDuration === 0) return []
+
+      return [{ ...item, duration: truncatedDuration }]
+    })
   }
 
   const buildMergedSegments = (items: EnemyStatusEffect[]) => {
@@ -80,8 +131,8 @@ export const EnemyStatusTimeline = ({
       if (a.startTime !== b.startTime) return a.startTime - b.startTime
       const aEffect = a.effect as PhysicalStatus
       const bEffect = b.effect as PhysicalStatus
-      const aIsConsume = aEffect === PhysicalStatus.CRUSH || aEffect === PhysicalStatus.BREACH
-      const bIsConsume = bEffect === PhysicalStatus.CRUSH || bEffect === PhysicalStatus.BREACH
+      const aIsConsume = aEffect === PhysicalStatus.CRUSH || aEffect === PhysicalStatus.SHATTER
+      const bIsConsume = bEffect === PhysicalStatus.CRUSH || bEffect === PhysicalStatus.SHATTER
       if (aIsConsume === bIsConsume) return 0
       return aIsConsume ? -1 : 1
     })
@@ -91,7 +142,7 @@ export const EnemyStatusTimeline = ({
     let current: StatusEffectSegment | null = null
 
     const isConsumeEffect = (effect: PhysicalStatus) =>
-      effect === PhysicalStatus.CRUSH || effect === PhysicalStatus.BREACH
+      effect === PhysicalStatus.CRUSH || effect === PhysicalStatus.SHATTER
     const isStackEffect = (effect: PhysicalStatus) =>
       effect === PhysicalStatus.VULNERABLE || effect === PhysicalStatus.LIFT || effect === PhysicalStatus.KNOCKDOWN
 
@@ -105,32 +156,26 @@ export const EnemyStatusTimeline = ({
           if (current.endTime > current.startTime) {
             segments.push(current)
           }
-          current = null
-          return
+        } else if (current) {
+          segments.push(current)
         }
-
-        if (current) segments.push(current)
-        current = {
-          startTime: item.startTime,
-          endTime,
-          count: 1,
-          starts: [item.startTime],
-        }
+        current = null
         return
       }
 
       if (!isStackEffect(effect)) return
 
+      if (effect === PhysicalStatus.LIFT) {
+        liftEvents.push(item)
+      }
+      if (effect === PhysicalStatus.KNOCKDOWN) {
+        knockdownEvents.push(item)
+      }
+
       if (current && item.startTime < current.endTime) {
         current.endTime = Math.max(current.endTime, endTime)
         current.count = Math.min(4, current.count + 1)
         current.starts.push(item.startTime)
-        if (effect === PhysicalStatus.LIFT) {
-          liftEvents.push(item)
-        }
-        if (effect === PhysicalStatus.KNOCKDOWN) {
-          knockdownEvents.push(item)
-        }
         return
       }
 
@@ -150,24 +195,30 @@ export const EnemyStatusTimeline = ({
 
   const statusEffectRows = useMemo<StatusEffectRow[]>(() => {
     const effects: EnemyStatusEffect[] = []
+    const { resolvedEffects, consumedEvents } = buildResolvedStatusEffectState(actions)
     actions.forEach((action) => {
-      const statusEffect = getStatusEffectForAction(getOperatorIdByName(action.characterId), action.type)
-      if (statusEffect) {
+      const statusEffects = resolvedEffects.get(action.id) ?? []
+      if (statusEffects.length === 0) return
+
+      statusEffects.forEach((effect) => {
         effects.push({
-          id: `${action.id}-effect`,
-          effect: statusEffect,
+          id: `${action.id}-effect-${effect}`,
+          effect,
           startTime: action.timing,
-          duration: DEFAULT_STATUS_EFFECT_DURATION_MS,
+          duration: getStatusEffectDurationMs(effect),
           sourceActionId: action.id,
         })
-      }
+      })
     })
 
-    const displayableEffects = effects.filter((effect) => isDisplayableStatusEffect(effect.effect))
-    const physicalEffects = displayableEffects.filter((effect) =>
+    const displayableEffects = effects.filter((effect) => isDisplayableStatusEffect(effect.effect)) as Array<
+      Omit<EnemyStatusEffect, 'effect'> & { effect: PhysicalStatus | ArtsInfliction | ArtsReaction | SpecialEffect }
+    >
+    const consumableAdjustedEffects = applyConsumptionToEffects(displayableEffects, consumedEvents)
+    const physicalEffects = consumableAdjustedEffects.filter((effect) =>
       Object.values(PhysicalStatus).includes(effect.effect as PhysicalStatus)
     )
-    const nonPhysicalEffects = displayableEffects.filter(
+    const nonPhysicalEffects = consumableAdjustedEffects.filter(
       (effect) => !Object.values(PhysicalStatus).includes(effect.effect as PhysicalStatus)
     )
 
@@ -240,14 +291,34 @@ export const EnemyStatusTimeline = ({
     return rows
   }, [actions])
 
+  const staggerMeterChartData = useMemo(() => {
+    const mappedActions = actions.map(action => ({
+      ...action,
+      operatorId: operatorIdMap[action.characterId] ?? action.characterId
+    }))
+    const { points } = buildStaggerMeterTimeline(mappedActions, initialEnemyStaggerMeter, timelineDurationMs)
+    return points
+  }, [actions, operatorIdMap, initialEnemyStaggerMeter, timelineDurationMs])
+
   return (
     <div className="bg-gray-800 rounded-lg overflow-x-auto">
       {showHeader && <div className="text-lg font-semibold mb-2 text-red-400">敵の状態</div>}
       <div className="flex flex-col gap-2">
-        {statusEffectRows.map((row) => (
+        {/* Stagger Meter Chart */}
+        <StaggerMeterChart
+          chartData={staggerMeterChartData}
+          initialStaggerMeter={initialEnemyStaggerMeter}
+          timelineDurationMs={timelineDurationMs}
+          showLabel={withCharacterOffset}
+        />
+
+        {statusEffectRows.map((row) => {
+          const effect = row.effect as PhysicalStatus | ArtsInfliction | ArtsReaction | SpecialEffect
+          const effectLabel = t(getStatusEffectLabelKey(effect))
+          return (
           <div key={row.effect} className="flex items-center">
             {withCharacterOffset && <div className="w-40 shrink-0" />}
-            <div className="w-24 text-sm text-gray-400">{STATUS_EFFECT_LABELS[row.effect]}</div>
+            <div className="w-24 text-sm text-gray-400">{effectLabel}</div>
             <div className="relative flex-1 h-10 bg-gray-900 rounded border border-red-700">
               {/* Timeline markers */}
               <div
@@ -262,12 +333,12 @@ export const EnemyStatusTimeline = ({
               {row.segments.map((segment, index) => (
                 <div
                   key={`${row.effect}-${segment.startTime}-${index}`}
-                  className={`absolute top-1 z-20 h-8 ${STATUS_EFFECT_COLORS[row.effect]} rounded px-2 text-xs flex items-center justify-center opacity-80`}
+                  className={`absolute top-1 z-20 h-8 ${STATUS_EFFECT_COLORS[effect]} rounded px-2 text-xs flex items-center justify-center opacity-80`}
                   style={{
                     left: `${getActionPosition(segment.startTime)}px`,
                     width: `${((segment.endTime - segment.startTime) / timelineDurationMs) * TIMELINE_WIDTH}px`,
                   }}
-                  title={`${STATUS_EFFECT_LABELS[row.effect]} (${segment.endTime - segment.startTime}ms)`}
+                  title={`${effectLabel} (${segment.endTime - segment.startTime}ms)`}
                 >
                   <span className="relative flex items-center justify-center w-full h-full">
                     {segment.starts.length > 1 &&
@@ -281,14 +352,15 @@ export const EnemyStatusTimeline = ({
                         />
                       ))}
                     <span className="relative z-10">
-                      {STATUS_EFFECT_LABELS[row.effect]}{segment.count > 1 ? `×${segment.count}` : ''}
+                      {effectLabel}{segment.count > 1 ? `×${segment.count}` : ''}
                     </span>
                   </span>
                 </div>
               ))}
             </div>
           </div>
-        ))}
+        )
+        })}
       </div>
     </div>
   )

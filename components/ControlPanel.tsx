@@ -11,6 +11,9 @@ interface ControlPanelProps {
   onExportImage: () => void
   onShare: () => void
   onClear: () => void
+  deleteMode: boolean
+  onToggleDeleteMode: () => void
+  deleteModeLabel: string
 }
 
 export default function ControlPanel({
@@ -21,6 +24,9 @@ export default function ControlPanel({
   onExportImage,
   onShare,
   onClear,
+  deleteMode,
+  onToggleDeleteMode,
+  deleteModeLabel,
 }: ControlPanelProps) {
   return (
     <div className="bg-gray-800 p-4 rounded-lg mb-4">
@@ -30,9 +36,19 @@ export default function ControlPanel({
           value={comboName}
           onChange={(e) => onComboNameChange(e.target.value)}
           placeholder="コンボ名を入力..."
-          className="flex-1 min-w-[200px] px-4 py-2 bg-gray-700 text-white rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="flex-1 min-w-50 px-4 py-2 bg-gray-700 text-white rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         
+        <Button
+          onClick={onToggleDeleteMode}
+          className={deleteMode
+            ? 'px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded transition'
+            : 'px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded transition'
+          }
+        >
+          {deleteModeLabel}
+        </Button>
+
         <Button
           onClick={onSave}
           className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition"

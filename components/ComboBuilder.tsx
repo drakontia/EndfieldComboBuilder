@@ -1,6 +1,6 @@
 'use client'
 
-import { type MouseEvent, useCallback, useEffect, useMemo } from 'react'
+import { type MouseEvent, useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import CharacterColumn from '@/components/CharacterColumn'
 import TimelineColumn from '@/components/TimelineColumn'
@@ -10,6 +10,7 @@ import {
   SKILL_TYPE_LABELS,
 } from '@/components/combo-timeline/skillTypeConfig'
 import { EnemyStatusTimeline } from '@/components/EnemyStatusTimeline'
+import { OperatorStatusTimeline } from '@/components/OperatorStatusTimeline'
 import { NormalAttackTimeline } from '@/components/NormalAttackTimeline'
 import { SpTimelineChart } from '@/components/SpTimelineChart'
 import { TimelineScale } from '@/components/TimelineScale'
@@ -60,12 +61,14 @@ const buildSpChartData = (points: SpTimelinePoint[], timelineDurationMs: number)
 
 export const ComboBuilder = () => {
   const t = useTranslations()
+  const [deleteMode, setDeleteMode] = useState(false)
   const comboName = useComboStore((state) => state.comboName)
   const characters = useComboStore((state) => state.characters)
   const actions = useComboStore((state) => state.actions)
   const timelineDurationMs = useComboStore((state) => state.timelineDurationMs)
   const initialTeamSp = useComboStore((state) => state.initialTeamSp)
   const initialUltimateCharges = useComboStore((state) => state.initialUltimateCharges)
+  const initialEnemyStaggerMeter = useComboStore((state) => state.initialEnemyStaggerMeter)
   const setComboName = useComboStore((state) => state.setComboName)
   const setCharacters = useComboStore((state) => state.setCharacters)
   const setActions = useComboStore((state) => state.setActions)
@@ -73,6 +76,7 @@ export const ComboBuilder = () => {
   const setInitialTeamSp = useComboStore((state) => state.setInitialTeamSp)
   const setInitialUltimateCharges = useComboStore((state) => state.setInitialUltimateCharges)
   const setInitialUltimateCharge = useComboStore((state) => state.setInitialUltimateCharge)
+  const setInitialEnemyStaggerMeter = useComboStore((state) => state.setInitialEnemyStaggerMeter)
 
   const getOperatorIdFromCharacterId = useCallback((characterId: string) => {
     const operatorEntry = Object.entries(OPERATORS).find(([, operator]) => operator.name === characterId)
@@ -87,7 +91,8 @@ export const ComboBuilder = () => {
     setInitialTeamSp(combo.initialTeamSp ?? INITIAL_TEAM_SP)
     const nextCharges = combo.initialUltimateCharges ?? []
     setInitialUltimateCharges(nextCharges.length > 0 ? nextCharges : Array(4).fill(0))
-  }, [setActions, setCharacters, setComboName, setInitialTeamSp, setInitialUltimateCharges, setTimelineDurationMs])
+    setInitialEnemyStaggerMeter(combo.initialEnemyStaggerMeter ?? 100)
+  }, [setActions, setCharacters, setComboName, setInitialTeamSp, setInitialUltimateCharges, setTimelineDurationMs, setInitialEnemyStaggerMeter])
 
   useEffect(() => {
     if (!comboName) {
@@ -148,6 +153,20 @@ export const ComboBuilder = () => {
     return matched?.[0] ?? null
   }
 
+  // Create operator ID mapping for actions
+  const operatorIdMap = useMemo(() => {
+    const map: Record<string, string> = {}
+    actions.forEach((action) => {
+      if (!map[action.characterId]) {
+        const operatorId = getOperatorIdFromCharacterId(action.characterId)
+        if (operatorId) {
+          map[action.characterId] = operatorId
+        }
+      }
+    })
+    return map
+  }, [actions, getOperatorIdFromCharacterId])
+
   const getNormalAttackDurationMsForPlayer = () => {
     const operatorKey = getOperatorKey(playerCharacter)
     if (!operatorKey) return null
@@ -156,6 +175,7 @@ export const ComboBuilder = () => {
 
   const handleTimelineClick = (e: MouseEvent<HTMLDivElement>, character: Operator | null, type: SkillType) => {
     if (!character) return
+    if (deleteMode) return
     const target = e.target as HTMLElement
     if (target.closest('[data-action-id]')) return
     const lineElement = e.currentTarget.querySelector('[data-timeline-line]') as HTMLDivElement | null
@@ -179,6 +199,9 @@ export const ComboBuilder = () => {
         onExportImage={handleExportImage}
         onShare={handleShare}
         onClear={handleClear}
+        deleteMode={deleteMode}
+        onToggleDeleteMode={() => setDeleteMode((prev) => !prev)}
+        deleteModeLabel={deleteMode ? t('actions.deleteModeOn') : t('actions.deleteModeOff')}
       />
 
       <div className="bg-gray-800 p-4 rounded-lg mb-4">
@@ -205,7 +228,7 @@ export const ComboBuilder = () => {
               </span>
             </div>
           </div>
-          <div className="flex flex-col gap-2 w-[170px]">
+          <div className="flex flex-col gap-2 w-42.5">
             <label className="text-xs text-gray-300" htmlFor="initial-sp">
               {t('timeline.initialSpLabel')}
             </label>
@@ -221,6 +244,23 @@ export const ComboBuilder = () => {
                 className="w-20 bg-white text-gray-900"
               />
               <span className="text-[10px] text-gray-500">0 - {MAX_TEAM_SP}</span>
+            </div>
+          </div>
+          <div className="flex flex-col gap-2 w-42.5">
+            <label className="text-xs text-gray-300" htmlFor="initial-stagger">
+              敵のスタッガー
+            </label>
+            <div className="flex items-center gap-2">
+              <Input
+                id="initial-stagger"
+                type="number"
+                min={0}
+                step={5}
+                value={initialEnemyStaggerMeter}
+                onChange={(e) => setInitialEnemyStaggerMeter(Number(e.target.value))}
+                className="w-20 bg-white text-gray-900"
+              />
+              <span className="text-[10px] text-gray-500">初期値: 100</span>
             </div>
           </div>
           {characters.map((character, index) => (
@@ -283,6 +323,15 @@ export const ComboBuilder = () => {
               <TimelineScale withCharacterOffset={false} timelineDurationMs={timelineDurationMs} />
             </div>
           </div>
+          <div className="flex gap-4 mb-4 items-stretch">
+            <div className="flex-1">
+              <OperatorStatusTimeline
+                actions={actions}
+                timelineDurationMs={timelineDurationMs}
+                showHeader={true}
+              />
+            </div>
+          </div>
           <div className="flex gap-4 mb-4 items-center">
             <div className="w-40 shrink-0">
               <div className="bg-gray-700 px-3 py-2 rounded h-12 flex flex-col justify-center">
@@ -305,6 +354,7 @@ export const ComboBuilder = () => {
                 onRemoveAction={handleRemoveAction}
                 onMoveAction={handleMoveAction}
                 timelineDurationMs={timelineDurationMs}
+                deleteMode={deleteMode}
                 showCharacterLabel={false}
               />
             </div>
@@ -323,6 +373,7 @@ export const ComboBuilder = () => {
               onMoveAction={handleMoveAction}
               timelineDurationMs={timelineDurationMs}
               initialUltimateCharges={initialUltimateCharges}
+              deleteMode={deleteMode}
             />
           </div>
           <div className="flex gap-4 mt-4">
@@ -330,9 +381,11 @@ export const ComboBuilder = () => {
             <div className="flex-1">
               <EnemyStatusTimeline
                 actions={actions}
+                operatorIdMap={operatorIdMap}
                 withCharacterOffset={false}
                 showHeader={false}
                 timelineDurationMs={timelineDurationMs}
+                initialEnemyStaggerMeter={initialEnemyStaggerMeter}
               />
             </div>
           </div>

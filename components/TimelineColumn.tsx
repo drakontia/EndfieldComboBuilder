@@ -18,6 +18,7 @@ interface TimelineColumnProps {
   onMoveAction: (actionId: string, nextTiming: number) => void
   timelineDurationMs: number
   initialUltimateCharges: number[]
+  deleteMode: boolean
 }
 
 export default function TimelineColumn({
@@ -28,6 +29,7 @@ export default function TimelineColumn({
   onMoveAction,
   timelineDurationMs,
   initialUltimateCharges,
+  deleteMode,
 }: TimelineColumnProps) {
   const getActionPosition = (timing: number) => {
     return (timing / timelineDurationMs) * TIMELINE_WIDTH
@@ -77,6 +79,7 @@ export default function TimelineColumn({
 
   const handleTimelineClick = (e: MouseEvent<HTMLDivElement>, character: Operator | null, type: SkillType) => {
     if (!character) return
+    if (deleteMode) return
     const target = e.target as HTMLElement
     if (target.closest('[data-action-id]')) return
     const lineElement = e.currentTarget.querySelector('[data-timeline-line]') as HTMLDivElement | null
@@ -105,6 +108,7 @@ export default function TimelineColumn({
           getSkillTypesForCharacter={getSkillTypesForCharacter}
           timelineDurationMs={timelineDurationMs}
           initialUltimateCharge={initialUltimateCharges[index] ?? 0}
+          deleteMode={deleteMode}
         />
       ))}
     </div>
