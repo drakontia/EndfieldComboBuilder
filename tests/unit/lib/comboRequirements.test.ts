@@ -84,10 +84,34 @@ describe('comboRequirements', () => {
       expect(result.missingEffects.length).toBeGreaterThan(0)
     })
 
-    it('イヴォンヌの連携技 - 凍結が必要', () => {
+    it('イヴォンヌの連携技 - 凍結 + 重攻撃が必要', () => {
+      // yvonne は freezeが必要 かつ requiresHeavyAttack: true
+      // yvonne の通常攻撃 duration=3317ms, t=0 → heavyAttackEndTime=3317
+      // yvonne の戦技 t=1000 → FREEZE active: 1000~4000ms
       const actions: ComboAction[] = [
         {
-          id: '1',
+          id: 'na1',
+          characterId: 'character.yvonne.name',
+          type: SkillType.NORMAL,
+          timing: 0,
+        },
+        {
+          id: 'bs1',
+          characterId: 'character.yvonne.name',
+          type: SkillType.BATTLE_SKILL,
+          timing: 1000,
+        },
+      ]
+
+      // t=3500: FREEZE active(1000~4000) かつ heavyAttackEndTime=3317 <= 3500 < 8317 → true
+      const result = canActivateComboSkill('yvonne', actions, 3500)
+      expect(result.canActivate).toBe(true)
+    })
+
+    it('イヴォンヌの連携技 - 凍結のみ（重攻撃なし）では発動不可', () => {
+      const actions: ComboAction[] = [
+        {
+          id: 'bs1',
           characterId: 'character.yvonne.name',
           type: SkillType.BATTLE_SKILL,
           timing: 1000,
@@ -95,14 +119,44 @@ describe('comboRequirements', () => {
       ]
 
       const result = canActivateComboSkill('yvonne', actions, 2000)
+      expect(result.canActivate).toBe(false)
+      expect(result.missingEffects).toContain('requires_heavy_attack')
+    })
+
+    it('エンドミニストラ - チーム連携技なしでは発動不可', () => {
+      const result = canActivateComboSkill('endministrator', [], 2000)
+      expect(result.canActivate).toBe(false)
+      expect(result.missingEffects).toContain('requires_team_combo_skill_damage')
+    })
+
+    it('エンドミニストラ - 他キャラの連携技直後は発動可能', () => {
+      const actions: ComboAction[] = [
+        {
+          id: 'cs1',
+          characterId: 'character.laevatain.name',
+          type: SkillType.COMBO_SKILL,
+          timing: 5000,
+        },
+      ]
+
+      // t=7000: laevatain の連携技(t=5000)から 2000ms 後 → 5秒以内 → true
+      const result = canActivateComboSkill('endministrator', actions, 7000)
       expect(result.canActivate).toBe(true)
     })
 
-    it('エンドミニストラ - ステータス効果の条件なし', () => {
-      const actions: ComboAction[] = []
+    it('エンドミニストラ - 他キャラの連携技から5秒後は発動不可', () => {
+      const actions: ComboAction[] = [
+        {
+          id: 'cs1',
+          characterId: 'character.laevatain.name',
+          type: SkillType.COMBO_SKILL,
+          timing: 5000,
+        },
+      ]
 
-      const result = canActivateComboSkill('endministrator', actions, 2000)
-      expect(result.canActivate).toBe(true)
+      // t=10100: 5秒超 → false
+      const result = canActivateComboSkill('endministrator', actions, 10100)
+      expect(result.canActivate).toBe(false)
     })
 
     it('ポグラニチニク - クラッシュ重ね掛け消費が必要', () => {
@@ -383,6 +437,137 @@ describe('comboRequirements', () => {
       // laevatain の通常攻撃 duration=3300ms のため、2回目攻撃の終了 = 10000+3300 = 13300ms
       const result = canActivateComboSkill('xaihi', actions, 14000)
       expect(result.canActivate).toBe(true)
+    })
+  })
+
+  describe('requiresHeavyAttack チェック', () => {
+    it('ペルリカ - 重攻撃後5秒以内は発動可能', () => {
+      // perlica の通常攻撃 duration を確認するために laevatain で代用（operatorId=perlica でチェック）
+      // perlica の characterId = 'character.perlica.name', operatorId = 'perlica'
+      // perlica 通常攻撃 duration が必要 → laevatain(3300ms) で検証できないので直接 perlica で
+      const actions: ComboAction[] = [
+        {
+          id: 'na1',
+          characterId: 'character.perlica.name',
+          type: SkillType.NORMAL,
+          timing: 0,
+        },
+      ]
+      // perlica の duration を確認するため、t=5000 で試す（どのdurationでも0+duration <= 5000 && 5000 < duration+5000）
+      // perlica duration は attacks.ts で 3317ms とする前提
+      // heavyAttackEndTime = duration, t=3500: 3317<=3500<8317 → true
+      const result = canActivateComboSkill('perlica', actions, 3500)
+      expect(result.canActivate).toBe(true)
+    })
+
+    it('ペルリカ - 重攻撃なしでは発動不可', () => {
+      const result = canActivateComboSkill('perlica', [], 5000)
+      expect(result.canActivate).toBe(false)
+      expect(result.missingEffects).toContain('requires_heavy_attack')
+    })
+
+    it('ペルリカ - 重攻撃から5秒後は発動不可', () => {
+      const actions: ComboAction[] = [
+        {
+          id: 'na1',
+          characterId: 'character.perlica.name',
+          type: SkillType.NORMAL,
+          timing: 0,
+        },
+      ]
+      // heavyAttackEndTime + 5000 = duration+5000. t=duration+5001 → false
+      // duration > 0 なので timing=0 + duration + 5001 > 5001
+      // laevatain duration=3300ms を想定して t=8500: 3317+5000=8317 < 8500 → false
+      const result = canActivateComboSkill('perlica', actions, 8500)
+      expect(result.canActivate).toBe(false)
+    })
+  })
+
+  describe('excludedStatusEffects チェック', () => {
+    it('アルデリア - 除外効果なし + 重攻撃あり → 発動可能', () => {
+      // ardelia: requiresHeavyAttack: true, excludedStatusEffects: [CRUSH, HEAT, CRYO, ELECTRIC, NATURE]
+      // ardelia 通常攻撃 duration=3517ms, t=0 → heavyAttackEndTime=3517
+      // 除外効果なし、重攻撃後5秒以内 → t=4000: 3517<=4000<8517 → true
+      const actions: ComboAction[] = [
+        {
+          id: 'na1',
+          characterId: 'character.ardelia.name',
+          type: SkillType.NORMAL,
+          timing: 0,
+        },
+      ]
+      const result = canActivateComboSkill('ardelia', actions, 4000)
+      expect(result.canActivate).toBe(true)
+    })
+
+    it('アルデリア - アーツ付着状態では発動不可', () => {
+      const actions: ComboAction[] = [
+        {
+          id: 'na1',
+          characterId: 'character.ardelia.name',
+          type: SkillType.NORMAL,
+          timing: 0,
+        },
+        {
+          id: 'bs1',
+          characterId: 'character.wolfgard.name',
+          type: SkillType.BATTLE_SKILL,
+          timing: 1000,
+        },
+      ]
+      // wolfgard 戦技 → HEAT 付着（ArtsInfliction.HEAT = excluded）
+      // laevatain battle_skill creates COMBUSTION; wolfgard creates HEAT
+      const result = canActivateComboSkill('ardelia', actions, 3500)
+      expect(result.canActivate).toBe(false)
+      expect(result.missingEffects).toContain('excluded_status_effect_present')
+    })
+  })
+
+  describe('requiresStatusEffectConsumed チェック', () => {
+    it('アレシュ - アーツ異常が消費された直後（期限切れ）は発動可能', () => {
+      // alesh: requiresStatusEffectConsumed: [COMBUSTION, FREEZE, SHOCK, CORROSION, ORIGINIUM_CRYSTALS]
+      // laevatain battle_skill → COMBUSTION (duration=3000ms)
+      // t=1000 → expiryTime=1000+3000=4000
+      // t=4500: expiryTime=4000 <= 4500 < 4000+5000=9000 → true
+      const actions: ComboAction[] = [
+        {
+          id: 'bs1',
+          characterId: 'character.laevatain.name',
+          type: SkillType.BATTLE_SKILL,
+          timing: 1000,
+        },
+      ]
+      const result = canActivateComboSkill('alesh', actions, 4500)
+      expect(result.canActivate).toBe(true)
+    })
+
+    it('アレシュ - アーツ異常がまだアクティブ（未消費）の間は発動不可', () => {
+      const actions: ComboAction[] = [
+        {
+          id: 'bs1',
+          characterId: 'character.laevatain.name',
+          type: SkillType.BATTLE_SKILL,
+          timing: 1000,
+        },
+      ]
+      // t=2000: expiryTime=4000 > 2000 → 消費前 → false
+      const result = canActivateComboSkill('alesh', actions, 2000)
+      expect(result.canActivate).toBe(false)
+    })
+
+    it('アレシュ - アーツ異常消費から5秒後は発動不可', () => {
+      const actions: ComboAction[] = [
+        {
+          id: 'bs1',
+          characterId: 'character.laevatain.name',
+          type: SkillType.BATTLE_SKILL,
+          timing: 1000,
+        },
+      ]
+      // expiryTime=4000, expiryTime+5000=9000
+      // t=9100: 9100 >= 9000 → false
+      const result = canActivateComboSkill('alesh', actions, 9100)
+      expect(result.canActivate).toBe(false)
     })
   })
 })

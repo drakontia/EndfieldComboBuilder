@@ -264,6 +264,62 @@ export const canActivateComboSkill = (
     }
   }
 
+  if (requirement.excludedStatusEffects && requirement.excludedStatusEffects.length > 0) {
+    const activeEffects = getActiveStatusEffectsAtTime(actions, time)
+    const hasExcluded = requirement.excludedStatusEffects.some((e) => activeEffects.has(e))
+    if (hasExcluded) {
+      return { canActivate: false, missingEffects: ['excluded_status_effect_present'] }
+    }
+  }
+
+  if (requirement.requiresHeavyAttack) {
+    const hasRecentHeavyAttack = actions.some((a) => {
+      if (a.type !== SkillType.NORMAL) return false
+      if (getOperatorIdByName(a.characterId) !== operatorId) return false
+      const heavyAttackEndTime = a.timing + getNormalAttackDurationMs(operatorId)
+      return heavyAttackEndTime <= time && time < heavyAttackEndTime + COMBO_SKILL_EXECUTION_WINDOW_MS
+    })
+    if (!hasRecentHeavyAttack) {
+      return { canActivate: false, missingEffects: ['requires_heavy_attack'] }
+    }
+  }
+
+  if (requirement.requiresTeamComboSkillDamage) {
+    const hasRecentTeamComboSkill = actions.some((a) => {
+      if (a.type !== SkillType.COMBO_SKILL) return false
+      if (getOperatorIdByName(a.characterId) === operatorId) return false
+      return a.timing <= time && time < a.timing + COMBO_SKILL_EXECUTION_WINDOW_MS
+    })
+    if (!hasRecentTeamComboSkill) {
+      return { canActivate: false, missingEffects: ['requires_team_combo_skill_damage'] }
+    }
+  }
+
+  if (requirement.requiresStatusEffectConsumed && requirement.requiresStatusEffectConsumed.length > 0) {
+    const { resolvedEffects, consumedEvents } = buildResolvedStatusEffectState(actions)
+    const hasRecentConsumption = actions.some((action) => {
+      const effects = resolvedEffects.get(action.id) ?? []
+      return requirement.requiresStatusEffectConsumed!.some((requiredEffect) => {
+        if (!effects.includes(requiredEffect)) return false
+        // consumedEventsによる消費（明示的トリガー）
+        const consumedViaEvent = consumedEvents.some(
+          (e) =>
+            e.effect === (requiredEffect as ArtsReaction | SpecialEffect) &&
+            e.timing >= action.timing &&
+            e.timing <= time &&
+            e.timing + COMBO_SKILL_EXECUTION_WINDOW_MS > time
+        )
+        if (consumedViaEvent) return true
+        // 継続時間終了による消費
+        const expiryTime = action.timing + getStatusEffectDurationMs(requiredEffect)
+        return expiryTime <= time && time < expiryTime + COMBO_SKILL_EXECUTION_WINDOW_MS
+      })
+    })
+    if (!hasRecentConsumption) {
+      return { canActivate: false, missingEffects: ['requires_status_effect_consumed'] }
+    }
+  }
+
   return { canActivate: true, missingEffects: [] }
 }
 
