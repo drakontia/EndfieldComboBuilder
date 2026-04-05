@@ -212,8 +212,8 @@ export default function TimelineRow({
                         style={{
                           left: `${left}px`,
                           width: `${width}px`,
-                          backgroundColor: '#22c55e',
-                          opacity: 0.25,
+                          backgroundColor: '#06b6d4',
+                          opacity: 0.3,
                         }}
                       />
                     )

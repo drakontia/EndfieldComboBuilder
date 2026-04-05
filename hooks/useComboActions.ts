@@ -4,6 +4,7 @@ import type { Dispatch, SetStateAction } from 'react'
 import { getNormalAttackDurationMs } from '@/lib/data/attacks'
 import { COMBO_SKILLS, ULTIMATES } from '@/lib/data/skills'
 import { BATTLE_SKILL_SP_COST, buildSpTimeline } from '@/lib/timeline'
+import { getComboSkillTriggerWindows } from '@/lib/comboRequirements'
 import { SkillType } from '@/types/combo'
 
 import type { ComboAction } from '@/types/combo'
@@ -107,6 +108,13 @@ export const useComboActions = ({
       }
 
       if (type === SkillType.COMBO_SKILL && operatorId) {
+        const windows = getComboSkillTriggerWindows(operatorId, prev, timelineDurationMs, 100)
+        const isInWindow = windows.some((w) => timing >= w.start && timing < w.end)
+        if (!isInWindow) {
+          alert(t('messages.comboSkillNotInWindow'))
+          return prev
+        }
+
         const cooldownMs =
           COMBO_SKILLS[`${operatorId}_combo_skill`]?.cooldown ??
           COMBO_SKILLS[`${operatorId}.combo_skill`]?.cooldown

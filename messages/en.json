@@ -114,6 +114,7 @@
     "normalAttackOverlap": "Normal attacks overlap.",
     "battleSkillOverlap": "Battle skills overlap.",
     "comboSkillOverlap": "Combo skill is on cooldown.",
+    "comboSkillNotInWindow": "Combo skill conditions are not met.",
     "ultimateOverlap": "Ultimate is on cooldown."
   },
   "stats": {
