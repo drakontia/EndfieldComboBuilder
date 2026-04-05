@@ -1,6 +1,6 @@
 'use client'
 
-import { type MouseEvent } from 'react'
+import { useMemo, type MouseEvent } from 'react'
 import { DndContext, DragEndEvent, useDraggable } from '@dnd-kit/core'
 import { restrictToHorizontalAxis, restrictToParentElement } from '@dnd-kit/modifiers'
 import { CSS } from '@dnd-kit/utilities'
@@ -15,6 +15,7 @@ import {
 } from '@/lib/timeline'
 import { getOperatorIdByName } from '@/lib/data/operators'
 import { getStatusEffectForAction } from '@/lib/data/skills'
+import { getComboSkillTriggerWindows } from '@/lib/comboRequirements'
 import { SkillType } from '@/types/combo'
 import type { Operator } from '@/types/combo'
 import type { ComboAction } from '@/types/combo'
@@ -23,6 +24,8 @@ import {
   SKILL_TYPE_LABELS,
   SKILL_TYPE_COLORS,
   SKILL_TYPE_BG_COLORS,
+  SKILL_TYPE_TEXT_COLORS,
+  SKILL_TYPE_ACCENT_COLORS,
 } from '@/components/combo-timeline/skillTypeConfig'
 
 interface TimelineRowProps {
@@ -132,6 +135,14 @@ export default function TimelineRow({
   deleteMode,
 }: TimelineRowProps) {
   const secondMarkerWidthPx = getSecondMarkerWidthPx(timelineDurationMs)
+
+  const operatorId = character ? getOperatorIdByName(character.name) : null
+
+  const comboSkillTriggerWindows = useMemo(() => {
+    if (!operatorId) return []
+    return getComboSkillTriggerWindows(operatorId, actions, timelineDurationMs)
+  }, [operatorId, actions, timelineDurationMs])
+
   const getDisplayWidthMs = (type: SkillType) => {
     if (type === SkillType.BATTLE_SKILL) return 1000
     if (type === SkillType.COMBO_SKILL) return 1000
@@ -169,7 +180,10 @@ export default function TimelineRow({
       {getSkillTypesForCharacter().map((type) => (
         <div key={type}>
           <div className="flex items-center" onClick={(e) => handleTimelineClick(e, character, type)}>
-            <div className="w-24 text-sm text-gray-400">
+            <div
+              className={`w-24 text-sm font-medium pl-2 ${SKILL_TYPE_TEXT_COLORS[type]}`}
+              style={{ borderLeft: `3px solid ${SKILL_TYPE_ACCENT_COLORS[type]}` }}
+            >
               {SKILL_TYPE_LABELS[type]}
             </div>
             <DndContext
@@ -183,6 +197,27 @@ export default function TimelineRow({
               >
               {type === SkillType.COMBO_SKILL && (
                 <>
+                  {comboSkillTriggerWindows.map((window, i) => {
+                    const left = getActionPosition(window.start)
+                    const width = Math.min(
+                      getActionPosition(window.end) - left,
+                      TIMELINE_WIDTH - left
+                    )
+                    if (width <= 0) return null
+
+                    return (
+                      <div
+                        key={`trigger-window-${i}`}
+                        className="absolute inset-y-0 z-5 pointer-events-none"
+                        style={{
+                          left: `${left}px`,
+                          width: `${width}px`,
+                          backgroundColor: '#22c55e',
+                          opacity: 0.25,
+                        }}
+                      />
+                    )
+                  })}
                   {actions
                     .filter((action) => character && action.characterId === character.name && action.type === SkillType.COMBO_SKILL)
                     .map((action) => {

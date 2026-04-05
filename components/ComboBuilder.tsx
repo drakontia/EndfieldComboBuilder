@@ -294,9 +294,9 @@ export const ComboBuilder = () => {
       <div id="combo-timeline" className="space-y-4">
         <div className="flex-1 bg-gray-800 p-4 rounded-lg overflow-x-auto">
           <div className="flex gap-4 items-center mb-6">
-            <div className="w-40 shrink-0 text-sm text-gray-300 font-medium">
-              {t('timeline.spLabel')}
-              <div className="text-xs text-gray-300">
+            <div className="w-40 shrink-0">
+              <div className="text-sm font-semibold text-gray-300 uppercase tracking-wide">{t('timeline.spLabel')}</div>
+              <div className="text-xs text-gray-400 mt-0.5">
                 {t('timeline.spInitial', {
                   value: initialTeamSp,
                   max: MAX_TEAM_SP,
@@ -334,9 +334,9 @@ export const ComboBuilder = () => {
           </div>
           <div className="flex gap-4 mb-4 items-center">
             <div className="w-40 shrink-0">
-              <div className="bg-gray-700 px-3 py-2 rounded h-12 flex flex-col justify-center">
-                <span className="text-xs text-gray-300">{t('team.playerControlled')}</span>
-                <span className="text-sm text-gray-100">
+              <div className="bg-gray-700 border border-gray-600 px-3 py-2 rounded h-12 flex flex-col justify-center">
+                <span className="text-xs font-semibold text-gray-400 uppercase tracking-wide">{t('team.playerControlled')}</span>
+                <span className="text-sm font-medium text-gray-100">
                   {playerCharacter?.name ? t(playerCharacter.name) : t('team.selectCharacter')}
                 </span>
               </div>
@@ -377,7 +377,7 @@ export const ComboBuilder = () => {
             />
           </div>
           <div className="flex gap-4 mt-4">
-            <div className="w-40 shrink-0 text-lg font-semibold text-red-400">敵の状態</div>
+            <div className="w-40 shrink-0 text-sm font-semibold text-gray-300 uppercase tracking-wide self-start pt-1">敵の状態</div>
             <div className="flex-1">
               <EnemyStatusTimeline
                 actions={actions}

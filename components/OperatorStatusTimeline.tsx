@@ -7,6 +7,7 @@ import {
   TIMELINE_WIDTH,
   getSecondMarkerWidthPx,
   STATUS_EFFECT_COLORS,
+  LONG_STATUS_EFFECT_DURATION_MS,
 } from '@/lib/timeline'
 import { getStatusEffectLabelKey } from '@/lib/statusEffectLabels'
 import { getOperatorIdByName } from '@/lib/data/operators'
@@ -28,6 +29,11 @@ type SupportCrystalState = {
   recoveryCount: number
 }
 
+type ColdInfusionState = {
+  startTime: number
+  endTime: number
+}
+
 export const OperatorStatusTimeline = ({
   actions,
   timelineDurationMs,
@@ -45,9 +51,15 @@ export const OperatorStatusTimeline = ({
     const sortedActions = [...actions].sort((a, b) => a.timing - b.timing)
     
     let isActive = false
-    let activeSince = 0
+    let segmentStart = 0
     let currentRecoveryCount = SUPPORT_CRYSTAL_MAX_RECOVERY_COUNT
     
+    const closeCurrentSegment = (endTime: number) => {
+      if (isActive) {
+        states.push({ startTime: segmentStart, endTime, recoveryCount: currentRecoveryCount })
+      }
+    }
+
     sortedActions.forEach((action) => {
       const operatorId = getOperatorIdByName(action.characterId)
       const statusEffect = getStatusEffectForAction(operatorId, action.type)
@@ -55,40 +67,38 @@ export const OperatorStatusTimeline = ({
       // Check if this action grants SUPPORT_CRYSTAL
       if (statusEffect?.includes(Buff.SUPPORT_CRYSTAL)) {
         if (!isActive) {
-          // Start new support crystal segment
           isActive = true
-          activeSince = action.timing
+          segmentStart = action.timing
           currentRecoveryCount = SUPPORT_CRYSTAL_MAX_RECOVERY_COUNT
         } else {
-          // Extend existing segment
+          // Re-activation: close current segment, start fresh
+          closeCurrentSegment(action.timing)
+          segmentStart = action.timing
           currentRecoveryCount = SUPPORT_CRYSTAL_MAX_RECOVERY_COUNT
         }
         return
       }
       
-      // Check if this is a normal attack (potential heavy attack)
+      // Heavy attack: decrement the recovery count
       if (isActive && action.type === SkillType.NORMAL) {
-        // Decrement recovery count
-        if (currentRecoveryCount > 0) {
-          currentRecoveryCount = Math.max(0, currentRecoveryCount - 1)
-        }
+        // Close the current segment at this point (charge changes here)
+        closeCurrentSegment(action.timing)
+        currentRecoveryCount = Math.max(0, currentRecoveryCount - 1)
         
-        // If recovery count reaches 0, close the segment
         if (currentRecoveryCount === 0) {
-          states.push({
-            startTime: activeSince,
-            endTime: action.timing,
-            recoveryCount: SUPPORT_CRYSTAL_MAX_RECOVERY_COUNT,
-          })
+          // Crystal exhausted — no new segment
           isActive = false
+        } else {
+          // Start new segment with decremented count
+          segmentStart = action.timing
         }
       }
     })
     
-    // If still active at the end, close the segment
+    // If still active at end of timeline, close the final segment
     if (isActive) {
       states.push({
-        startTime: activeSince,
+        startTime: segmentStart,
         endTime: timelineDurationMs,
         recoveryCount: currentRecoveryCount,
       })
@@ -97,14 +107,39 @@ export const OperatorStatusTimeline = ({
     return states
   }, [actions, timelineDurationMs])
 
-  const backgroundColor = STATUS_EFFECT_COLORS[Buff.SUPPORT_CRYSTAL] || 'bg-purple-500'
-  const label = t(getStatusEffectLabelKey(Buff.SUPPORT_CRYSTAL))
+  const coldInfusionStates = useMemo<ColdInfusionState[]>(() => {
+    const states: ColdInfusionState[] = []
+    const sortedActions = [...actions].sort((a, b) => a.timing - b.timing)
+    
+    sortedActions.forEach((action) => {
+      const operatorId = getOperatorIdByName(action.characterId)
+      const statusEffect = getStatusEffectForAction(operatorId, action.type)
+      
+      // Check if this action grants COLD_INFUSION
+      if (statusEffect?.includes(Buff.COLD_INFUSION)) {
+        const startTime = action.timing
+        const endTime = Math.min(startTime + LONG_STATUS_EFFECT_DURATION_MS, timelineDurationMs)
+        states.push({
+          startTime,
+          endTime,
+        })
+      }
+    })
+    
+    return states
+  }, [actions, timelineDurationMs])
+
+  const supportCrystalBgColor = STATUS_EFFECT_COLORS[Buff.SUPPORT_CRYSTAL] || 'bg-purple-500'
+  const supportCrystalLabel = t(getStatusEffectLabelKey(Buff.SUPPORT_CRYSTAL))
+  
+  const coldInfusionBgColor = STATUS_EFFECT_COLORS[Buff.COLD_INFUSION] || 'bg-blue-300'
+  const coldInfusionLabel = t(getStatusEffectLabelKey(Buff.COLD_INFUSION))
 
   return (
     <div className="flex flex-col">
       {showHeader && (
         <div className="flex items-center">
-          <div className="w-40 text-sm font-semibold text-gray-700">自操作キャラ</div>
+          <div className="w-40 text-sm font-semibold text-gray-200">自操作キャラ</div>
           <div className="w-24 shrink-0" />
           <div className="text-xs text-gray-500" style={{ width: `${TIMELINE_WIDTH}px` }}>
             {Array.from({ length: Math.ceil(timelineDurationMs / 1000) }, (_, i) => (
@@ -116,10 +151,10 @@ export const OperatorStatusTimeline = ({
         </div>
       )}
       
-      <div className="flex items-center border-b border-slate-200">
+      <div className="flex items-center border-b border-gray-600">
         <div className="w-40 px-4 py-2 flex items-center gap-2">
-          <div className={`w-4 h-4 rounded ${backgroundColor}`} />
-          <span className="text-sm font-medium">{label}</span>
+          <div className={`w-4 h-4 rounded ${supportCrystalBgColor}`} />
+          <span className="text-sm font-medium text-gray-200">{supportCrystalLabel}</span>
         </div>
         <div className="w-24 shrink-0" />
         <div className="flex-1 relative h-12" style={{ width: `${TIMELINE_WIDTH}px` }}>
@@ -128,7 +163,7 @@ export const OperatorStatusTimeline = ({
             const widthPx = getActionPosition(state.endTime) - leftPx
             
             // Determine color based on recovery count
-            let segmentBgColor = backgroundColor
+            let segmentBgColor = supportCrystalBgColor
             if (state.recoveryCount === 0) {
               segmentBgColor = 'bg-gray-400 opacity-50' // Exhausted state
             } else if (state.recoveryCount === 1) {
@@ -148,6 +183,31 @@ export const OperatorStatusTimeline = ({
                   ×{state.recoveryCount}
                 </span>
               </div>
+            )
+          })}
+        </div>
+      </div>
+
+      <div className="flex items-center border-b border-gray-600">
+        <div className="w-40 px-4 py-2 flex items-center gap-2">
+          <div className={`w-4 h-4 rounded ${coldInfusionBgColor}`} />
+          <span className="text-sm font-medium text-gray-200">{coldInfusionLabel}</span>
+        </div>
+        <div className="w-24 shrink-0" />
+        <div className="flex-1 relative h-12" style={{ width: `${TIMELINE_WIDTH}px` }}>
+          {coldInfusionStates.map((state, idx) => {
+            const leftPx = getActionPosition(state.startTime)
+            const widthPx = getActionPosition(state.endTime) - leftPx
+            
+            return (
+              <div
+                key={idx}
+                className={`absolute h-8 top-2 ${coldInfusionBgColor} border border-slate-400`}
+                style={{
+                  left: `${leftPx}px`,
+                  width: `${Math.max(30, widthPx)}px`,
+                }}
+              />
             )
           })}
         </div>

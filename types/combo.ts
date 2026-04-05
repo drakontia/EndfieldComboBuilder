@@ -46,7 +46,8 @@ export enum Buff {
   AMP = 'amp', // 増幅
   LINK = 'link', // リンク
   DISPEL = 'dispel', // 浄化
-  SUPPORT_CRYSTAL = 'support_crystal' // サポートクリスタル
+  SUPPORT_CRYSTAL = 'support_crystal', // サポートクリスタル
+  COLD_INFUSION = 'cold_infusion' // 低温注入
 }
 
 export enum Debuff {

@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import path from 'path'
+import { VitestReporter } from 'tdd-guard-vitest'
 
 export default defineConfig({
   plugins: [react()],
@@ -10,6 +11,7 @@ export default defineConfig({
     setupFiles: ['./vitest.setup.ts'],
     exclude: ['node_modules', 'tests/e2e', '.next'],
     include: ['tests/unit/**/*.test.ts', 'tests/unit/**/*.test.tsx'],
+    reporters: ['default', new VitestReporter('G:/EndfieldComboBuilder')],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],

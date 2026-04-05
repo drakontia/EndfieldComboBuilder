@@ -1,0 +1,121 @@
+{
+  "testModules": [
+    {
+      "moduleId": "G:/EndfieldComboBuilder/tests/unit/lib/comboRequirements.test.ts",
+      "tests": [
+        {
+          "name": "指定時刻でアクティブなステータス効果を取得する",
+          "fullName": "comboRequirements > getActiveStatusEffectsAtTime > 指定時刻でアクティブなステータス効果を取得する",
+          "state": "passed"
+        },
+        {
+          "name": "複数のステータス効果が重なる場合を処理する",
+          "fullName": "comboRequirements > getActiveStatusEffectsAtTime > 複数のステータス効果が重なる場合を処理する",
+          "state": "passed"
+        },
+        {
+          "name": "発動条件を満たす場合、trueを返す - レーヴァテイン",
+          "fullName": "comboRequirements > canActivateComboSkill > 発動条件を満たす場合、trueを返す - レーヴァテイン",
+          "state": "passed"
+        },
+        {
+          "name": "発動条件を満たさない場合、falseを返す",
+          "fullName": "comboRequirements > canActivateComboSkill > 発動条件を満たさない場合、falseを返す",
+          "state": "passed"
+        },
+        {
+          "name": "イヴォンヌの連携技 - 凍結が必要",
+          "fullName": "comboRequirements > canActivateComboSkill > イヴォンヌの連携技 - 凍結が必要",
+          "state": "passed"
+        },
+        {
+          "name": "エンドミニストラ - ステータス効果の条件なし",
+          "fullName": "comboRequirements > canActivateComboSkill > エンドミニストラ - ステータス効果の条件なし",
+          "state": "passed"
+        },
+        {
+          "name": "ポグラニチニク - クラッシュ重ね掛け消費が必要",
+          "fullName": "comboRequirements > canActivateComboSkill > ポグラニチニク - クラッシュ重ね掛け消費が必要",
+          "state": "passed"
+        },
+        {
+          "name": "ラストリット - 寒冷付着が3段階以上で発動可能",
+          "fullName": "comboRequirements > canActivateComboSkill > ラストリット - 寒冷付着が3段階以上で発動可能",
+          "state": "passed"
+        },
+        {
+          "name": "フローライト - 寒冷または自然の付着段階が2以上で発動可能",
+          "fullName": "comboRequirements > canActivateComboSkill > フローライト - 寒冷または自然の付着段階が2以上で発動可能",
+          "state": "passed"
+        },
+        {
+          "name": "連携技が発動可能な時間範囲を取得する",
+          "fullName": "comboRequirements > getComboSkillAvailableTimeRanges > 連携技が発動可能な時間範囲を取得する",
+          "state": "passed"
+        },
+        {
+          "name": "複数の時間範囲がある場合を処理する",
+          "fullName": "comboRequirements > getComboSkillAvailableTimeRanges > 複数の時間範囲がある場合を処理する",
+          "state": "passed"
+        },
+        {
+          "name": "発動可能区間の先頭から5秒間のウィンドウを返す",
+          "fullName": "comboRequirements > getComboSkillTriggerWindows > 発動可能区間の先頭から5秒間のウィンドウを返す",
+          "state": "passed"
+        },
+        {
+          "name": "発動可能区間がない場合、空配列を返す",
+          "fullName": "comboRequirements > getComboSkillTriggerWindows > 発動可能区間がない場合、空配列を返す",
+          "state": "passed"
+        },
+        {
+          "name": "発動可能区間が5秒未満の場合、その区間の長さのウィンドウを返す",
+          "fullName": "comboRequirements > getComboSkillTriggerWindows > 発動可能区間が5秒未満の場合、その区間の長さのウィンドウを返す",
+          "state": "passed"
+        },
+        {
+          "name": "複数の発動可能区間がある場合、それぞれに5秒ウィンドウを返す",
+          "fullName": "comboRequirements > getComboSkillTriggerWindows > 複数の発動可能区間がある場合、それぞれに5秒ウィンドウを返す",
+          "state": "passed"
+        },
+        {
+          "name": "サポートクリスタルが付与されていない場合は false を返す",
+          "fullName": "comboRequirements > checkSupportCrystalExhausted > サポートクリスタルが付与されていない場合は false を返す",
+          "state": "passed"
+        },
+        {
+          "name": "戦技直後（通常攻撃0回）は false を返す",
+          "fullName": "comboRequirements > checkSupportCrystalExhausted > 戦技直後（通常攻撃0回）は false を返す",
+          "state": "passed"
+        },
+        {
+          "name": "通常攻撃1回後は false を返す（まだ1チャージ残り）",
+          "fullName": "comboRequirements > checkSupportCrystalExhausted > 通常攻撃1回後は false を返す（まだ1チャージ残り）",
+          "state": "passed"
+        },
+        {
+          "name": "通常攻撃2回後は true を返す（チャージ消耗）",
+          "fullName": "comboRequirements > checkSupportCrystalExhausted > 通常攻撃2回後は true を返す（チャージ消耗）",
+          "state": "passed"
+        },
+        {
+          "name": "2回目の通常攻撃タイミング以前は false を返す",
+          "fullName": "comboRequirements > checkSupportCrystalExhausted > 2回目の通常攻撃タイミング以前は false を返す",
+          "state": "passed"
+        },
+        {
+          "name": "Xaihiの連携技: サポートクリスタル消耗前は発動不可",
+          "fullName": "comboRequirements > checkSupportCrystalExhausted > Xaihiの連携技: サポートクリスタル消耗前は発動不可",
+          "state": "passed"
+        },
+        {
+          "name": "Xaihiの連携技: サポートクリスタル消耗後は発動可能",
+          "fullName": "comboRequirements > checkSupportCrystalExhausted > Xaihiの連携技: サポートクリスタル消耗後は発動可能",
+          "state": "passed"
+        }
+      ]
+    }
+  ],
+  "unhandledErrors": [],
+  "reason": "passed"
+}

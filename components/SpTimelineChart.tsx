@@ -32,6 +32,7 @@ export const SpTimelineChart = ({
       <div className="w-24 shrink-0" />
       <div className="relative" style={{ width: `${TIMELINE_WIDTH}px`, height: '96px' }}>
         <ChartContainer
+          id="sp-timeline"
           config={{
             sp: {
               label: t('timeline.spLabel'),

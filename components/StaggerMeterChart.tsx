@@ -26,6 +26,7 @@ export const StaggerMeterChart = ({
       <div className="w-24 shrink-0" />
       <div className="relative" style={{ width: `${TIMELINE_WIDTH}px`, height: '96px' }}>
         <ChartContainer
+          id="stagger-meter"
           config={{
             staggerMeter: {
               label: t('timeline.staggerLabel'),

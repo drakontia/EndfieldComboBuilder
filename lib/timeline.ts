@@ -14,6 +14,7 @@ export const TIMELINE_ROW_HEIGHT_PX = 160
 export const getSecondMarkerWidthPx = (durationMs: number) => {
   return TIMELINE_WIDTH / (durationMs / 1000)
 }
+export const COMBO_SKILL_EXECUTION_WINDOW_MS = 5000
 export const INITIAL_TEAM_SP = 200
 export const MAX_TEAM_SP = 300
 export const TEAM_SP_REGEN_PER_SECOND = 10
@@ -59,6 +60,7 @@ export const STATUS_EFFECT_COLORS: Record<TimelineStatusEffect, string> = {
   [PhysicalStatus.SHATTER]: 'bg-orange-500',
   [SpecialEffect.ORIGINIUM_CRYSTALS]: 'bg-indigo-500',
   [Buff.SUPPORT_CRYSTAL]: 'bg-purple-500',
+  [Buff.COLD_INFUSION]: 'bg-blue-300',
   [Buff.SHIELD]: 'bg-blue-500',
   [Buff.PROTECT]: 'bg-red-500',
   [Buff.AMP]: 'bg-blue-600',
@@ -77,9 +79,17 @@ const CRASH_STACK_EFFECTS = new Set<PhysicalStatus>([
   PhysicalStatus.LIFT,
   PhysicalStatus.KNOCKDOWN,
 ])
+const LONG_DURATION_BUFFS = new Set<Buff>([
+  Buff.SUPPORT_CRYSTAL,
+  Buff.COLD_INFUSION,
+])
 
 export const getStatusEffectDurationMs = (effect: TimelineStatusEffect) => {
   if (ARTS_INFLICTION_SET.has(effect as ArtsInfliction) || CRASH_STACK_EFFECTS.has(effect as PhysicalStatus)) {
+    return LONG_STATUS_EFFECT_DURATION_MS
+  }
+
+  if (LONG_DURATION_BUFFS.has(effect as Buff)) {
     return LONG_STATUS_EFFECT_DURATION_MS
   }
 

@@ -1,7 +1,8 @@
 import { COMBO_SKILLS } from '@/lib/data/skills'
 import { getOperatorIdByName } from '@/lib/data/operators'
+import { getStatusEffectForAction } from '@/lib/data/skills'
 import { buildResolvedStatusEffectState } from '@/lib/statusEffects'
-import { getStatusEffectDurationMs } from '@/lib/timeline'
+import { getStatusEffectDurationMs, COMBO_SKILL_EXECUTION_WINDOW_MS } from '@/lib/timeline'
 import {
   ArtsInfliction,
   ArtsReaction,
@@ -9,8 +10,11 @@ import {
   SpecialEffect,
   Buff,
   Debuff,
+  SkillType,
   type ComboAction,
 } from '@/types/combo'
+
+const SUPPORT_CRYSTAL_MAX_RECOVERY_COUNT = 2
 
 export interface StatusEffectInstance {
   effect: PhysicalStatus | ArtsInfliction | ArtsReaction | SpecialEffect | Buff | Debuff
@@ -154,6 +158,42 @@ export const getActiveStatusEffectsAtTime = (
 }
 
 /**
+ * 指定時刻においてサポートクリスタルが消耗済み（回復回数0）かチェック
+ * 条件: SUPPORT_CRYSTAL が付与された後、NORMAL 攻撃が SUPPORT_CRYSTAL_MAX_RECOVERY_COUNT 回以上あった
+ */
+export const checkSupportCrystalExhausted = (
+  actions: ComboAction[],
+  time: number
+): boolean => {
+  const sortedActions = [...actions]
+    .filter((a) => a.timing <= time)
+    .sort((a, b) => a.timing - b.timing)
+
+  let isActive = false
+  let recoveryCount = SUPPORT_CRYSTAL_MAX_RECOVERY_COUNT
+
+  for (const action of sortedActions) {
+    const operatorId = getOperatorIdByName(action.characterId)
+    const statusEffect = getStatusEffectForAction(operatorId, action.type)
+
+    if (statusEffect?.includes(Buff.SUPPORT_CRYSTAL)) {
+      isActive = true
+      recoveryCount = SUPPORT_CRYSTAL_MAX_RECOVERY_COUNT
+      continue
+    }
+
+    if (isActive && action.type === SkillType.NORMAL) {
+      recoveryCount = Math.max(0, recoveryCount - 1)
+      if (recoveryCount === 0) {
+        return true
+      }
+    }
+  }
+
+  return false
+}
+
+/**
  * 連携技の発動条件を満たしているかチェック
  */
 export const canActivateComboSkill = (
@@ -214,6 +254,12 @@ export const canActivateComboSkill = (
     }
   }
 
+  if (requirement.requiresSupportCrystalRecoveryZero) {
+    if (!checkSupportCrystalExhausted(actions, time)) {
+      return { canActivate: false, missingEffects: ['support_crystal_exhausted'] }
+    }
+  }
+
   return { canActivate: true, missingEffects: [] }
 }
 
@@ -246,6 +292,24 @@ export const getComboSkillAvailableTimeRanges = (
   }
 
   return ranges
+}
+
+/**
+ * 連携技の実行猶予ウィンドウ（条件成立時刻から5秒間）を取得
+ */
+export const getComboSkillTriggerWindows = (
+  operatorId: string,
+  actions: ComboAction[],
+  timelineDurationMs: number,
+  step: number = 100,
+  executionWindowMs: number = COMBO_SKILL_EXECUTION_WINDOW_MS
+): Array<{ start: number; end: number }> => {
+  const availableRanges = getComboSkillAvailableTimeRanges(operatorId, actions, timelineDurationMs, step)
+
+  return availableRanges.map((range) => ({
+    start: range.start,
+    end: Math.min(range.start + executionWindowMs, range.end),
+  }))
 }
 
 /**

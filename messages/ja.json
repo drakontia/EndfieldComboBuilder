@@ -74,7 +74,8 @@
     "amp": "増幅",
     "link": "リンク",
     "dispel": "浄化",
-    "support_crystal": "サポートクリスタル"
+    "support_crystal": "サポートクリスタル",
+    "cold_infusion": "低温注入"
   },
   "debuff": {
     "weaken": "弱体化",

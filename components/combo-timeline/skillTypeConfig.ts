@@ -20,3 +20,17 @@ export const SKILL_TYPE_BG_COLORS = {
   [SkillType.COMBO_SKILL]: '#a855f7',
   [SkillType.ULTIMATE]: '#ef4444',
 }
+
+export const SKILL_TYPE_TEXT_COLORS = {
+  [SkillType.NORMAL]: 'text-slate-300',
+  [SkillType.BATTLE_SKILL]: 'text-green-400',
+  [SkillType.COMBO_SKILL]: 'text-purple-400',
+  [SkillType.ULTIMATE]: 'text-red-400',
+}
+
+export const SKILL_TYPE_ACCENT_COLORS = {
+  [SkillType.NORMAL]: '#64748b',
+  [SkillType.BATTLE_SKILL]: '#22c55e',
+  [SkillType.COMBO_SKILL]: '#a855f7',
+  [SkillType.ULTIMATE]: '#ef4444',
+}

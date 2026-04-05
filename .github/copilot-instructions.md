@@ -51,11 +51,80 @@
 
 ## アーキテクチャ指針
 
+### コンポーネント階層
+
+```
+ComboBuilder（メインオーケストレーター）
+├── ControlPanel（保存/読込/エクスポート）
+├── タイムライン設定（期間/SP/チャージ入力）
+├── SpTimelineChart（Recharts: SP回復グラフ）
+├── OperatorStatusTimeline（オペレーター状態異常）
+├── NormalAttackTimeline（通常攻撃タイムライン）
+├── CharacterColumn × 4（キャラ選択・並び替え）
+│   └── CharacterCard（キャラカード表示）
+├── TimelineColumn × 4（スキルタイムライン）
+│   └── TimelineRow（dnd-kit ドラッグ可能アクション）
+└── EnemyStatusTimeline（敵状態異常・スタッガーメーター）
+```
+
+### 状態管理とカスタムフックの分離
+
+`useComboStore`（単一 Zustand ストア）に全グローバル状態を集約。ビジネスロジックはカスタムフックに抽出：
+
+| フック | 責務 |
+|--------|------|
+| `useComboActions` | アクション追加/削除/移動・重複チェック |
+| `useComboCharacters` | キャラ選択・並び替え |
+| `useComboControlPanel` | 保存/読込/エクスポート/URL共有 |
+| `useComboLoadDialog` | 読込ダイアログ状態管理 |
+
+コンポーネント内から直接 `useComboStore` を呼ぶより、対応するカスタムフック経由を優先する。
+
+### Zustand ストアの主要 State
+
+```typescript
+comboName: string
+characters: (Operator | null)[]     // 4スロット固定
+actions: ComboAction[]
+timelineDurationMs: number           // 10000〜60000ms
+initialTeamSp: number                // 0〜300
+initialUltimateCharges: number[]     // キャラごとに 0〜100
+initialEnemyStaggerMeter: number
+```
+
+### タイムライン座標変換
+
+`lib/timeline.ts` の定数・変換式は **変更前に必ず参照すること**：
+
+- `TIMELINE_WIDTH = 1000`（ピクセル）—タイムライン表示幅（固定）
+- ピクセル→ミリ秒: `(pixelX / TIMELINE_WIDTH) * timelineDurationMs`
+- アクションは **100ms 単位にスナップ**
+- SP は毎秒 10 回復（`TEAM_SP_REGEN_PER_SECOND = 10`）、戦技コスト 100（`BATTLE_SKILL_SP_COST = 100`）
+
+### データキーの命名規則（`lib/data/`）
+
+```typescript
+// operators.ts: スネークケース小文字
+'laevatain', 'endministrator', 'perlica'
+
+// skills.ts: `${operatorId}_${skill_type}` 形式
+'laevatain_battle_skill', 'laevatain_combo_skill', 'laevatain_ultimate'
+
+// i18n キー: 'character.{operatorId}.name' 形式
+'character.laevatain.name'
+```
+
+### dnd-kit の使用パターン
+
+`TimelineRow.tsx` でスキルアクションの水平ドラッグを実装：
+- `DndContext` + `restrictToHorizontalAxis` モディファイア
+- `useDraggable` フックにアクションデータをペイロードとして渡す
+- ドラッグデルタをミリ秒に変換してタイムライン境界にクランプ
+
 ### コンポーネント設計
 
-- **Atomic Design の部分的採用**: `/components/ui` に基本コンポーネント、`/components` 内に機能特化コンポーネント
-- **Composition Pattern**: 小さなコンポーネントを組み合わせて複雑な UI を構築
-- **Container/Presentational Pattern**: ロジックと表示を分離（Zustand stores でロジックを抽出）
+- **Atomic Design の部分的採用**: `components/ui` に基本コンポーネント（shadcn/ui）、`components/` に機能特化コンポーネント
+- **Container/Presentational Pattern**: ロジックをカスタムフックに抽出し、コンポーネントは表示に集中
 
 ### 状態管理の方針
 
@@ -167,18 +236,39 @@ import styles from './Home.module.css';
 - **TODO コメント**: 一時的な実装には `// TODO:` を残す
 - **コメントアウト**: 不要なコードは削除し、コメントアウトは残さない
 
+## コマンド早見表
+
+```bash
+pnpm dev              # 開発サーバー起動（http://localhost:3000）
+pnpm build            # プロダクションビルド
+pnpm lint             # ESLint 実行
+pnpm test             # Vitest ウォッチモード
+pnpm test:coverage    # カバレッジ付きユニットテスト
+pnpm test:e2e         # Playwright E2E テスト
+pnpm test:ui          # Vitest UI モード
+
+# 単一テストファイルの実行
+pnpm vitest run tests/unit/lib/timeline.test.ts
+pnpm vitest run tests/unit/hooks/useComboActions.test.ts
+
+# 単一 E2E テストの実行
+pnpm playwright test tests/e2e/combo-builder.spec.ts
+```
+
 ## テスト指針
 
 ### ユニットテスト（Vitest）
 
-- **配置**: `/tests/unit`
-- **カバレッジ**: 重要なロジックは必ずテスト
+- **配置**: `tests/unit/{lib,hooks,components}/`
+- **環境**: jsdom（`vitest.config.ts` でブラウザライク環境を設定）
+- **ライブラリ**: `@testing-library/react` + `vi.fn()` モック
+- **パターン**: コンポーネントは render + fireEvent + コールバック検証、フックは直接関数呼び出し + 状態アサーション
 - **実行**: `pnpm test` or `pnpm test:coverage`
 
 ### E2Eテスト（Playwright）
 
-- **配置**: `/tests/e2e`
-- **実行**: `pnpm test:e2e`
+- **配置**: `tests/e2e/`
+- **実行**: `pnpm test:e2e`（サーバーを自動起動する）
 - **対象**: ユーザーフロー全体
 
 ## CI/CD
@@ -195,12 +285,12 @@ import styles from './Home.module.css';
 - **URL**: localePrefix なし（/ja や /en のプレフィックスなし）
 
 ## 実装ルール
-- 型安全: すべて TypeScript で厳密に型定義を尊重（`types/index.ts` を参照）。
-- i18n: 表示文言は next-intl のキーを用い、`messages/*` にキー追加。既存キー構造に従い、フォールバックを適切に設定。
+- 型安全: すべて TypeScript で厳密に型定義を尊重（`types/combo.ts` を参照）。主要 Enum: `SkillType`, `ArtsInfliction`, `ArtsReaction`, `PhysicalStatus`, `Buff`, `Debuff`。
+- i18n: 表示文言は next-intl のキーを用い、`messages/ja.json` と `messages/en.json` の両方にキー追加。ロケールは `NEXT_LOCALE` Cookie で管理（デフォルト: `ja`）。
 - UI: Tailwind v4 記法に準拠。Shadcn UI コンポーネントのスタイル/アクセシビリティを維持。
 - 最小変更: 既存 API/挙動を壊さず、差分を限定的に。
-- 仕様準拠: `SPECIFICATION.md` に沿い、現行コードとの差異はコード側を優先（例: `convertedCards` は Map）。
-- ドメイン整合性: ヒラメキ/神ヒラメキのルール、ポイント算出のルールを守る。
+- URL共有: `lib/storage.ts` がコンボを URL クエリパラメータにシリアライズ/デシリアライズする。URL共有に関わる変更はこのファイルを参照。
+- ドメイン整合性: `lib/statusEffects.ts`（状態異常処理）と `lib/comboRequirements.ts`（スキル使用条件）のルールを守る。
 
 ## 変更の作法（PR作成の指針）
 - ブランチ: `feature/<短く要点>` / `fix/<短く要点>` など意味のある名前。

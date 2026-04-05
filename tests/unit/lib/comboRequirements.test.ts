@@ -3,7 +3,10 @@ import {
   getActiveStatusEffectsAtTime,
   canActivateComboSkill,
   getComboSkillAvailableTimeRanges,
+  getComboSkillTriggerWindows,
+  checkSupportCrystalExhausted,
 } from '@/lib/comboRequirements'
+import { COMBO_SKILL_EXECUTION_WINDOW_MS } from '@/lib/timeline'
 import { SkillType, ArtsReaction, ArtsInfliction } from '@/types/combo'
 import type { ComboAction } from '@/types/combo'
 
@@ -239,6 +242,145 @@ describe('comboRequirements', () => {
       // 2つの範囲が存在する可能性がある
       // 1000-4000ms と 8000-11000ms
       expect(ranges.length).toBeGreaterThanOrEqual(1)
+    })
+  })
+
+  describe('getComboSkillTriggerWindows', () => {
+    it('発動可能区間の先頭から5秒間のウィンドウを返す', () => {
+      const actions: ComboAction[] = [
+        {
+          id: '1',
+          characterId: 'character.laevatain.name',
+          type: SkillType.BATTLE_SKILL,
+          timing: 1000,
+        },
+      ]
+
+      const windows = getComboSkillTriggerWindows('laevatain', actions, 30000, 100)
+
+      expect(windows.length).toBeGreaterThan(0)
+      const first = windows[0]
+      // ウィンドウの幅は最大5秒
+      expect(first.end - first.start).toBeLessThanOrEqual(COMBO_SKILL_EXECUTION_WINDOW_MS)
+      // ウィンドウの幅は1ステップ以上
+      expect(first.end).toBeGreaterThan(first.start)
+    })
+
+    it('発動可能区間がない場合、空配列を返す', () => {
+      const windows = getComboSkillTriggerWindows('laevatain', [], 30000, 100)
+      expect(windows).toEqual([])
+    })
+
+    it('発動可能区間が5秒未満の場合、その区間の長さのウィンドウを返す', () => {
+      // 短い区間: 3000ms の燃焼効果（DEFAULT_STATUS_EFFECT_DURATION_MS = 3000ms）
+      const actions: ComboAction[] = [
+        {
+          id: '1',
+          characterId: 'character.laevatain.name',
+          type: SkillType.BATTLE_SKILL,
+          timing: 1000,
+        },
+      ]
+
+      const windows = getComboSkillTriggerWindows('laevatain', actions, 10000, 100)
+
+      expect(windows.length).toBeGreaterThan(0)
+      const first = windows[0]
+      // 条件が満たされる区間の長さ以下
+      expect(first.end - first.start).toBeLessThanOrEqual(COMBO_SKILL_EXECUTION_WINDOW_MS)
+    })
+
+    it('複数の発動可能区間がある場合、それぞれに5秒ウィンドウを返す', () => {
+      const actions: ComboAction[] = [
+        {
+          id: '1',
+          characterId: 'character.laevatain.name',
+          type: SkillType.BATTLE_SKILL,
+          timing: 1000,
+        },
+        {
+          id: '2',
+          characterId: 'character.laevatain.name',
+          type: SkillType.BATTLE_SKILL,
+          timing: 20000,
+        },
+      ]
+
+      const windows = getComboSkillTriggerWindows('laevatain', actions, 30000, 100)
+
+      expect(windows.length).toBeGreaterThanOrEqual(2)
+      windows.forEach((window) => {
+        expect(window.end - window.start).toBeLessThanOrEqual(COMBO_SKILL_EXECUTION_WINDOW_MS)
+        expect(window.end).toBeGreaterThan(window.start)
+      })
+    })
+  })
+
+  describe('checkSupportCrystalExhausted', () => {
+    // Xaihi の battle skill が SUPPORT_CRYSTAL を付与する
+    const xaihiBattleSkill: ComboAction = {
+      id: 'bs1',
+      characterId: 'character.xaihi.name',
+      type: SkillType.BATTLE_SKILL,
+      timing: 5000,
+    }
+
+    it('サポートクリスタルが付与されていない場合は false を返す', () => {
+      expect(checkSupportCrystalExhausted([], 10000)).toBe(false)
+    })
+
+    it('戦技直後（通常攻撃0回）は false を返す', () => {
+      const result = checkSupportCrystalExhausted([xaihiBattleSkill], 6000)
+      expect(result).toBe(false)
+    })
+
+    it('通常攻撃1回後は false を返す（まだ1チャージ残り）', () => {
+      const actions: ComboAction[] = [
+        xaihiBattleSkill,
+        { id: 'na1', characterId: 'character.laevatain.name', type: SkillType.NORMAL, timing: 7000 },
+      ]
+      const result = checkSupportCrystalExhausted(actions, 8000)
+      expect(result).toBe(false)
+    })
+
+    it('通常攻撃2回後は true を返す（チャージ消耗）', () => {
+      const actions: ComboAction[] = [
+        xaihiBattleSkill,
+        { id: 'na1', characterId: 'character.laevatain.name', type: SkillType.NORMAL, timing: 7000 },
+        { id: 'na2', characterId: 'character.laevatain.name', type: SkillType.NORMAL, timing: 10000 },
+      ]
+      const result = checkSupportCrystalExhausted(actions, 11000)
+      expect(result).toBe(true)
+    })
+
+    it('2回目の通常攻撃タイミング以前は false を返す', () => {
+      const actions: ComboAction[] = [
+        xaihiBattleSkill,
+        { id: 'na1', characterId: 'character.laevatain.name', type: SkillType.NORMAL, timing: 7000 },
+        { id: 'na2', characterId: 'character.laevatain.name', type: SkillType.NORMAL, timing: 10000 },
+      ]
+      // time=9000 では 2回目の通常攻撃 (t=10000) がまだ
+      expect(checkSupportCrystalExhausted(actions, 9000)).toBe(false)
+    })
+
+    it('Xaihiの連携技: サポートクリスタル消耗前は発動不可', () => {
+      const actions: ComboAction[] = [
+        xaihiBattleSkill,
+        { id: 'na1', characterId: 'character.laevatain.name', type: SkillType.NORMAL, timing: 7000 },
+      ]
+      const result = canActivateComboSkill('xaihi', actions, 8000)
+      expect(result.canActivate).toBe(false)
+      expect(result.missingEffects).toContain('support_crystal_exhausted')
+    })
+
+    it('Xaihiの連携技: サポートクリスタル消耗後は発動可能', () => {
+      const actions: ComboAction[] = [
+        xaihiBattleSkill,
+        { id: 'na1', characterId: 'character.laevatain.name', type: SkillType.NORMAL, timing: 7000 },
+        { id: 'na2', characterId: 'character.laevatain.name', type: SkillType.NORMAL, timing: 10000 },
+      ]
+      const result = canActivateComboSkill('xaihi', actions, 11000)
+      expect(result.canActivate).toBe(true)
     })
   })
 })

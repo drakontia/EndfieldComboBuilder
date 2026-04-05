@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import { PlusCircle } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
@@ -91,13 +92,11 @@ export default function CharacterCard({
               type="button"
               onClick={() => onOpenSelector(index)}
               data-testid={`character-slot-${index}`}
-              className="w-full h-full bg-gray-600 hover:bg-gray-500 text-white rounded px-2 py-2"
+              className="w-full h-full rounded border-2 border-dashed border-gray-500 hover:border-gray-300 transition-colors text-white"
             >
               <div className="flex flex-col items-center gap-2">
-                <div className="h-12 w-12 rounded bg-gray-500/60 flex items-center justify-center">
-                  <span className="text-xs text-gray-200">{t('team.noImage')}</span>
-                </div>
-                <span className="text-sm text-gray-100 text-center">{t('team.selectCharacter')}</span>
+                <PlusCircle className="w-8 h-8 text-gray-400 group-hover:text-gray-200" />
+                <span className="text-sm text-gray-400">{t('team.selectCharacter')}</span>
               </div>
             </button>
           )}
