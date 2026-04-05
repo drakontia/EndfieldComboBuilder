@@ -35,11 +35,11 @@ export const BATTLE_SKILLS: Record<string, BattleSkill> = {
     statusEffect: [PhysicalStatus.CRUSH],
     skillPoints: 100
   },
-  'alderia_battle_skill': {
-    operatorId: 'alderia',
+  'ardelia_battle_skill': {
+    operatorId: 'ardelia',
     type: SkillType.BATTLE_SKILL,
-    name: 'skill.alderia_battle_skill.name',
-    description: 'skill.alderia_battle_skill.description',
+    name: 'skill.ardelia_battle_skill.name',
+    description: 'skill.ardelia_battle_skill.description',
     statusEffect: [Debuff.PHYSICAL_SUSCEPTIBILITY, Debuff.ARTS_SUSCEPTIBILITY],
     skillPoints: 100
   },
@@ -48,7 +48,7 @@ export const BATTLE_SKILLS: Record<string, BattleSkill> = {
     type: SkillType.BATTLE_SKILL,
     name: 'skill.pogranichnik_battle_skill.name',
     description: 'skill.pogranichnik_battle_skill.description',
-    statusEffect: [PhysicalStatus.VULNERABLE],
+    statusEffect: [PhysicalStatus.SHATTER],
     skillPoints: 100
   },
   'last_rite_battle_skill': {
@@ -56,7 +56,7 @@ export const BATTLE_SKILLS: Record<string, BattleSkill> = {
     type: SkillType.BATTLE_SKILL,
     name: 'skill.last_rite_battle_skill.name',
     description: 'skill.last_rite_battle_skill.description',
-    statusEffect: [PhysicalStatus.VULNERABLE],
+    statusEffect: [Buff.COLD_INFUSION],
     skillPoints: 100
   },
   'ember_battle_skill': {
@@ -168,7 +168,7 @@ export const BATTLE_SKILLS: Record<string, BattleSkill> = {
     type: SkillType.BATTLE_SKILL,
     name: 'skill.estella_battle_skill.name',
     description: 'skill.estella_battle_skill.description',
-    statusEffect: [PhysicalStatus.LIFT],
+    statusEffect: [ArtsInfliction.CRYO],
     skillPoints: 100
   },
   'catcher_battle_skill': {
@@ -251,15 +251,15 @@ export const COMBO_SKILLS: Record<string, ComboSkill> = {
       requiresTeamComboSkillDamage: true
     }
   },
-  'alderia_combo_skill': {
+  'ardelia_combo_skill': {
     // 操作中のオペレーターがクラッシュまたはアーツ付着状態でない敵に重攻撃を与えると発動可能。
     // 敵に火山雲を放ち、接近後に自然ダメージを与える。
     // 火山雲は敵を追尾し、そのあと爆発する。
     // 周囲の他の敵には、そのダメージの半分の自然ダメージを与え、強制的に短時間腐食状態にする。
-    operatorId: 'alderia',
+    operatorId: 'ardelia',
     type: SkillType.COMBO_SKILL,
-    name: 'alderia.combo_skill.name',
-    description: 'alderia.combo_skill.description',
+    name: 'ardelia.combo_skill.name',
+    description: 'ardelia.combo_skill.description',
     cooldown: 16000,
     statusEffectForcibly: [ArtsReaction.CORROSION],
     requirement: {
@@ -705,11 +705,11 @@ export const ULTIMATES: Record<string, Ultimate> = {
     chargeGain: 75,
     cooldown: 10000
   },
-  'alderia_ultimate': {
-    operatorId: 'alderia',
+  'ardelia_ultimate': {
+    operatorId: 'ardelia',
     type: SkillType.ULTIMATE,
-    name: 'alderia.ultimate.name',
-    description: 'alderia.ultimate.description',
+    name: 'ardelia.ultimate.name',
+    description: 'ardelia.ultimate.description',
     chargeGain: 80,
     statusEffect: [ArtsInfliction.NATURE],
     cooldown: 10000

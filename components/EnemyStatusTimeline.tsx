@@ -14,7 +14,7 @@ import {
 import { buildResolvedStatusEffectState } from '@/lib/statusEffects'
 import { getStatusEffectLabelKey } from '@/lib/statusEffectLabels'
 import { StaggerMeterChart } from '@/components/StaggerMeterChart'
-import { ArtsInfliction, ArtsReaction, PhysicalStatus, SpecialEffect, Debuff } from '@/types/combo'
+import { ArtsInfliction, ArtsReaction, PhysicalStatus, SpecialEffect, Buff, Debuff } from '@/types/combo'
 import type { EnemyStatusEffect } from '@/types/combo'
 import type { ComboAction } from '@/types/combo'
 
@@ -42,7 +42,7 @@ export const EnemyStatusTimeline = ({
   }
 
   const isDisplayableStatusEffect = (
-    effect: PhysicalStatus | ArtsInfliction | ArtsReaction | SpecialEffect | Debuff
+    effect: PhysicalStatus | ArtsInfliction | ArtsReaction | SpecialEffect | Buff | Debuff
   ): effect is PhysicalStatus | ArtsInfliction | ArtsReaction | SpecialEffect | Debuff => {
     return (
       Object.values(ArtsInfliction).includes(effect as ArtsInfliction) ||

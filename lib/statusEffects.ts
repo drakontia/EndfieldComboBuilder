@@ -139,7 +139,7 @@ export const buildResolvedStatusEffectState = (
 
     let effects = baseEffects
 
-    if (operatorId === 'alderia' && action.type === SkillType.BATTLE_SKILL) {
+    if (operatorId === 'ardelia' && action.type === SkillType.BATTLE_SKILL) {
       const isCorrosionActive = isStatusEffectActiveAtTime(
         resolvedList,
         action.timing,
@@ -151,6 +151,19 @@ export const buildResolvedStatusEffectState = (
 
       if (isCorrosionActive) {
         consumedEvents.push({ effect: ArtsReaction.CORROSION, timing: action.timing })
+      }
+    }
+
+    if (operatorId === 'last_rite' && action.type === SkillType.NORMAL) {
+      const isColdInfusionActive = isStatusEffectActiveAtTime(
+        resolvedList,
+        action.timing,
+        Buff.COLD_INFUSION,
+        consumedEvents
+      )
+
+      if (isColdInfusionActive) {
+        effects = [...baseEffects, ArtsInfliction.CRYO]
       }
     }
 

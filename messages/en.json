@@ -74,7 +74,8 @@
     "amp": "Amplification",
     "link": "Link",
     "dispel": "Cleanse",
-    "support_crystal": "Support Crystal"
+    "support_crystal": "Support Crystal",
+    "cold_infusion": "Cold Infusion"
   },
   "debuff": {
     "weaken": "Weaken",
@@ -164,8 +165,8 @@
         "description": "Launches Arts attack dealing high Physical damage. Consumes Originium Crystals for additional damage."
       }
     },
-    "alderia": {
-      "name": "Alderia",
+    "ardelia": {
+      "name": "Ardelia",
       "combo_skill": {
         "name": "Eruption Column",
         "description": "Activate when heavy attack hits non-Crash/Arts Infliction enemy. Deals Nature damage and forces Corrosion."
