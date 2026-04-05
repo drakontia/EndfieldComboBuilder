@@ -349,7 +349,8 @@ describe('comboRequirements', () => {
         { id: 'na1', characterId: 'character.laevatain.name', type: SkillType.NORMAL, timing: 7000 },
         { id: 'na2', characterId: 'character.laevatain.name', type: SkillType.NORMAL, timing: 10000 },
       ]
-      const result = checkSupportCrystalExhausted(actions, 11000)
+      // laevatain の通常攻撃 duration=3300ms のため、2回目攻撃の終了 = 10000+3300 = 13300ms
+      const result = checkSupportCrystalExhausted(actions, 14000)
       expect(result).toBe(true)
     })
 
@@ -379,7 +380,8 @@ describe('comboRequirements', () => {
         { id: 'na1', characterId: 'character.laevatain.name', type: SkillType.NORMAL, timing: 7000 },
         { id: 'na2', characterId: 'character.laevatain.name', type: SkillType.NORMAL, timing: 10000 },
       ]
-      const result = canActivateComboSkill('xaihi', actions, 11000)
+      // laevatain の通常攻撃 duration=3300ms のため、2回目攻撃の終了 = 10000+3300 = 13300ms
+      const result = canActivateComboSkill('xaihi', actions, 14000)
       expect(result.canActivate).toBe(true)
     })
   })

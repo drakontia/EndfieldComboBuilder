@@ -1,6 +1,7 @@
 import { COMBO_SKILLS } from '@/lib/data/skills'
 import { getOperatorIdByName } from '@/lib/data/operators'
 import { getStatusEffectForAction } from '@/lib/data/skills'
+import { getNormalAttackDurationMs } from '@/lib/data/attacks'
 import { buildResolvedStatusEffectState } from '@/lib/statusEffects'
 import { getStatusEffectDurationMs, COMBO_SKILL_EXECUTION_WINDOW_MS } from '@/lib/timeline'
 import {
@@ -183,9 +184,12 @@ export const checkSupportCrystalExhausted = (
     }
 
     if (isActive && action.type === SkillType.NORMAL) {
-      recoveryCount = Math.max(0, recoveryCount - 1)
-      if (recoveryCount === 0) {
-        return true
+      const attackEndTime = action.timing + getNormalAttackDurationMs(operatorId ?? '')
+      if (attackEndTime <= time) {
+        recoveryCount = Math.max(0, recoveryCount - 1)
+        if (recoveryCount === 0) {
+          return true
+        }
       }
     }
   }

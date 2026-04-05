@@ -12,6 +12,7 @@ import {
 import { getStatusEffectLabelKey } from '@/lib/statusEffectLabels'
 import { getOperatorIdByName } from '@/lib/data/operators'
 import { getStatusEffectForAction } from '@/lib/data/skills'
+import { getNormalAttackDurationMs } from '@/lib/data/attacks'
 import { Buff, SkillType } from '@/types/combo'
 import type { ComboAction } from '@/types/combo'
 
@@ -79,10 +80,11 @@ export const OperatorStatusTimeline = ({
         return
       }
       
-      // Heavy attack: decrement the recovery count
+      // Heavy attack: decrement the recovery count at end of attack animation
       if (isActive && action.type === SkillType.NORMAL) {
-        // Close the current segment at this point (charge changes here)
-        closeCurrentSegment(action.timing)
+        const attackEndTime = action.timing + getNormalAttackDurationMs(operatorId ?? '')
+        // Close the current segment at the end of the attack (when heavy attack fires)
+        closeCurrentSegment(attackEndTime)
         currentRecoveryCount = Math.max(0, currentRecoveryCount - 1)
         
         if (currentRecoveryCount === 0) {
@@ -90,7 +92,7 @@ export const OperatorStatusTimeline = ({
           isActive = false
         } else {
           // Start new segment with decremented count
-          segmentStart = action.timing
+          segmentStart = attackEndTime
         }
       }
     })
