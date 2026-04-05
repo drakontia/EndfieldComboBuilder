@@ -177,6 +177,14 @@ export const OPERATORS: Record<string, Operator> = {
     element: CharacterElement.NATURE,
     rarity: 4,
     imageUrl: '/images/operators/fluorite.png'
+  },
+  // Tangtang
+  'tangtang': {
+    name: 'character.tangtang.name',
+    type: CharcterType.CASTER,
+    element: CharacterElement.CRYO,
+    rarity: 6,
+    imageUrl: '/images/operators/tangtang.png'
   }
 }
 

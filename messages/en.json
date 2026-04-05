@@ -373,6 +373,17 @@
         "name": "Everyone, Assemble!",
         "description": "Continuously releases Arts firing 3 rally flares. Each flare recovers SP."
       }
+    },
+    "tangtang": {
+      "name": "Tangtang",
+      "combo_skill": {
+        "name": "River, Obey Me!",
+        "description": "Activate when enemy has Cryo Infliction or Arts Burst. Unleashes torrents dealing Cryo damage and applying Cryo Infliction."
+      },
+      "ultimate": {
+        "name": "The Big Boss is Watching!",
+        "description": "Unleashes a massive wave dealing Cryo damage to enemies in range."
+      }
     }
   },
   "characterType": {

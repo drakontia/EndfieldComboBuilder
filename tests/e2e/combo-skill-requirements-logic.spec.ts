@@ -113,7 +113,7 @@ test.describe('Combo Skill Requirements - Data Verification', () => {
     
     allSkills.forEach(skill => {
       expect(skill.cooldown).toBeDefined()
-      expect(skill.cooldown).toBe(16000) // 全ての連携技は16秒のクールダウン
+      expect(skill.cooldown).toBeGreaterThan(0)
     })
   })
 
@@ -218,5 +218,87 @@ test.describe('Combo Skill Requirements - Logic Verification', () => {
     const firstRange = ranges[0]
     expect(firstRange.start).toBeGreaterThanOrEqual(1000)
     expect(firstRange.end).toBeLessThanOrEqual(4000)
+  })
+})
+
+/**
+ * タンタン連携技条件のE2Eテスト
+ * 
+ * タンタンの連携技「川よ、俺様に従え！」は寒冷付着状態の敵に対して発動可能。
+ */
+test.describe('Tangtang - Combo Skill Requirements', () => {
+  test('タンタンのデータが正しく定義されている', async () => {
+    const { OPERATORS } = await import('../../lib/data/operators')
+    const { NORMAL_ATTACKS } = await import('../../lib/data/attacks')
+    const { BATTLE_SKILLS, COMBO_SKILLS, ULTIMATES } = await import('../../lib/data/skills')
+
+    expect(OPERATORS['tangtang']).toBeDefined()
+    expect(OPERATORS['tangtang'].name).toBe('character.tangtang.name')
+
+    expect(NORMAL_ATTACKS['tangtang_base_attack']).toBeDefined()
+    expect(NORMAL_ATTACKS['tangtang_base_attack'].stagger).toBe(18)
+
+    expect(BATTLE_SKILLS['tangtang_battle_skill']).toBeDefined()
+    expect(BATTLE_SKILLS['tangtang_battle_skill'].skillPoints).toBe(100)
+
+    const comboSkill = COMBO_SKILLS['tangtang_combo_skill']
+    expect(comboSkill).toBeDefined()
+    expect(comboSkill.cooldown).toBe(12000)
+    expect(comboSkill.requirement.statusEffects).toContain('cryo')
+
+    const ultimate = ULTIMATES['tangtang_ultimate']
+    expect(ultimate).toBeDefined()
+    expect(ultimate.chargeGain).toBe(90)
+  })
+
+  test('canActivateComboSkill: タンタン - 寒冷付着があれば発動可能', async () => {
+    const { canActivateComboSkill } = await import('../../lib/comboRequirements')
+    const { SkillType } = await import('../../types/combo')
+
+    const actions = [
+      {
+        id: '1',
+        characterId: 'character.tangtang.name',
+        type: SkillType.BATTLE_SKILL,
+        timing: 1000,
+      },
+    ]
+
+    // 2000msの時点では寒冷付着がアクティブ（戦技から10秒間）
+    const result = canActivateComboSkill('tangtang', actions, 2000)
+
+    expect(result.canActivate).toBe(true)
+    expect(result.missingEffects).toEqual([])
+  })
+
+  test('canActivateComboSkill: タンタン - 寒冷付着がなければ発動不可', async () => {
+    const { canActivateComboSkill } = await import('../../lib/comboRequirements')
+
+    const actions: ComboAction[] = []
+
+    const result = canActivateComboSkill('tangtang', actions, 2000)
+
+    expect(result.canActivate).toBe(false)
+    expect(result.missingEffects.length).toBeGreaterThan(0)
+  })
+
+  test('canActivateComboSkill: タンタン - 寒冷付着の有効期間外は発動不可', async () => {
+    const { canActivateComboSkill } = await import('../../lib/comboRequirements')
+    const { SkillType } = await import('../../types/combo')
+
+    const actions = [
+      {
+        id: '1',
+        characterId: 'character.tangtang.name',
+        type: SkillType.BATTLE_SKILL,
+        timing: 1000,
+      },
+    ]
+
+    // 31001ms時点では寒冷付着が終了（1000ms + 30000ms = 31000ms まで）
+    const result = canActivateComboSkill('tangtang', actions, 31001)
+
+    expect(result.canActivate).toBe(false)
+    expect(result.missingEffects.length).toBeGreaterThan(0)
   })
 })

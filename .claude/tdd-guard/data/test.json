@@ -1,6 +1,31 @@
 {
   "testModules": [
     {
+      "moduleId": "G:/EndfieldComboBuilder/tests/unit/lib/utils.test.ts",
+      "tests": [
+        {
+          "name": "merges class names with tailwind-merge",
+          "fullName": "cn > merges class names with tailwind-merge",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "G:/EndfieldComboBuilder/tests/unit/lib/export.test.ts",
+      "tests": [
+        {
+          "name": "exports an element as an image",
+          "fullName": "exportAsImage > exports an element as an image",
+          "state": "passed"
+        },
+        {
+          "name": "throws when the element is missing",
+          "fullName": "exportAsImage > throws when the element is missing",
+          "state": "passed"
+        }
+      ]
+    },
+    {
       "moduleId": "G:/EndfieldComboBuilder/tests/unit/lib/comboRequirements.test.ts",
       "tests": [
         {
@@ -111,6 +136,251 @@
         {
           "name": "Xaihiの連携技: サポートクリスタル消耗後は発動可能",
           "fullName": "comboRequirements > checkSupportCrystalExhausted > Xaihiの連携技: サポートクリスタル消耗後は発動可能",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "G:/EndfieldComboBuilder/tests/unit/hooks/useComboCharacters.test.ts",
+      "tests": [
+        {
+          "name": "selects characters and reorders with charges",
+          "fullName": "useComboCharacters > selects characters and reorders with charges",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "G:/EndfieldComboBuilder/tests/unit/components/LoadDialog.test.tsx",
+      "tests": [
+        {
+          "name": "renders combos and handles load/delete",
+          "fullName": "LoadDialog > renders combos and handles load/delete",
+          "state": "passed"
+        },
+        {
+          "name": "shows empty state when no combos exist",
+          "fullName": "LoadDialog > shows empty state when no combos exist",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "G:/EndfieldComboBuilder/tests/unit/components/TimelineScale.test.tsx",
+      "tests": [
+        {
+          "name": "renders second markers based on duration",
+          "fullName": "TimelineScale > renders second markers based on duration",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "G:/EndfieldComboBuilder/tests/unit/hooks/useComboActions.test.ts",
+      "tests": [
+        {
+          "name": "prevents overlapping normal attacks",
+          "fullName": "useComboActions > prevents overlapping normal attacks",
+          "state": "passed"
+        },
+        {
+          "name": "blocks battle skill when SP is insufficient",
+          "fullName": "useComboActions > blocks battle skill when SP is insufficient",
+          "state": "passed"
+        },
+        {
+          "name": "prevents moving actions into overlapping lanes",
+          "fullName": "useComboActions > prevents moving actions into overlapping lanes",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "G:/EndfieldComboBuilder/tests/unit/hooks/useComboLoadDialog.test.ts",
+      "tests": [
+        {
+          "name": "opens dialog and loads saved combos",
+          "fullName": "useComboLoadDialog > opens dialog and loads saved combos",
+          "state": "passed"
+        },
+        {
+          "name": "loads a combo and alerts",
+          "fullName": "useComboLoadDialog > loads a combo and alerts",
+          "state": "passed"
+        },
+        {
+          "name": "deletes a combo and refreshes list",
+          "fullName": "useComboLoadDialog > deletes a combo and refreshes list",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "G:/EndfieldComboBuilder/tests/unit/hooks/useComboControlPanel.test.ts",
+      "tests": [
+        {
+          "name": "saves combos and alerts",
+          "fullName": "useComboControlPanel > saves combos and alerts",
+          "state": "passed"
+        },
+        {
+          "name": "exports image and handles errors",
+          "fullName": "useComboControlPanel > exports image and handles errors",
+          "state": "passed"
+        },
+        {
+          "name": "shares combos and copies URL",
+          "fullName": "useComboControlPanel > shares combos and copies URL",
+          "state": "passed"
+        },
+        {
+          "name": "clears combo state after confirmation",
+          "fullName": "useComboControlPanel > clears combo state after confirmation",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "G:/EndfieldComboBuilder/tests/unit/components/ControlPanel.test.tsx",
+      "tests": [
+        {
+          "name": "calls handlers when interacting with controls",
+          "fullName": "ControlPanel > calls handlers when interacting with controls",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "G:/EndfieldComboBuilder/tests/unit/components/CharacterSelectDialog.test.tsx",
+      "tests": [
+        {
+          "name": "filters options by search and filters",
+          "fullName": "CharacterSelectDialog > filters options by search and filters",
+          "state": "passed"
+        },
+        {
+          "name": "calls onSelect when an option is clicked",
+          "fullName": "CharacterSelectDialog > calls onSelect when an option is clicked",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "G:/EndfieldComboBuilder/tests/unit/lib/storage.test.ts",
+      "tests": [
+        {
+          "name": "should save a combo to localStorage",
+          "fullName": "Storage Functions > saveCombo > should save a combo to localStorage",
+          "state": "passed"
+        },
+        {
+          "name": "should update existing combo with same name",
+          "fullName": "Storage Functions > saveCombo > should update existing combo with same name",
+          "state": "passed"
+        },
+        {
+          "name": "should load a combo by name",
+          "fullName": "Storage Functions > loadCombo > should load a combo by name",
+          "state": "passed"
+        },
+        {
+          "name": "should return null for non-existent combo",
+          "fullName": "Storage Functions > loadCombo > should return null for non-existent combo",
+          "state": "passed"
+        },
+        {
+          "name": "should delete a combo by name",
+          "fullName": "Storage Functions > deleteCombo > should delete a combo by name",
+          "state": "passed"
+        },
+        {
+          "name": "should return empty array when no combos saved",
+          "fullName": "Storage Functions > getSavedCombos > should return empty array when no combos saved",
+          "state": "passed"
+        },
+        {
+          "name": "should return all saved combos",
+          "fullName": "Storage Functions > getSavedCombos > should return all saved combos",
+          "state": "passed"
+        },
+        {
+          "name": "should generate a URL with encoded combo data",
+          "fullName": "Storage Functions > generateShareUrl > should generate a URL with encoded combo data",
+          "state": "passed"
+        },
+        {
+          "name": "should load combo from URL parameters",
+          "fullName": "Storage Functions > loadComboFromUrl > should load combo from URL parameters",
+          "state": "passed"
+        },
+        {
+          "name": "should return null when no combo in URL",
+          "fullName": "Storage Functions > loadComboFromUrl > should return null when no combo in URL",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "G:/EndfieldComboBuilder/tests/unit/lib/statusEffects.test.ts",
+      "tests": [
+        {
+          "name": "should correctly resolve operator ID from Last Rite character name",
+          "fullName": "Last Rite cold infusion > should correctly resolve operator ID from Last Rite character name",
+          "state": "passed"
+        },
+        {
+          "name": "should apply cryo attachment when Last Rite uses normal attack with COLD_INFUSION active",
+          "fullName": "Last Rite cold infusion > should apply cryo attachment when Last Rite uses normal attack with COLD_INFUSION active",
+          "state": "passed"
+        },
+        {
+          "name": "should not apply cryo when COLD_INFUSION is not active",
+          "fullName": "Last Rite cold infusion > should not apply cryo when COLD_INFUSION is not active",
+          "state": "passed"
+        },
+        {
+          "name": "should apply COLD_INFUSION buff from Last Rite battle skill",
+          "fullName": "Last Rite cold infusion > should apply COLD_INFUSION buff from Last Rite battle skill",
+          "state": "passed"
+        },
+        {
+          "name": "should have cryo stacked when multiple normal attacks are used within COLD_INFUSION window",
+          "fullName": "Last Rite cold infusion > should have cryo stacked when multiple normal attacks are used within COLD_INFUSION window",
+          "state": "passed"
+        },
+        {
+          "name": "should expire COLD_INFUSION buff after 30 seconds",
+          "fullName": "Last Rite cold infusion > should expire COLD_INFUSION buff after 30 seconds",
+          "state": "passed"
+        },
+        {
+          "name": "should handle multiple Last Rite battle skills",
+          "fullName": "Last Rite cold infusion > should handle multiple Last Rite battle skills",
+          "state": "passed"
+        },
+        {
+          "name": "should preserve buffed status with buildResolvedStatusEffectState",
+          "fullName": "Last Rite cold infusion > should preserve buffed status with buildResolvedStatusEffectState",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "G:/EndfieldComboBuilder/tests/unit/lib/timeline.test.ts",
+      "tests": [
+        {
+          "name": "calculates second marker width",
+          "fullName": "timeline helpers > calculates second marker width",
+          "state": "passed"
+        },
+        {
+          "name": "builds SP timeline with battle skill cost",
+          "fullName": "timeline helpers > builds SP timeline with battle skill cost",
+          "state": "passed"
+        },
+        {
+          "name": "adds SP from normal attacks when the action finishes",
+          "fullName": "timeline helpers > adds SP from normal attacks when the action finishes",
           "state": "passed"
         }
       ]

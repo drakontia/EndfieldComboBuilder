@@ -186,6 +186,15 @@ export const BATTLE_SKILLS: Record<string, BattleSkill> = {
     description: 'skill.fluorite_battle_skill.description',
     statusEffect: [PhysicalStatus.LIFT],
     skillPoints: 100
+  },
+  'tangtang_battle_skill': {
+    // 水竜巻を引き起こし、敵に寒冷付着を付与する。
+    operatorId: 'tangtang',
+    type: SkillType.BATTLE_SKILL,
+    name: 'skill.tangtang_battle_skill.name',
+    description: 'skill.tangtang_battle_skill.description',
+    statusEffect: [ArtsInfliction.CRYO],
+    skillPoints: 100
   }
 }
 
@@ -512,6 +521,19 @@ export const COMBO_SKILLS: Record<string, ComboSkill> = {
     cooldown: 16000,
     statusEffect: [Buff.SHIELD],
     requirement: {}
+  },
+  'tangtang_combo_skill': {
+    // 敵が寒冷付着またはアーツ爆発状態になったときに発動可能。
+    // 激流を解き放ち、敵に寒冷ダメージを与える。
+    operatorId: 'tangtang',
+    type: SkillType.COMBO_SKILL,
+    name: 'tangtang.combo_skill.name',
+    description: 'tangtang.combo_skill.description',
+    cooldown: 12000,
+    statusEffect: [ArtsInfliction.CRYO],
+    requirement: {
+      statusEffects: [ArtsInfliction.CRYO]
+    }
   }
 }
 
@@ -712,6 +734,14 @@ export const ULTIMATES: Record<string, Ultimate> = {
     description: 'ardelia.ultimate.description',
     chargeGain: 80,
     statusEffect: [ArtsInfliction.NATURE],
+    cooldown: 10000
+  },
+  'tangtang_ultimate': {
+    operatorId: 'tangtang',
+    type: SkillType.ULTIMATE,
+    name: 'tangtang.ultimate.name',
+    description: 'tangtang.ultimate.description',
+    chargeGain: 90,
     cooldown: 10000
   }
 }

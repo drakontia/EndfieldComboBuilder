@@ -165,6 +165,13 @@ export const NORMAL_ATTACKS: Record<string, BaseAttack> = {
     description: 'yvonne.base_attack.description',
     duration: 3317,
     stagger: 17
+  },
+  'tangtang_base_attack': {
+    operatorId: 'tangtang',
+    name: 'tangtang.base_attack.name',
+    description: 'tangtang.base_attack.description',
+    duration: 3000,
+    stagger: 18
   }
 }
 
