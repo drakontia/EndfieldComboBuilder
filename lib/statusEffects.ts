@@ -180,6 +180,61 @@ export const buildResolvedStatusEffectState = (
       }
     }
 
+    if (operatorId === 'alesh' && action.type === SkillType.BATTLE_SKILL) {
+      const isCryoActive = isStatusEffectActiveAtTime(
+        resolvedList,
+        action.timing,
+        ArtsInfliction.CRYO,
+        consumedEvents
+      )
+
+      if (isCryoActive) {
+        effects = [ArtsReaction.FREEZE]
+        consumedEvents.push({ effect: ArtsInfliction.CRYO, timing: action.timing })
+      } else {
+        effects = []
+      }
+    }
+
+    if (operatorId === 'wolfgard' && action.type === SkillType.BATTLE_SKILL) {
+      const isCombustionActive = isStatusEffectActiveAtTime(
+        resolvedList,
+        action.timing,
+        ArtsReaction.COMBUSTION,
+        consumedEvents
+      )
+      const isShockActive = isStatusEffectActiveAtTime(
+        resolvedList,
+        action.timing,
+        ArtsReaction.SHOCK,
+        consumedEvents
+      )
+
+      if (isCombustionActive) {
+        effects = []
+        consumedEvents.push({ effect: ArtsReaction.COMBUSTION, timing: action.timing })
+      } else if (isShockActive) {
+        effects = []
+        consumedEvents.push({ effect: ArtsReaction.SHOCK, timing: action.timing })
+      } else {
+        effects = [ArtsInfliction.HEAT]
+      }
+    }
+
+    if (operatorId === 'arclight' && action.type === SkillType.BATTLE_SKILL) {
+      const isShockActive = isStatusEffectActiveAtTime(
+        resolvedList,
+        action.timing,
+        ArtsReaction.SHOCK,
+        consumedEvents
+      )
+
+      if (isShockActive) {
+        consumedEvents.push({ effect: ArtsReaction.SHOCK, timing: action.timing })
+      }
+      effects = []
+    }
+
     if (operatorId === 'last_rite' && action.type === SkillType.NORMAL) {
       const isColdInfusionActive = isStatusEffectActiveAtTime(
         resolvedList,

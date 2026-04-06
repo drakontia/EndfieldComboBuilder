@@ -1,6 +1,101 @@
 {
   "testModules": [
     {
+      "moduleId": "G:/EndfieldComboBuilder/tests/unit/lib/export.test.ts",
+      "tests": [
+        {
+          "name": "exports an element as an image",
+          "fullName": "exportAsImage > exports an element as an image",
+          "state": "passed"
+        },
+        {
+          "name": "throws when the element is missing",
+          "fullName": "exportAsImage > throws when the element is missing",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "G:/EndfieldComboBuilder/tests/unit/hooks/useComboActions.test.ts",
+      "tests": [
+        {
+          "name": "prevents overlapping normal attacks",
+          "fullName": "useComboActions > prevents overlapping normal attacks",
+          "state": "passed"
+        },
+        {
+          "name": "blocks battle skill when SP is insufficient",
+          "fullName": "useComboActions > blocks battle skill when SP is insufficient",
+          "state": "passed"
+        },
+        {
+          "name": "prevents moving actions into overlapping lanes",
+          "fullName": "useComboActions > prevents moving actions into overlapping lanes",
+          "state": "passed"
+        },
+        {
+          "name": "removes an action by id",
+          "fullName": "useComboActions > removes an action by id",
+          "state": "passed"
+        },
+        {
+          "name": "does nothing when handleMoveAction is called with the same timing",
+          "fullName": "useComboActions > does nothing when handleMoveAction is called with the same timing",
+          "state": "passed"
+        },
+        {
+          "name": "prevents adding a battle skill when it overlaps an existing battle skill",
+          "fullName": "useComboActions > prevents adding a battle skill when it overlaps an existing battle skill",
+          "state": "passed"
+        },
+        {
+          "name": "blocks adding a combo skill when timing is outside trigger windows",
+          "fullName": "useComboActions > combo skill actions > blocks adding a combo skill when timing is outside trigger windows",
+          "state": "passed"
+        },
+        {
+          "name": "adds a combo skill when timing is inside a trigger window",
+          "fullName": "useComboActions > combo skill actions > adds a combo skill when timing is inside a trigger window",
+          "state": "passed"
+        },
+        {
+          "name": "blocks adding a combo skill that overlaps an existing one",
+          "fullName": "useComboActions > combo skill actions > blocks adding a combo skill that overlaps an existing one",
+          "state": "passed"
+        },
+        {
+          "name": "adds an ultimate when there is no overlap",
+          "fullName": "useComboActions > ultimate actions > adds an ultimate when there is no overlap",
+          "state": "passed"
+        },
+        {
+          "name": "blocks adding an ultimate that overlaps an existing one",
+          "fullName": "useComboActions > ultimate actions > blocks adding an ultimate that overlaps an existing one",
+          "state": "passed"
+        },
+        {
+          "name": "alerts normalAttackOverlap when moving a normal attack into another",
+          "fullName": "useComboActions > handleMoveAction overlap alerts by skill type > alerts normalAttackOverlap when moving a normal attack into another",
+          "state": "passed"
+        },
+        {
+          "name": "alerts comboSkillOverlap when moving a combo skill into another",
+          "fullName": "useComboActions > handleMoveAction overlap alerts by skill type > alerts comboSkillOverlap when moving a combo skill into another",
+          "state": "passed"
+        },
+        {
+          "name": "alerts ultimateOverlap when moving an ultimate into another",
+          "fullName": "useComboActions > handleMoveAction overlap alerts by skill type > alerts ultimateOverlap when moving an ultimate into another",
+          "state": "passed"
+        },
+        {
+          "name": "blocks moving a battle skill when SP becomes insufficient",
+          "fullName": "useComboActions > blocks moving a battle skill when SP becomes insufficient",
+          "state": "passed"
+        }
+      ]
+    },
+    {
       "moduleId": "G:/EndfieldComboBuilder/tests/unit/lib/comboRequirements.test.ts",
       "tests": [
         {
@@ -24,13 +119,28 @@
           "state": "passed"
         },
         {
-          "name": "イヴォンヌの連携技 - 凍結が必要",
-          "fullName": "comboRequirements > canActivateComboSkill > イヴォンヌの連携技 - 凍結が必要",
+          "name": "イヴォンヌの連携技 - 凍結 + 重攻撃が必要",
+          "fullName": "comboRequirements > canActivateComboSkill > イヴォンヌの連携技 - 凍結 + 重攻撃が必要",
           "state": "passed"
         },
         {
-          "name": "エンドミニストラ - ステータス効果の条件なし",
-          "fullName": "comboRequirements > canActivateComboSkill > エンドミニストラ - ステータス効果の条件なし",
+          "name": "イヴォンヌの連携技 - 凍結のみ（重攻撃なし）では発動不可",
+          "fullName": "comboRequirements > canActivateComboSkill > イヴォンヌの連携技 - 凍結のみ（重攻撃なし）では発動不可",
+          "state": "passed"
+        },
+        {
+          "name": "エンドミニストラ - チーム連携技なしでは発動不可",
+          "fullName": "comboRequirements > canActivateComboSkill > エンドミニストラ - チーム連携技なしでは発動不可",
+          "state": "passed"
+        },
+        {
+          "name": "エンドミニストラ - 他キャラの連携技直後は発動可能",
+          "fullName": "comboRequirements > canActivateComboSkill > エンドミニストラ - 他キャラの連携技直後は発動可能",
+          "state": "passed"
+        },
+        {
+          "name": "エンドミニストラ - 他キャラの連携技から5秒後は発動不可",
+          "fullName": "comboRequirements > canActivateComboSkill > エンドミニストラ - 他キャラの連携技から5秒後は発動不可",
           "state": "passed"
         },
         {
@@ -111,6 +221,506 @@
         {
           "name": "Xaihiの連携技: サポートクリスタル消耗後は発動可能",
           "fullName": "comboRequirements > checkSupportCrystalExhausted > Xaihiの連携技: サポートクリスタル消耗後は発動可能",
+          "state": "passed"
+        },
+        {
+          "name": "ペルリカ - 重攻撃後5秒以内は発動可能",
+          "fullName": "comboRequirements > requiresHeavyAttack チェック > ペルリカ - 重攻撃後5秒以内は発動可能",
+          "state": "passed"
+        },
+        {
+          "name": "ペルリカ - 重攻撃なしでは発動不可",
+          "fullName": "comboRequirements > requiresHeavyAttack チェック > ペルリカ - 重攻撃なしでは発動不可",
+          "state": "passed"
+        },
+        {
+          "name": "ペルリカ - 重攻撃から5秒後は発動不可",
+          "fullName": "comboRequirements > requiresHeavyAttack チェック > ペルリカ - 重攻撃から5秒後は発動不可",
+          "state": "passed"
+        },
+        {
+          "name": "アルデリア - 除外効果なし + 重攻撃あり → 発動可能",
+          "fullName": "comboRequirements > excludedStatusEffects チェック > アルデリア - 除外効果なし + 重攻撃あり → 発動可能",
+          "state": "passed"
+        },
+        {
+          "name": "アルデリア - アーツ付着状態では発動不可",
+          "fullName": "comboRequirements > excludedStatusEffects チェック > アルデリア - アーツ付着状態では発動不可",
+          "state": "passed"
+        },
+        {
+          "name": "アレシュ - アーツ異常が消費された直後（期限切れ）は発動可能",
+          "fullName": "comboRequirements > requiresStatusEffectConsumed チェック > アレシュ - アーツ異常が消費された直後（期限切れ）は発動可能",
+          "state": "passed"
+        },
+        {
+          "name": "アレシュ - アーツ異常がまだアクティブ（未消費）の間は発動不可",
+          "fullName": "comboRequirements > requiresStatusEffectConsumed チェック > アレシュ - アーツ異常がまだアクティブ（未消費）の間は発動不可",
+          "state": "passed"
+        },
+        {
+          "name": "アレシュ - アーツ異常消費から5秒後は発動不可",
+          "fullName": "comboRequirements > requiresStatusEffectConsumed チェック > アレシュ - アーツ異常消費から5秒後は発動不可",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "G:/EndfieldComboBuilder/tests/unit/lib/statusEffects.test.ts",
+      "tests": [
+        {
+          "name": "should correctly resolve operator ID from Last Rite character name",
+          "fullName": "Last Rite cold infusion > should correctly resolve operator ID from Last Rite character name",
+          "state": "passed"
+        },
+        {
+          "name": "should apply cryo attachment when Last Rite uses normal attack with COLD_INFUSION active",
+          "fullName": "Last Rite cold infusion > should apply cryo attachment when Last Rite uses normal attack with COLD_INFUSION active",
+          "state": "passed"
+        },
+        {
+          "name": "should not apply cryo when COLD_INFUSION is not active",
+          "fullName": "Last Rite cold infusion > should not apply cryo when COLD_INFUSION is not active",
+          "state": "passed"
+        },
+        {
+          "name": "should apply COLD_INFUSION buff from Last Rite battle skill",
+          "fullName": "Last Rite cold infusion > should apply COLD_INFUSION buff from Last Rite battle skill",
+          "state": "passed"
+        },
+        {
+          "name": "should have cryo stacked when multiple normal attacks are used within COLD_INFUSION window",
+          "fullName": "Last Rite cold infusion > should have cryo stacked when multiple normal attacks are used within COLD_INFUSION window",
+          "state": "passed"
+        },
+        {
+          "name": "should expire COLD_INFUSION buff after 30 seconds",
+          "fullName": "Last Rite cold infusion > should expire COLD_INFUSION buff after 30 seconds",
+          "state": "passed"
+        },
+        {
+          "name": "should handle multiple Last Rite battle skills",
+          "fullName": "Last Rite cold infusion > should handle multiple Last Rite battle skills",
+          "state": "passed"
+        },
+        {
+          "name": "should preserve buffed status with buildResolvedStatusEffectState",
+          "fullName": "Last Rite cold infusion > should preserve buffed status with buildResolvedStatusEffectState",
+          "state": "passed"
+        },
+        {
+          "name": "correctly resolves fluorite operator ID",
+          "fullName": "fluorite combo skill conditional effects > correctly resolves fluorite operator ID",
+          "state": "passed"
+        },
+        {
+          "name": "applies cryo when cryo stacks >= 2 at combo skill timing",
+          "fullName": "fluorite combo skill conditional effects > applies cryo when cryo stacks >= 2 at combo skill timing",
+          "state": "passed"
+        },
+        {
+          "name": "applies nature when nature stacks >= 2 at combo skill timing",
+          "fullName": "fluorite combo skill conditional effects > applies nature when nature stacks >= 2 at combo skill timing",
+          "state": "passed"
+        },
+        {
+          "name": "applies no effects when neither cryo nor nature stacks reach 2",
+          "fullName": "fluorite combo skill conditional effects > applies no effects when neither cryo nor nature stacks reach 2",
+          "state": "passed"
+        },
+        {
+          "name": "prioritises cryo over nature when both reach 2 stacks",
+          "fullName": "fluorite combo skill conditional effects > prioritises cryo over nature when both reach 2 stacks",
+          "state": "passed"
+        },
+        {
+          "name": "does not count expired cryo stacks",
+          "fullName": "fluorite combo skill conditional effects > does not count expired cryo stacks",
+          "state": "passed"
+        },
+        {
+          "name": "correctly resolves ardelia operator ID",
+          "fullName": "ardelia battle skill conditional effects > correctly resolves ardelia operator ID",
+          "state": "passed"
+        },
+        {
+          "name": "returns empty effects when corrosion is not active",
+          "fullName": "ardelia battle skill conditional effects > returns empty effects when corrosion is not active",
+          "state": "passed"
+        },
+        {
+          "name": "returns debuff effects when corrosion is active",
+          "fullName": "ardelia battle skill conditional effects > returns debuff effects when corrosion is active",
+          "state": "passed"
+        },
+        {
+          "name": "correctly resolves yvonne operator ID",
+          "fullName": "yvonne battle skill conditional freeze > correctly resolves yvonne operator ID",
+          "state": "passed"
+        },
+        {
+          "name": "does NOT apply freeze when no cryo or nature infliction is active",
+          "fullName": "yvonne battle skill conditional freeze > does NOT apply freeze when no cryo or nature infliction is active",
+          "state": "passed"
+        },
+        {
+          "name": "applies freeze when cryo infliction is active, consuming it",
+          "fullName": "yvonne battle skill conditional freeze > applies freeze when cryo infliction is active, consuming it",
+          "state": "passed"
+        },
+        {
+          "name": "applies freeze when nature infliction is active, consuming it",
+          "fullName": "yvonne battle skill conditional freeze > applies freeze when nature infliction is active, consuming it",
+          "state": "passed"
+        },
+        {
+          "name": "consumes cryo infliction so a second yvonne battle skill does not trigger freeze again",
+          "fullName": "yvonne battle skill conditional freeze > consumes cryo infliction so a second yvonne battle skill does not trigger freeze again",
+          "state": "passed"
+        },
+        {
+          "name": "does not apply freeze when cryo infliction has expired",
+          "fullName": "yvonne battle skill conditional freeze > does not apply freeze when cryo infliction has expired",
+          "state": "passed"
+        },
+        {
+          "name": "applies freeze using nature when cryo is not present",
+          "fullName": "yvonne battle skill conditional freeze > applies freeze using nature when cryo is not present",
+          "state": "passed"
+        },
+        {
+          "name": "sorts actions with the same timing by id (locale order)",
+          "fullName": "action sorting with identical timing > sorts actions with the same timing by id (locale order)",
+          "state": "passed"
+        },
+        {
+          "name": "applies KNOCKDOWN (転倒), not VULNERABLE (クラッシュ)",
+          "fullName": "ember battle skill > applies KNOCKDOWN (転倒), not VULNERABLE (クラッシュ)",
+          "state": "passed"
+        },
+        {
+          "name": "applies KNOCKDOWN (転倒), not VULNERABLE (クラッシュ)",
+          "fullName": "lifeng battle skill > applies KNOCKDOWN (転倒), not VULNERABLE (クラッシュ)",
+          "state": "passed"
+        },
+        {
+          "name": "applies ELECTRIC infliction (電磁付着), not LIFT (浮遊)",
+          "fullName": "avywenna battle skill > applies ELECTRIC infliction (電磁付着), not LIFT (浮遊)",
+          "state": "passed"
+        },
+        {
+          "name": "applies ELECTRIC infliction (電磁付着), not LIFT (浮遊)",
+          "fullName": "perlica battle skill > applies ELECTRIC infliction (電磁付着), not LIFT (浮遊)",
+          "state": "passed"
+        },
+        {
+          "name": "applies HEAT infliction (灼熱付着), not LIFT (浮遊)",
+          "fullName": "akekuri battle skill > applies HEAT infliction (灼熱付着), not LIFT (浮遊)",
+          "state": "passed"
+        },
+        {
+          "name": "applies PROTECT buff (加護)",
+          "fullName": "snowshine battle skill > applies PROTECT buff (加護)",
+          "state": "passed"
+        },
+        {
+          "name": "applies CRYO infliction (寒冷付着) from counterattack",
+          "fullName": "snowshine battle skill > applies CRYO infliction (寒冷付着) from counterattack",
+          "state": "passed"
+        },
+        {
+          "name": "applies SLOW debuff (スロー)",
+          "fullName": "fluorite battle skill > applies SLOW debuff (スロー)",
+          "state": "passed"
+        },
+        {
+          "name": "applies NATURE infliction (自然付着) from bomb explosion",
+          "fullName": "fluorite battle skill > applies NATURE infliction (自然付着) from bomb explosion",
+          "state": "passed"
+        },
+        {
+          "name": "applies ARTS_SUSCEPTIBILITY debuff (アーツ脆弱), not LIFT",
+          "fullName": "antal battle skill > applies ARTS_SUSCEPTIBILITY debuff (アーツ脆弱), not LIFT",
+          "state": "passed"
+        },
+        {
+          "name": "gives no effect when no CRYO infliction is active",
+          "fullName": "alesh battle skill conditional freeze > gives no effect when no CRYO infliction is active",
+          "state": "passed"
+        },
+        {
+          "name": "applies FREEZE and consumes CRYO when CRYO is active",
+          "fullName": "alesh battle skill conditional freeze > applies FREEZE and consumes CRYO when CRYO is active",
+          "state": "passed"
+        },
+        {
+          "name": "does NOT apply FREEZE twice (CRYO consumed after first alesh battle skill)",
+          "fullName": "alesh battle skill conditional freeze > does NOT apply FREEZE twice (CRYO consumed after first alesh battle skill)",
+          "state": "passed"
+        },
+        {
+          "name": "does NOT apply FREEZE when CRYO has expired",
+          "fullName": "alesh battle skill conditional freeze > does NOT apply FREEZE when CRYO has expired",
+          "state": "passed"
+        },
+        {
+          "name": "applies HEAT when no arts reaction (COMBUSTION/SHOCK) is active",
+          "fullName": "wolfgard battle skill conditional heat > applies HEAT when no arts reaction (COMBUSTION/SHOCK) is active",
+          "state": "passed"
+        },
+        {
+          "name": "does NOT apply HEAT when COMBUSTION is active; consumes COMBUSTION instead",
+          "fullName": "wolfgard battle skill conditional heat > does NOT apply HEAT when COMBUSTION is active; consumes COMBUSTION instead",
+          "state": "passed"
+        },
+        {
+          "name": "does NOT apply HEAT when SHOCK is active; consumes SHOCK instead",
+          "fullName": "wolfgard battle skill conditional heat > does NOT apply HEAT when SHOCK is active; consumes SHOCK instead",
+          "state": "passed"
+        },
+        {
+          "name": "applies HEAT again after COMBUSTION has been consumed",
+          "fullName": "wolfgard battle skill conditional heat > applies HEAT again after COMBUSTION has been consumed",
+          "state": "passed"
+        },
+        {
+          "name": "gives no status effect when no SHOCK is active",
+          "fullName": "arclight battle skill conditional shock consumption > gives no status effect when no SHOCK is active",
+          "state": "passed"
+        },
+        {
+          "name": "consumes SHOCK when active, gives no status effect (no LIFT)",
+          "fullName": "arclight battle skill conditional shock consumption > consumes SHOCK when active, gives no status effect (no LIFT)",
+          "state": "passed"
+        },
+        {
+          "name": "SHOCK is consumed so second arclight battle_skill gives no effect",
+          "fullName": "arclight battle skill conditional shock consumption > SHOCK is consumed so second arclight battle_skill gives no effect",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "G:/EndfieldComboBuilder/tests/unit/components/TimelineScale.test.tsx",
+      "tests": [
+        {
+          "name": "renders second markers based on duration",
+          "fullName": "TimelineScale > renders second markers based on duration",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "G:/EndfieldComboBuilder/tests/unit/components/LoadDialog.test.tsx",
+      "tests": [
+        {
+          "name": "renders combos and handles load/delete",
+          "fullName": "LoadDialog > renders combos and handles load/delete",
+          "state": "passed"
+        },
+        {
+          "name": "shows empty state when no combos exist",
+          "fullName": "LoadDialog > shows empty state when no combos exist",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "G:/EndfieldComboBuilder/tests/unit/hooks/useComboCharacters.test.ts",
+      "tests": [
+        {
+          "name": "selects characters and reorders with charges",
+          "fullName": "useComboCharacters > selects characters and reorders with charges",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "G:/EndfieldComboBuilder/tests/unit/hooks/useComboLoadDialog.test.ts",
+      "tests": [
+        {
+          "name": "opens dialog and loads saved combos",
+          "fullName": "useComboLoadDialog > opens dialog and loads saved combos",
+          "state": "passed"
+        },
+        {
+          "name": "loads a combo and alerts",
+          "fullName": "useComboLoadDialog > loads a combo and alerts",
+          "state": "passed"
+        },
+        {
+          "name": "deletes a combo and refreshes list",
+          "fullName": "useComboLoadDialog > deletes a combo and refreshes list",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "G:/EndfieldComboBuilder/tests/unit/hooks/useComboControlPanel.test.ts",
+      "tests": [
+        {
+          "name": "saves combos and alerts",
+          "fullName": "useComboControlPanel > saves combos and alerts",
+          "state": "passed"
+        },
+        {
+          "name": "exports image and handles errors",
+          "fullName": "useComboControlPanel > exports image and handles errors",
+          "state": "passed"
+        },
+        {
+          "name": "shares combos and copies URL",
+          "fullName": "useComboControlPanel > shares combos and copies URL",
+          "state": "passed"
+        },
+        {
+          "name": "clears combo state after confirmation",
+          "fullName": "useComboControlPanel > clears combo state after confirmation",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "G:/EndfieldComboBuilder/tests/unit/components/ControlPanel.test.tsx",
+      "tests": [
+        {
+          "name": "calls handlers when interacting with controls",
+          "fullName": "ControlPanel > calls handlers when interacting with controls",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "G:/EndfieldComboBuilder/tests/unit/components/CharacterSelectDialog.test.tsx",
+      "tests": [
+        {
+          "name": "filters options by search and filters",
+          "fullName": "CharacterSelectDialog > filters options by search and filters",
+          "state": "passed"
+        },
+        {
+          "name": "calls onSelect when an option is clicked",
+          "fullName": "CharacterSelectDialog > calls onSelect when an option is clicked",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "G:/EndfieldComboBuilder/tests/unit/lib/utils.test.ts",
+      "tests": [
+        {
+          "name": "merges class names with tailwind-merge",
+          "fullName": "cn > merges class names with tailwind-merge",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "G:/EndfieldComboBuilder/tests/unit/lib/storage.test.ts",
+      "tests": [
+        {
+          "name": "should save a combo to localStorage",
+          "fullName": "Storage Functions > saveCombo > should save a combo to localStorage",
+          "state": "passed"
+        },
+        {
+          "name": "should update existing combo with same name",
+          "fullName": "Storage Functions > saveCombo > should update existing combo with same name",
+          "state": "passed"
+        },
+        {
+          "name": "should load a combo by name",
+          "fullName": "Storage Functions > loadCombo > should load a combo by name",
+          "state": "passed"
+        },
+        {
+          "name": "should return null for non-existent combo",
+          "fullName": "Storage Functions > loadCombo > should return null for non-existent combo",
+          "state": "passed"
+        },
+        {
+          "name": "should delete a combo by name",
+          "fullName": "Storage Functions > deleteCombo > should delete a combo by name",
+          "state": "passed"
+        },
+        {
+          "name": "should return empty array when no combos saved",
+          "fullName": "Storage Functions > getSavedCombos > should return empty array when no combos saved",
+          "state": "passed"
+        },
+        {
+          "name": "should return all saved combos",
+          "fullName": "Storage Functions > getSavedCombos > should return all saved combos",
+          "state": "passed"
+        },
+        {
+          "name": "should generate a URL with encoded combo data",
+          "fullName": "Storage Functions > generateShareUrl > should generate a URL with encoded combo data",
+          "state": "passed"
+        },
+        {
+          "name": "should load combo from URL parameters",
+          "fullName": "Storage Functions > loadComboFromUrl > should load combo from URL parameters",
+          "state": "passed"
+        },
+        {
+          "name": "should return null when no combo in URL",
+          "fullName": "Storage Functions > loadComboFromUrl > should return null when no combo in URL",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "G:/EndfieldComboBuilder/tests/unit/lib/timeline.test.ts",
+      "tests": [
+        {
+          "name": "calculates second marker width",
+          "fullName": "timeline helpers > calculates second marker width",
+          "state": "passed"
+        },
+        {
+          "name": "builds SP timeline with battle skill cost",
+          "fullName": "timeline helpers > builds SP timeline with battle skill cost",
+          "state": "passed"
+        },
+        {
+          "name": "adds SP from normal attacks when the action finishes",
+          "fullName": "timeline helpers > adds SP from normal attacks when the action finishes",
+          "state": "passed"
+        },
+        {
+          "name": "returns initial stagger meter point when no actions provided",
+          "fullName": "buildStaggerMeterTimeline > returns initial stagger meter point when no actions provided",
+          "state": "passed"
+        },
+        {
+          "name": "reduces stagger meter after a normal attack completes",
+          "fullName": "buildStaggerMeterTimeline > reduces stagger meter after a normal attack completes",
+          "state": "passed"
+        },
+        {
+          "name": "schedules recovery 5 seconds after stagger meter reaches zero",
+          "fullName": "buildStaggerMeterTimeline > schedules recovery 5 seconds after stagger meter reaches zero",
+          "state": "passed"
+        },
+        {
+          "name": "immediately schedules recovery when initial stagger meter starts at zero",
+          "fullName": "buildStaggerMeterTimeline > immediately schedules recovery when initial stagger meter starts at zero",
+          "state": "passed"
+        },
+        {
+          "name": "ignores non-normal-attack actions for stagger calculation",
+          "fullName": "buildStaggerMeterTimeline > ignores non-normal-attack actions for stagger calculation",
+          "state": "passed"
+        },
+        {
+          "name": "tracks maxStaggerMeter as the highest observed value",
+          "fullName": "buildStaggerMeterTimeline > tracks maxStaggerMeter as the highest observed value",
+          "state": "passed"
+        },
+        {
+          "name": "processes events for multiple operators correctly",
+          "fullName": "buildStaggerMeterTimeline > processes events for multiple operators correctly",
           "state": "passed"
         }
       ]

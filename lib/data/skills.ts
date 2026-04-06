@@ -64,7 +64,7 @@ export const BATTLE_SKILLS: Record<string, BattleSkill> = {
     type: SkillType.BATTLE_SKILL,
     name: 'skill.ember_battle_skill.name',
     description: 'skill.ember_battle_skill.description',
-    statusEffect: [PhysicalStatus.VULNERABLE],
+    statusEffect: [PhysicalStatus.KNOCKDOWN],
     skillPoints: 100
   },
   'lifeng_battle_skill': {
@@ -72,7 +72,7 @@ export const BATTLE_SKILLS: Record<string, BattleSkill> = {
     type: SkillType.BATTLE_SKILL,
     name: 'skill.lifeng_battle_skill.name',
     description: 'skill.lifeng_battle_skill.description',
-    statusEffect: [PhysicalStatus.VULNERABLE],
+    statusEffect: [PhysicalStatus.KNOCKDOWN],
     skillPoints: 100
   },
   'chen_qianyu_battle_skill': {
@@ -88,7 +88,7 @@ export const BATTLE_SKILLS: Record<string, BattleSkill> = {
     type: SkillType.BATTLE_SKILL,
     name: 'skill.wolfgard_battle_skill.name',
     description: 'skill.wolfgard_battle_skill.description',
-    statusEffect: [ArtsInfliction.HEAT],
+    statusEffect: [],
     skillPoints: 100
   },
   'avywenna_battle_skill': {
@@ -96,7 +96,7 @@ export const BATTLE_SKILLS: Record<string, BattleSkill> = {
     type: SkillType.BATTLE_SKILL,
     name: 'skill.avywenna_battle_skill.name',
     description: 'skill.avywenna_battle_skill.description',
-    statusEffect: [PhysicalStatus.LIFT],
+    statusEffect: [ArtsInfliction.ELECTRIC],
     skillPoints: 100
   },
   'xaihi_battle_skill': {
@@ -112,7 +112,7 @@ export const BATTLE_SKILLS: Record<string, BattleSkill> = {
     type: SkillType.BATTLE_SKILL,
     name: 'skill.alesh_battle_skill.name',
     description: 'skill.alesh_battle_skill.description',
-    statusEffect: [PhysicalStatus.LIFT],
+    statusEffect: [],
     skillPoints: 100
   },
   'arclight_battle_skill': {
@@ -120,7 +120,7 @@ export const BATTLE_SKILLS: Record<string, BattleSkill> = {
     type: SkillType.BATTLE_SKILL,
     name: 'skill.arclight_battle_skill.name',
     description: 'skill.arclight_battle_skill.description',
-    statusEffect: [PhysicalStatus.LIFT],
+    statusEffect: [],
     skillPoints: 100
   },
   'snowshine_battle_skill': {
@@ -128,7 +128,7 @@ export const BATTLE_SKILLS: Record<string, BattleSkill> = {
     type: SkillType.BATTLE_SKILL,
     name: 'skill.snowshine_battle_skill.name',
     description: 'skill.snowshine_battle_skill.description',
-    statusEffect: [PhysicalStatus.LIFT],
+    statusEffect: [Buff.PROTECT, ArtsInfliction.CRYO],
     skillPoints: 100
   },
   'perlica_battle_skill': {
@@ -136,7 +136,7 @@ export const BATTLE_SKILLS: Record<string, BattleSkill> = {
     type: SkillType.BATTLE_SKILL,
     name: 'skill.perlica_battle_skill.name',
     description: 'skill.perlica_battle_skill.description',
-    statusEffect: [PhysicalStatus.LIFT],
+    statusEffect: [ArtsInfliction.ELECTRIC],
     skillPoints: 100
   },
   'da_pan_battle_skill': {
@@ -152,7 +152,7 @@ export const BATTLE_SKILLS: Record<string, BattleSkill> = {
     type: SkillType.BATTLE_SKILL,
     name: 'skill.antal_battle_skill.name',
     description: 'skill.antal_battle_skill.description',
-    statusEffect: [PhysicalStatus.LIFT],
+    statusEffect: [Debuff.ARTS_SUSCEPTIBILITY],
     skillPoints: 100
   },
   'akekuri_battle_skill': {
@@ -160,7 +160,7 @@ export const BATTLE_SKILLS: Record<string, BattleSkill> = {
     type: SkillType.BATTLE_SKILL,
     name: 'skill.akekuri_battle_skill.name',
     description: 'skill.akekuri_battle_skill.description',
-    statusEffect: [PhysicalStatus.LIFT],
+    statusEffect: [ArtsInfliction.HEAT],
     skillPoints: 100
   },
   'estella_battle_skill': {
@@ -184,7 +184,7 @@ export const BATTLE_SKILLS: Record<string, BattleSkill> = {
     type: SkillType.BATTLE_SKILL,
     name: 'skill.fluorite_battle_skill.name',
     description: 'skill.fluorite_battle_skill.description',
-    statusEffect: [PhysicalStatus.LIFT],
+    statusEffect: [Debuff.SLOW, ArtsInfliction.NATURE],
     skillPoints: 100
   },
   'tangtang_battle_skill': {
