@@ -13,6 +13,7 @@ import { getStatusEffectForAction } from '@/lib/data/skills'
 import { SkillType } from '@/types/combo'
 import type { Operator } from '@/types/combo'
 import type { ComboAction } from '@/types/combo'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 interface NormalAttackTimelineProps {
   playerCharacter: Operator | null
@@ -124,6 +125,7 @@ export const NormalAttackTimeline = ({
 }: NormalAttackTimelineProps) => {
   const t = useTranslations()
   const secondMarkerWidthPx = getSecondMarkerWidthPx(timelineDurationMs)
+  const operatorId = playerCharacter ? getOperatorIdByName(playerCharacter.name) : null
 
   const clampTiming = (timing: number) => {
     if (timing <= 0) return 0
@@ -150,9 +152,23 @@ export const NormalAttackTimeline = ({
       className="flex items-center"
       onClick={(e) => onTimelineClick(e, playerCharacter, SkillType.NORMAL)}
     >
-      <div className="w-24 text-sm text-gray-400">
-        {skillTypeLabels[SkillType.NORMAL]}
-      </div>
+      <TooltipProvider delayDuration={300}>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className="w-24 text-sm text-gray-400 cursor-default">
+              {skillTypeLabels[SkillType.NORMAL]}
+            </div>
+          </TooltipTrigger>
+          {operatorId && (
+            <TooltipContent side="right" className="max-w-xs">
+              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+              <p className="font-semibold text-sm">{t(`character.${operatorId}.base_attack.name` as any)}</p>
+              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+              <p className="text-xs mt-1">{t(`character.${operatorId}.base_attack.description` as any)}</p>
+            </TooltipContent>
+          )}
+        </Tooltip>
+      </TooltipProvider>
       <DndContext
         onDragEnd={handleDragEnd}
         modifiers={[restrictToHorizontalAxis, restrictToParentElement]}

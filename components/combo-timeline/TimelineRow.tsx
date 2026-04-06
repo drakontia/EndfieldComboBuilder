@@ -4,6 +4,9 @@ import { useMemo, type MouseEvent } from 'react'
 import { DndContext, DragEndEvent, useDraggable } from '@dnd-kit/core'
 import { restrictToHorizontalAxis, restrictToParentElement } from '@dnd-kit/modifiers'
 import { CSS } from '@dnd-kit/utilities'
+import { useTranslations } from 'next-intl'
+
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 import {
   CHARGE_SEGMENT_WIDTH,
@@ -134,6 +137,7 @@ export default function TimelineRow({
   initialUltimateCharge,
   deleteMode,
 }: TimelineRowProps) {
+  const t = useTranslations()
   const secondMarkerWidthPx = getSecondMarkerWidthPx(timelineDurationMs)
 
   const operatorId = character ? getOperatorIdByName(character.name) : null
@@ -172,6 +176,13 @@ export default function TimelineRow({
     onMoveAction(data.actionId, nextTiming)
   }
 
+  const getSkillI18nSection = (type: SkillType) => {
+    if (type === SkillType.BATTLE_SKILL) return 'battle_skill'
+    if (type === SkillType.COMBO_SKILL) return 'combo_skill'
+    if (type === SkillType.ULTIMATE) return 'ultimate'
+    return 'base_attack'
+  }
+
   return (
     <div
       className="h-full flex flex-col gap-2 bg-black/20"
@@ -180,12 +191,26 @@ export default function TimelineRow({
       {getSkillTypesForCharacter().map((type) => (
         <div key={type}>
           <div className="flex items-center" onClick={(e) => handleTimelineClick(e, character, type)}>
-            <div
-              className={`w-24 text-sm font-medium pl-2 ${SKILL_TYPE_TEXT_COLORS[type]}`}
-              style={{ borderLeft: `3px solid ${SKILL_TYPE_ACCENT_COLORS[type]}` }}
-            >
-              {SKILL_TYPE_LABELS[type]}
-            </div>
+            <TooltipProvider delayDuration={300}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div
+                    className={`w-24 text-sm font-medium pl-2 cursor-default ${SKILL_TYPE_TEXT_COLORS[type]}`}
+                    style={{ borderLeft: `3px solid ${SKILL_TYPE_ACCENT_COLORS[type]}` }}
+                  >
+                    {SKILL_TYPE_LABELS[type]}
+                  </div>
+                </TooltipTrigger>
+                {operatorId && (
+                  <TooltipContent side="right" className="max-w-xs">
+                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                    <p className="font-semibold text-sm">{t(`character.${operatorId}.${getSkillI18nSection(type)}.name` as any)}</p>
+                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                    <p className="text-xs mt-1">{t(`character.${operatorId}.${getSkillI18nSection(type)}.description` as any)}</p>
+                  </TooltipContent>
+                )}
+              </Tooltip>
+            </TooltipProvider>
             <DndContext
               onDragEnd={(event) => handleDragEnd(event, type)}
               modifiers={[restrictToHorizontalAxis, restrictToParentElement]}
