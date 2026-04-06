@@ -746,6 +746,24 @@ export const ULTIMATES: Record<string, Ultimate> = {
   }
 }
 
+export const getStatusEffectForciblyForAction = (operatorId: string | null, type: SkillType) => {
+  if (!operatorId) return undefined
+
+  if (type === SkillType.BATTLE_SKILL) {
+    return Object.values(BATTLE_SKILLS).find((skill) => skill.operatorId === operatorId)?.statusEffectForcibly
+  }
+
+  if (type === SkillType.COMBO_SKILL) {
+    return Object.values(COMBO_SKILLS).find((skill) => skill.operatorId === operatorId)?.statusEffectForcibly
+  }
+
+  if (type === SkillType.ULTIMATE) {
+    return Object.values(ULTIMATES).find((skill) => skill.operatorId === operatorId)?.statusEffectForcibly
+  }
+
+  return undefined
+}
+
 export const getStatusEffectForAction = (operatorId: string | null, type: SkillType) => {
   if (!operatorId) return undefined
 

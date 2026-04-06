@@ -161,6 +161,7 @@ const SNOWSHINE_NAME = 'character.snowshine.name'
 const ANTAL_NAME = 'character.antal.name'
 const ALESH_NAME = 'character.alesh.name'
 const WOLFGARD_NAME = 'character.wolfgard.name'
+const ESTELLA_NAME = 'character.estella.name'
 
 describe('fluorite combo skill conditional effects', () => {
   it('correctly resolves fluorite operator ID', () => {
@@ -256,22 +257,20 @@ describe('ardelia battle skill conditional effects', () => {
     expect(resolved.get('a1')).toEqual([])
   })
 
-  it('returns debuff effects when corrosion is active', () => {
-    // ardelia combo_skill resolves with corrosion via statusEffectForcibly,
-    // but buildResolvedStatusEffectState only reads statusEffect. So we test
-    // the behaviour using the tangtang→ardelia_combo chain that results in
-    // ArtsReaction (corrosion forced) appearing in the resolved list.
-    // Since statusEffectForcibly is not read by buildResolvedStatusEffectState,
-    // this confirms ardelia combo resolves to [] and battle_skill behaves accordingly.
+  it('returns debuff effects when corrosion is active via combo_skill statusEffectForcibly', () => {
+    // ardelia combo_skill now applies CORROSION via statusEffectForcibly
+    // ardelia battle_skill at t=1000 sees active CORROSION → consumes it → applies debuffs
     const actions = [
-      buildAction('a1', 0, SkillType.COMBO_SKILL, ARDELIA_NAME),   // no statusEffect → []
-      buildAction('a2', 1000, SkillType.BATTLE_SKILL, ARDELIA_NAME), // corrosion not in resolvedList
+      buildAction('a1', 0, SkillType.COMBO_SKILL, ARDELIA_NAME),   // CORROSION applied via statusEffectForcibly
+      buildAction('a2', 1000, SkillType.BATTLE_SKILL, ARDELIA_NAME), // CORROSION is active → apply baseEffects
     ]
 
     const resolved = buildResolvedStatusEffectsByAction(actions)
 
-    // Without corrosion resolvable through statusEffect, battle_skill yields []
-    expect(resolved.get('a2')).toEqual([])
+    // With CORROSION applied by combo_skill, battle_skill yields [PHYSICAL_SUSCEPTIBILITY, ARTS_SUSCEPTIBILITY]
+    expect(resolved.get('a1')).toContain(ArtsReaction.CORROSION)
+    expect(resolved.get('a2')).toContain(Debuff.PHYSICAL_SUSCEPTIBILITY)
+    expect(resolved.get('a2')).toContain(Debuff.ARTS_SUSCEPTIBILITY)
   })
 })
 
@@ -586,5 +585,49 @@ describe('arclight battle skill conditional shock consumption', () => {
     expect(resolvedEffects.get('a3')).toEqual([])
     // SHOCK should be in consumed events
     expect(consumedEvents.some((e) => e.effect === ArtsReaction.SHOCK)).toBe(true)
+  })
+})
+
+// ──────────────────────────────────────────────────────────────────────────
+// Phase 3: statusEffectForcibly combo skills
+// ──────────────────────────────────────────────────────────────────────────
+
+describe('gilberta combo skill forcibly applies LIFT', () => {
+  it('applies LIFT (浮遊) unconditionally', () => {
+    const actions = [buildAction('a1', 0, SkillType.COMBO_SKILL, GILBERTA_NAME)]
+    const resolved = buildResolvedStatusEffectsByAction(actions)
+    expect(resolved.get('a1')).toContain(PhysicalStatus.LIFT)
+  })
+})
+
+describe('yvonne combo skill forcibly applies FREEZE', () => {
+  it('applies FREEZE (凍結) unconditionally', () => {
+    const actions = [buildAction('a1', 0, SkillType.COMBO_SKILL, YVONNE_NAME)]
+    const resolved = buildResolvedStatusEffectsByAction(actions)
+    expect(resolved.get('a1')).toContain(ArtsReaction.FREEZE)
+  })
+})
+
+describe('ardelia combo skill forcibly applies CORROSION', () => {
+  it('applies CORROSION (腐食) unconditionally', () => {
+    const actions = [buildAction('a1', 0, SkillType.COMBO_SKILL, ARDELIA_NAME)]
+    const resolved = buildResolvedStatusEffectsByAction(actions)
+    expect(resolved.get('a1')).toContain(ArtsReaction.CORROSION)
+  })
+})
+
+describe('perlica combo skill forcibly applies SHOCK', () => {
+  it('applies SHOCK (感電) unconditionally', () => {
+    const actions = [buildAction('a1', 0, SkillType.COMBO_SKILL, PERLICA_NAME)]
+    const resolved = buildResolvedStatusEffectsByAction(actions)
+    expect(resolved.get('a1')).toContain(ArtsReaction.SHOCK)
+  })
+})
+
+describe('estella combo skill forcibly applies LIFT', () => {
+  it('applies LIFT (浮遊) unconditionally', () => {
+    const actions = [buildAction('a1', 0, SkillType.COMBO_SKILL, ESTELLA_NAME)]
+    const resolved = buildResolvedStatusEffectsByAction(actions)
+    expect(resolved.get('a1')).toContain(PhysicalStatus.LIFT)
   })
 })

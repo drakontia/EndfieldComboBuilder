@@ -1,5 +1,5 @@
 import { getOperatorIdByName } from '@/lib/data/operators'
-import { getStatusEffectForAction } from '@/lib/data/skills'
+import { getStatusEffectForAction, getStatusEffectForciblyForAction } from '@/lib/data/skills'
 import { getStatusEffectDurationMs } from '@/lib/timeline'
 import {
   ArtsInfliction,
@@ -121,6 +121,9 @@ export const buildResolvedStatusEffectState = (
     const baseEffects = normalizeStatusEffects(
       getStatusEffectForAction(operatorId, action.type)
     )
+    const forciblyEffects = normalizeStatusEffects(
+      getStatusEffectForciblyForAction(operatorId, action.type)
+    )
 
     if (operatorId === 'fluorite' && action.type === SkillType.COMBO_SKILL) {
       const cryoStacks = countActiveStacks(resolvedList, action.timing, ArtsInfliction.CRYO)
@@ -138,7 +141,7 @@ export const buildResolvedStatusEffectState = (
       return
     }
 
-    let effects = baseEffects
+    let effects = [...baseEffects, ...forciblyEffects]
 
     if (operatorId === 'ardelia' && action.type === SkillType.BATTLE_SKILL) {
       const isCorrosionActive = isStatusEffectActiveAtTime(
