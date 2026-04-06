@@ -320,7 +320,10 @@ export const EnemyStatusTimeline = ({
           <div key={row.effect} className="flex items-center">
             {withCharacterOffset && <div className="w-40 shrink-0" />}
             <div className="w-24 text-sm text-gray-400">{effectLabel}</div>
-            <div className="relative flex-1 h-10 bg-gray-900 rounded border border-red-700">
+            <div
+              className="relative h-10 bg-gray-900 rounded border border-red-700 overflow-hidden"
+              style={{ width: `${TIMELINE_WIDTH}px` }}
+            >
               {/* Timeline markers */}
               <div
                 className="absolute inset-0 pointer-events-none z-10"
@@ -331,13 +334,15 @@ export const EnemyStatusTimeline = ({
               />
 
               {/* Status effects */}
-              {row.segments.map((segment, index) => (
+              {row.segments.map((segment, index) => {
+                const clampedEnd = Math.min(segment.endTime, timelineDurationMs)
+                return (
                 <div
                   key={`${row.effect}-${segment.startTime}-${index}`}
                   className={`absolute top-1 z-20 h-8 ${STATUS_EFFECT_COLORS[effect]} rounded px-2 text-xs flex items-center justify-center opacity-80`}
                   style={{
                     left: `${getActionPosition(segment.startTime)}px`,
-                    width: `${((segment.endTime - segment.startTime) / timelineDurationMs) * TIMELINE_WIDTH}px`,
+                    width: `${((clampedEnd - segment.startTime) / timelineDurationMs) * TIMELINE_WIDTH}px`,
                   }}
                   title={`${effectLabel} (${segment.endTime - segment.startTime}ms)`}
                 >
@@ -357,7 +362,8 @@ export const EnemyStatusTimeline = ({
                     </span>
                   </span>
                 </div>
-              ))}
+                )
+              })}
             </div>
           </div>
         )
