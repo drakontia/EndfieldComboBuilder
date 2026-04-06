@@ -15,7 +15,7 @@ import {
 type StatusEffect = PhysicalStatus | ArtsInfliction | ArtsReaction | SpecialEffect | Buff | Debuff
 
 export type ConsumedStatusEffectEvent = {
-  effect: ArtsReaction | SpecialEffect
+  effect: ArtsReaction | SpecialEffect | ArtsInfliction
   timing: number
 }
 
@@ -54,16 +54,17 @@ const countActiveStacks = (
 
 const isConsumableStatusEffect = (
   effect: StatusEffect
-): effect is ArtsReaction | SpecialEffect => {
+): effect is ArtsReaction | SpecialEffect | ArtsInfliction => {
   return (
     Object.values(ArtsReaction).includes(effect as ArtsReaction) ||
-    Object.values(SpecialEffect).includes(effect as SpecialEffect)
+    Object.values(SpecialEffect).includes(effect as SpecialEffect) ||
+    Object.values(ArtsInfliction).includes(effect as ArtsInfliction)
   )
 }
 
 const getEarliestConsumptionTime = (
   events: ConsumedStatusEffectEvent[],
-  effect: ArtsReaction | SpecialEffect,
+  effect: ArtsReaction | SpecialEffect | ArtsInfliction,
   startTime: number
 ) => {
   let earliest: number | null = null
@@ -151,6 +152,31 @@ export const buildResolvedStatusEffectState = (
 
       if (isCorrosionActive) {
         consumedEvents.push({ effect: ArtsReaction.CORROSION, timing: action.timing })
+      }
+    }
+
+    if (operatorId === 'yvonne' && action.type === SkillType.BATTLE_SKILL) {
+      const isCryoActive = isStatusEffectActiveAtTime(
+        resolvedList,
+        action.timing,
+        ArtsInfliction.CRYO,
+        consumedEvents
+      )
+      const isNatureActive = isStatusEffectActiveAtTime(
+        resolvedList,
+        action.timing,
+        ArtsInfliction.NATURE,
+        consumedEvents
+      )
+
+      if (isCryoActive) {
+        effects = [ArtsReaction.FREEZE]
+        consumedEvents.push({ effect: ArtsInfliction.CRYO, timing: action.timing })
+      } else if (isNatureActive) {
+        effects = [ArtsReaction.FREEZE]
+        consumedEvents.push({ effect: ArtsInfliction.NATURE, timing: action.timing })
+      } else {
+        effects = []
       }
     }
 

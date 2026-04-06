@@ -85,10 +85,17 @@ describe('comboRequirements', () => {
     })
 
     it('イヴォンヌの連携技 - 凍結 + 重攻撃が必要', () => {
-      // yvonne は freezeが必要 かつ requiresHeavyAttack: true
-      // yvonne の通常攻撃 duration=3317ms, t=0 → heavyAttackEndTime=3317
-      // yvonne の戦技 t=1000 → FREEZE active: 1000~4000ms
+      // yvonne の連携技には凍結(FREEZE)が必要 かつ requiresHeavyAttack: true
+      // tangtang の戦技 t=0 → CRYO付着を付与
+      // yvonne の通常攻撃 t=0: duration=3317ms → heavyAttackEndTime=3317
+      // yvonne の戦技 t=1000 → CRYO消費してFREEZE発動 (有効: 1000~11000ms)
       const actions: ComboAction[] = [
+        {
+          id: 'tangtang_bs',
+          characterId: 'character.tangtang.name',
+          type: SkillType.BATTLE_SKILL,
+          timing: 0,
+        },
         {
           id: 'na1',
           characterId: 'character.yvonne.name',
@@ -103,13 +110,22 @@ describe('comboRequirements', () => {
         },
       ]
 
-      // t=3500: FREEZE active(1000~4000) かつ heavyAttackEndTime=3317 <= 3500 < 8317 → true
+      // t=3500: FREEZE active(1000~11000) かつ heavyAttackEndTime=3317 <= 3500 < 8317 → true
       const result = canActivateComboSkill('yvonne', actions, 3500)
       expect(result.canActivate).toBe(true)
     })
 
     it('イヴォンヌの連携技 - 凍結のみ（重攻撃なし）では発動不可', () => {
+      // tangtang の戦技 t=0 → CRYO付着
+      // yvonne の戦技 t=1000 → CRYO消費してFREEZE発動
+      // ただし重攻撃がないため発動不可
       const actions: ComboAction[] = [
+        {
+          id: 'tangtang_bs',
+          characterId: 'character.tangtang.name',
+          type: SkillType.BATTLE_SKILL,
+          timing: 0,
+        },
         {
           id: 'bs1',
           characterId: 'character.yvonne.name',

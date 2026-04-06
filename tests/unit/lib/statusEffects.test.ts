@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 
 import { buildResolvedStatusEffectState, buildResolvedStatusEffectsByAction } from '@/lib/statusEffects'
 import { getOperatorIdByName } from '@/lib/data/operators'
-import { ArtsInfliction, Buff, Debuff, SkillType } from '@/types/combo'
+import { ArtsInfliction, ArtsReaction, Buff, Debuff, SkillType } from '@/types/combo'
 
 // Character names (i18n keys) matching the OPERATORS data structure
 const LAST_RITE_NAME = 'character.last_rite.name'
@@ -147,6 +147,7 @@ const TANGTANG_NAME = 'character.tangtang.name'
 const GILBERTA_NAME = 'character.gilberta.name'
 const FLUORITE_NAME = 'character.fluorite.name'
 const ARDELIA_NAME = 'character.ardelia.name'
+const YVONNE_NAME = 'character.yvonne.name'
 
 describe('fluorite combo skill conditional effects', () => {
   it('correctly resolves fluorite operator ID', () => {
@@ -258,6 +259,93 @@ describe('ardelia battle skill conditional effects', () => {
 
     // Without corrosion resolvable through statusEffect, battle_skill yields []
     expect(resolved.get('a2')).toEqual([])
+  })
+})
+
+describe('yvonne battle skill conditional freeze', () => {
+  it('correctly resolves yvonne operator ID', () => {
+    expect(getOperatorIdByName(YVONNE_NAME)).toBe('yvonne')
+  })
+
+  it('does NOT apply freeze when no cryo or nature infliction is active', () => {
+    const actions = [
+      buildAction('a1', 1000, SkillType.BATTLE_SKILL, YVONNE_NAME),
+    ]
+
+    const resolved = buildResolvedStatusEffectsByAction(actions)
+
+    expect(resolved.get('a1')).not.toContain(ArtsReaction.FREEZE)
+    expect(resolved.get('a1')).toEqual([])
+  })
+
+  it('applies freeze when cryo infliction is active, consuming it', () => {
+    // tangtang battle_skill applies CRYO at t=0
+    // yvonne battle_skill at t=2000 consumes CRYO → applies FREEZE
+    const actions = [
+      buildAction('a1', 0, SkillType.BATTLE_SKILL, TANGTANG_NAME),
+      buildAction('a2', 2000, SkillType.BATTLE_SKILL, YVONNE_NAME),
+    ]
+
+    const resolved = buildResolvedStatusEffectsByAction(actions)
+
+    expect(resolved.get('a2')).toContain(ArtsReaction.FREEZE)
+  })
+
+  it('applies freeze when nature infliction is active, consuming it', () => {
+    // gilberta battle_skill applies NATURE at t=0
+    // yvonne battle_skill at t=2000 consumes NATURE → applies FREEZE
+    const actions = [
+      buildAction('a1', 0, SkillType.BATTLE_SKILL, GILBERTA_NAME),
+      buildAction('a2', 2000, SkillType.BATTLE_SKILL, YVONNE_NAME),
+    ]
+
+    const resolved = buildResolvedStatusEffectsByAction(actions)
+
+    expect(resolved.get('a2')).toContain(ArtsReaction.FREEZE)
+  })
+
+  it('consumes cryo infliction so a second yvonne battle skill does not trigger freeze again', () => {
+    // CRYO applied at t=0 (30s duration), yvonne at t=2000 consumes it → FREEZE
+    // Second yvonne at t=3000: CRYO consumed → no FREEZE
+    const actions = [
+      buildAction('a1', 0, SkillType.BATTLE_SKILL, TANGTANG_NAME),
+      buildAction('a2', 2000, SkillType.BATTLE_SKILL, YVONNE_NAME),
+      buildAction('a3', 3000, SkillType.BATTLE_SKILL, YVONNE_NAME),
+    ]
+
+    const resolved = buildResolvedStatusEffectsByAction(actions)
+
+    expect(resolved.get('a2')).toContain(ArtsReaction.FREEZE)
+    expect(resolved.get('a3')).not.toContain(ArtsReaction.FREEZE)
+    expect(resolved.get('a3')).toEqual([])
+  })
+
+  it('does not apply freeze when cryo infliction has expired', () => {
+    // tangtang battle_skill at t=0 → CRYO active until t=30000ms
+    // yvonne battle_skill at t=35000 → CRYO expired → no FREEZE
+    const actions = [
+      buildAction('a1', 0, SkillType.BATTLE_SKILL, TANGTANG_NAME),
+      buildAction('a2', 35000, SkillType.BATTLE_SKILL, YVONNE_NAME),
+    ]
+
+    const resolved = buildResolvedStatusEffectsByAction(actions)
+
+    expect(resolved.get('a2')).not.toContain(ArtsReaction.FREEZE)
+    expect(resolved.get('a2')).toEqual([])
+  })
+
+  it('applies freeze using nature when cryo is not present', () => {
+    // Only gilberta (NATURE) is present — no CRYO
+    // yvonne should consume NATURE and apply FREEZE
+    const actions = [
+      buildAction('a1', 0, SkillType.BATTLE_SKILL, GILBERTA_NAME),
+      buildAction('a2', 1000, SkillType.BATTLE_SKILL, GILBERTA_NAME),
+      buildAction('a3', 5000, SkillType.BATTLE_SKILL, YVONNE_NAME),
+    ]
+
+    const resolved = buildResolvedStatusEffectsByAction(actions)
+
+    expect(resolved.get('a3')).toContain(ArtsReaction.FREEZE)
   })
 })
 

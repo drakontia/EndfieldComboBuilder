@@ -24,7 +24,7 @@ export const BATTLE_SKILLS: Record<string, BattleSkill> = {
     type: SkillType.BATTLE_SKILL,
     name: 'skill.yvonne_battle_skill.name',
     description: 'skill.yvonne_battle_skill.description',
-    statusEffect: [ArtsReaction.FREEZE],
+    statusEffect: [],
     skillPoints: 100
   },
   'endministrator_battle_skill': {

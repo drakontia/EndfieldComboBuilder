@@ -68,11 +68,12 @@ export const EnemyStatusTimeline = ({
   const getEarliestConsumptionTime = (
     effect: EnemyStatusEffect['effect'],
     startTime: number,
-    consumedEvents: Array<{ effect: ArtsReaction | SpecialEffect; timing: number }>
+    consumedEvents: Array<{ effect: ArtsReaction | SpecialEffect | ArtsInfliction; timing: number }>
   ) => {
     if (
       !Object.values(ArtsReaction).includes(effect as ArtsReaction) &&
-      !Object.values(SpecialEffect).includes(effect as SpecialEffect)
+      !Object.values(SpecialEffect).includes(effect as SpecialEffect) &&
+      !Object.values(ArtsInfliction).includes(effect as ArtsInfliction)
     ) {
       return null
     }
@@ -91,7 +92,7 @@ export const EnemyStatusTimeline = ({
 
   const applyConsumptionToEffects = (
     items: EnemyStatusEffect[],
-    consumedEvents: Array<{ effect: ArtsReaction | SpecialEffect; timing: number }>
+    consumedEvents: Array<{ effect: ArtsReaction | SpecialEffect | ArtsInfliction; timing: number }>
   ) => {
     return items.flatMap((item) => {
       const consumedAt = getEarliestConsumptionTime(item.effect, item.startTime, consumedEvents)

@@ -47,7 +47,7 @@ const getStatusEffectStackCountAtTime = (
   time: number,
   targetEffect: PhysicalStatus | ArtsInfliction | ArtsReaction | SpecialEffect | Buff | Debuff,
   resolvedEffects: Map<string, StatusEffectInstance['effect'][]>,
-  consumedEvents: Array<{ effect: ArtsReaction | SpecialEffect; timing: number }>
+  consumedEvents: Array<{ effect: ArtsReaction | SpecialEffect | ArtsInfliction; timing: number }>
 ) => {
   let count = 0
 
@@ -304,7 +304,7 @@ export const canActivateComboSkill = (
         // consumedEventsによる消費（明示的トリガー）
         const consumedViaEvent = consumedEvents.some(
           (e) =>
-            e.effect === (requiredEffect as ArtsReaction | SpecialEffect) &&
+            e.effect === (requiredEffect as ArtsReaction | SpecialEffect | ArtsInfliction) &&
             e.timing >= action.timing &&
             e.timing <= time &&
             e.timing + COMBO_SKILL_EXECUTION_WINDOW_MS > time
