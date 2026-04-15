@@ -85,6 +85,12 @@ export interface Operator {
 
 export interface ActionRequirement {
   statusEffects?: (PhysicalStatus | ArtsInfliction | ArtsReaction | SpecialEffect | Buff | Debuff)[]
+  /**
+   * AND条件のステータス効果グループ。各グループからいずれか1つ（OR）が必要で、全グループ（AND）を満たす必要がある。
+   * 例: [[PhysicalStatus.VULNERABLE], [ArtsInfliction.HEAT, ArtsInfliction.CRYO]] は
+   *     「クラッシュ かつ (灼熱付着 または 寒冷付着)」を意味する。
+   */
+  statusEffectGroups?: (PhysicalStatus | ArtsInfliction | ArtsReaction | SpecialEffect | Buff | Debuff)[][]
   statusEffectStackRequirements?: StatusEffectStackRequirement[]
   excludedStatusEffects?: (PhysicalStatus | ArtsInfliction | ArtsReaction | SpecialEffect | Buff | Debuff)[]
   requiresHeavyAttack?: boolean

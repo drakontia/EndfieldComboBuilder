@@ -195,6 +195,17 @@ export const BATTLE_SKILLS: Record<string, BattleSkill> = {
     description: 'skill.tangtang_battle_skill.description',
     statusEffect: [ArtsInfliction.CRYO],
     skillPoints: 100
+  },
+  'rossi_battle_skill': {
+    // 突進攻撃で敵に物理ダメージを与え、浮遊状態にする。
+    // クラッシュ状態の敵への攻撃時は追突進から灼熱ダメージを追加する。
+    operatorId: 'rossi',
+    type: SkillType.BATTLE_SKILL,
+    name: 'skill.rossi_battle_skill.name',
+    description: 'skill.rossi_battle_skill.description',
+    statusEffect: [PhysicalStatus.LIFT],
+    stagger: 5,
+    skillPoints: 100
   }
 }
 
@@ -534,6 +545,24 @@ export const COMBO_SKILLS: Record<string, ComboSkill> = {
     requirement: {
       statusEffects: [ArtsInfliction.CRYO]
     }
+  },
+  'rossi_combo_skill': {
+    // クラッシュかつアーツ付着状態の敵に発動可能。
+    // 1回目: 物理ダメージ。2回目: アーツ付着を全消費し物理ダメージ+浮遊。
+    // 完璧連携: クラッシュ1段を追加付与。
+    operatorId: 'rossi',
+    type: SkillType.COMBO_SKILL,
+    name: 'rossi.combo_skill.name',
+    description: 'rossi.combo_skill.description',
+    cooldown: 16000,
+    statusEffect: [PhysicalStatus.LIFT],
+    stagger: 5,
+    requirement: {
+      statusEffectGroups: [
+        [PhysicalStatus.VULNERABLE],
+        [ArtsInfliction.HEAT, ArtsInfliction.CRYO, ArtsInfliction.ELECTRIC, ArtsInfliction.NATURE]
+      ]
+    }
   }
 }
 
@@ -742,6 +771,17 @@ export const ULTIMATES: Record<string, Ultimate> = {
     name: 'tangtang.ultimate.name',
     description: 'tangtang.ultimate.description',
     chargeGain: 90,
+    cooldown: 10000
+  },
+  'rossi_ultimate': {
+    // 複数回の灼熱ダメージを与え、灼熱付着を付与する。
+    operatorId: 'rossi',
+    type: SkillType.ULTIMATE,
+    name: 'rossi.ultimate.name',
+    description: 'rossi.ultimate.description',
+    chargeGain: 110,
+    statusEffect: [ArtsInfliction.HEAT],
+    stagger: 25,
     cooldown: 10000
   }
 }

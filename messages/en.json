@@ -385,6 +385,25 @@
         "name": "The Big Boss is Watching!",
         "description": "Unleashes a massive wave dealing Cryo damage to enemies in range."
       }
+    },
+    "rossi": {
+      "name": "Rossi",
+      "base_attack": {
+        "name": "Boiling Wolf Blood",
+        "description": "Normal Attack: Up to 5-hit combo dealing Physical damage. Heavy Attack deals additional Break Value 18."
+      },
+      "battle_skill": {
+        "name": "Crimson Shadow",
+        "description": "Dashes forward dealing Physical damage and inflicting Lift. Against enemies in Crash state, follows up with an additional dash dealing Heat damage."
+      },
+      "combo_skill": {
+        "name": "Fleeting Shadow",
+        "description": "Activate when enemy is in Crash state AND has any Arts Infliction. 1st hit: Physical damage. 2nd hit: Consumes all Arts Infliction dealing Physical damage and Lift. Perfect Combo: grants 1 additional Crash stack."
+      },
+      "ultimate": {
+        "name": "\"Razor Claw\" Ambush",
+        "description": "Deals multiple hits of Heat damage and applies Heat Infliction."
+      }
     }
   },
   "characterType": {

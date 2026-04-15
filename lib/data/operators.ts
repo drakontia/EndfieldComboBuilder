@@ -185,6 +185,14 @@ export const OPERATORS: Record<string, Operator> = {
     element: CharacterElement.CRYO,
     rarity: 6,
     imageUrl: '/images/operators/tangtang.png'
+  },
+  // Rossi
+  'rossi': {
+    name: 'character.rossi.name',
+    type: CharcterType.GUARD,
+    element: CharacterElement.PHYSICS,
+    rarity: 6,
+    imageUrl: '/images/operators/rossi.png'
   }
 }
 

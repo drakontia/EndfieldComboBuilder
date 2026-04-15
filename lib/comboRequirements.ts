@@ -233,6 +233,17 @@ export const canActivateComboSkill = (
     }
   }
 
+  // statusEffectGroupsのAND条件チェック（各グループからいずれか1つが必要）
+  if (requirement.statusEffectGroups && requirement.statusEffectGroups.length > 0) {
+    const activeEffects = getActiveStatusEffectsAtTime(actions, time)
+    for (const group of requirement.statusEffectGroups) {
+      const hasAnyInGroup = group.some((effect) => activeEffects.has(effect))
+      if (!hasAnyInGroup) {
+        return { canActivate: false, missingEffects: group.map(String) }
+      }
+    }
+  }
+
   if (requirement.statusEffectStackRequirements && requirement.statusEffectStackRequirements.length > 0) {
     const { resolvedEffects, consumedEvents } = buildResolvedStatusEffectState(actions)
     const hasRequiredStacks = requirement.statusEffectStackRequirements.some(({ effect, minStacks }) => {

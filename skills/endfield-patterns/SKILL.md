@@ -5,7 +5,6 @@ version: 1.0.0
 source: local-git-analysis
 analyzed_commits: 50
 ---
-
 # Endfield Combo Builder — Coding Patterns
 
 ## Commit Conventions
@@ -21,6 +20,7 @@ analyzed_commits: 50
 ```
 
 例：
+
 - `コンボ要件についてロジックを追加する`
 - `バフとデバフの型を分ける`
 - `スタッガーとサポートクリスタルの情報を追加する`
@@ -83,12 +83,14 @@ public/images/operators/ # オペレーター画像 (operatorId.png)
 
 **ファイル配置ルール：**
 
-| 対象 | テストパス |
-|------|-----------|
-| `lib/*.ts` | `tests/unit/lib/*.test.ts` |
-| `hooks/use*.ts` | `tests/unit/hooks/*.test.ts` |
+
+| 対象                 | テストパス                              |
+| ------------------ | ---------------------------------- |
+| `lib/*.ts`         | `tests/unit/lib/*.test.ts`         |
+| `hooks/use*.ts`    | `tests/unit/hooks/*.test.ts`       |
 | `components/*.tsx` | `tests/unit/components/*.test.tsx` |
-| E2E フロー | `tests/e2e/*.spec.ts` |
+| E2E フロー            | `tests/e2e/*.spec.ts`              |
+
 
 **コンポーネントテストパターン：**
 
@@ -162,9 +164,12 @@ MAX_TEAM_SP = 300
 
 ## Co-change Patterns（同時変更が多いファイル群）
 
-| 変更内容 | 一緒に変更するファイル |
-|---------|---------------------|
-| 新オペレーター | `operators.ts`, `skills.ts`, `attacks.ts`, `en.json`, `ja.json` |
+
+| 変更内容     | 一緒に変更するファイル                                                                        |
+| -------- | ---------------------------------------------------------------------------------- |
+| 新オペレーター  | `operators.ts`, `skills.ts`, `attacks.ts`, `en.json`, `ja.json`                    |
 | 状態異常ロジック | `statusEffects.ts`, `comboRequirements.ts`, `statusEffectLabels.ts`, `timeline.ts` |
-| 新フック | 4つのフックファイルはまとめて管理 |
-| 新テスト追加 | `vitest.config.ts`, `vitest.setup.ts` は稀に一緒に変更 |
+| 新フック     | 4つのフックファイルはまとめて管理                                                                  |
+| 新テスト追加   | `vitest.config.ts`, `vitest.setup.ts` は稀に一緒に変更                                     |
+
+

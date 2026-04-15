@@ -16,86 +16,6 @@
       ]
     },
     {
-      "moduleId": "G:/EndfieldComboBuilder/tests/unit/hooks/useComboActions.test.ts",
-      "tests": [
-        {
-          "name": "prevents overlapping normal attacks",
-          "fullName": "useComboActions > prevents overlapping normal attacks",
-          "state": "passed"
-        },
-        {
-          "name": "blocks battle skill when SP is insufficient",
-          "fullName": "useComboActions > blocks battle skill when SP is insufficient",
-          "state": "passed"
-        },
-        {
-          "name": "prevents moving actions into overlapping lanes",
-          "fullName": "useComboActions > prevents moving actions into overlapping lanes",
-          "state": "passed"
-        },
-        {
-          "name": "removes an action by id",
-          "fullName": "useComboActions > removes an action by id",
-          "state": "passed"
-        },
-        {
-          "name": "does nothing when handleMoveAction is called with the same timing",
-          "fullName": "useComboActions > does nothing when handleMoveAction is called with the same timing",
-          "state": "passed"
-        },
-        {
-          "name": "prevents adding a battle skill when it overlaps an existing battle skill",
-          "fullName": "useComboActions > prevents adding a battle skill when it overlaps an existing battle skill",
-          "state": "passed"
-        },
-        {
-          "name": "blocks adding a combo skill when timing is outside trigger windows",
-          "fullName": "useComboActions > combo skill actions > blocks adding a combo skill when timing is outside trigger windows",
-          "state": "passed"
-        },
-        {
-          "name": "adds a combo skill when timing is inside a trigger window",
-          "fullName": "useComboActions > combo skill actions > adds a combo skill when timing is inside a trigger window",
-          "state": "passed"
-        },
-        {
-          "name": "blocks adding a combo skill that overlaps an existing one",
-          "fullName": "useComboActions > combo skill actions > blocks adding a combo skill that overlaps an existing one",
-          "state": "passed"
-        },
-        {
-          "name": "adds an ultimate when there is no overlap",
-          "fullName": "useComboActions > ultimate actions > adds an ultimate when there is no overlap",
-          "state": "passed"
-        },
-        {
-          "name": "blocks adding an ultimate that overlaps an existing one",
-          "fullName": "useComboActions > ultimate actions > blocks adding an ultimate that overlaps an existing one",
-          "state": "passed"
-        },
-        {
-          "name": "alerts normalAttackOverlap when moving a normal attack into another",
-          "fullName": "useComboActions > handleMoveAction overlap alerts by skill type > alerts normalAttackOverlap when moving a normal attack into another",
-          "state": "passed"
-        },
-        {
-          "name": "alerts comboSkillOverlap when moving a combo skill into another",
-          "fullName": "useComboActions > handleMoveAction overlap alerts by skill type > alerts comboSkillOverlap when moving a combo skill into another",
-          "state": "passed"
-        },
-        {
-          "name": "alerts ultimateOverlap when moving an ultimate into another",
-          "fullName": "useComboActions > handleMoveAction overlap alerts by skill type > alerts ultimateOverlap when moving an ultimate into another",
-          "state": "passed"
-        },
-        {
-          "name": "blocks moving a battle skill when SP becomes insufficient",
-          "fullName": "useComboActions > blocks moving a battle skill when SP becomes insufficient",
-          "state": "passed"
-        }
-      ]
-    },
-    {
       "moduleId": "G:/EndfieldComboBuilder/tests/unit/lib/comboRequirements.test.ts",
       "tests": [
         {
@@ -349,8 +269,8 @@
           "state": "passed"
         },
         {
-          "name": "returns debuff effects when corrosion is active",
-          "fullName": "ardelia battle skill conditional effects > returns debuff effects when corrosion is active",
+          "name": "returns debuff effects when corrosion is active via combo_skill statusEffectForcibly",
+          "fullName": "ardelia battle skill conditional effects > returns debuff effects when corrosion is active via combo_skill statusEffectForcibly",
           "state": "passed"
         },
         {
@@ -497,15 +417,40 @@
           "name": "SHOCK is consumed so second arclight battle_skill gives no effect",
           "fullName": "arclight battle skill conditional shock consumption > SHOCK is consumed so second arclight battle_skill gives no effect",
           "state": "passed"
+        },
+        {
+          "name": "applies LIFT (浮遊) unconditionally",
+          "fullName": "gilberta combo skill forcibly applies LIFT > applies LIFT (浮遊) unconditionally",
+          "state": "passed"
+        },
+        {
+          "name": "applies FREEZE (凍結) unconditionally",
+          "fullName": "yvonne combo skill forcibly applies FREEZE > applies FREEZE (凍結) unconditionally",
+          "state": "passed"
+        },
+        {
+          "name": "applies CORROSION (腐食) unconditionally",
+          "fullName": "ardelia combo skill forcibly applies CORROSION > applies CORROSION (腐食) unconditionally",
+          "state": "passed"
+        },
+        {
+          "name": "applies SHOCK (感電) unconditionally",
+          "fullName": "perlica combo skill forcibly applies SHOCK > applies SHOCK (感電) unconditionally",
+          "state": "passed"
+        },
+        {
+          "name": "applies LIFT (浮遊) unconditionally",
+          "fullName": "estella combo skill forcibly applies LIFT > applies LIFT (浮遊) unconditionally",
+          "state": "passed"
         }
       ]
     },
     {
-      "moduleId": "G:/EndfieldComboBuilder/tests/unit/components/TimelineScale.test.tsx",
+      "moduleId": "G:/EndfieldComboBuilder/tests/unit/hooks/useComboCharacters.test.ts",
       "tests": [
         {
-          "name": "renders second markers based on duration",
-          "fullName": "TimelineScale > renders second markers based on duration",
+          "name": "selects characters and reorders with charges",
+          "fullName": "useComboCharacters > selects characters and reorders with charges",
           "state": "passed"
         }
       ]
@@ -526,11 +471,91 @@
       ]
     },
     {
-      "moduleId": "G:/EndfieldComboBuilder/tests/unit/hooks/useComboCharacters.test.ts",
+      "moduleId": "G:/EndfieldComboBuilder/tests/unit/components/TimelineScale.test.tsx",
       "tests": [
         {
-          "name": "selects characters and reorders with charges",
-          "fullName": "useComboCharacters > selects characters and reorders with charges",
+          "name": "renders second markers based on duration",
+          "fullName": "TimelineScale > renders second markers based on duration",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "G:/EndfieldComboBuilder/tests/unit/hooks/useComboActions.test.ts",
+      "tests": [
+        {
+          "name": "prevents overlapping normal attacks",
+          "fullName": "useComboActions > prevents overlapping normal attacks",
+          "state": "passed"
+        },
+        {
+          "name": "blocks battle skill when SP is insufficient",
+          "fullName": "useComboActions > blocks battle skill when SP is insufficient",
+          "state": "passed"
+        },
+        {
+          "name": "prevents moving actions into overlapping lanes",
+          "fullName": "useComboActions > prevents moving actions into overlapping lanes",
+          "state": "passed"
+        },
+        {
+          "name": "removes an action by id",
+          "fullName": "useComboActions > removes an action by id",
+          "state": "passed"
+        },
+        {
+          "name": "does nothing when handleMoveAction is called with the same timing",
+          "fullName": "useComboActions > does nothing when handleMoveAction is called with the same timing",
+          "state": "passed"
+        },
+        {
+          "name": "prevents adding a battle skill when it overlaps an existing battle skill",
+          "fullName": "useComboActions > prevents adding a battle skill when it overlaps an existing battle skill",
+          "state": "passed"
+        },
+        {
+          "name": "blocks adding a combo skill when timing is outside trigger windows",
+          "fullName": "useComboActions > combo skill actions > blocks adding a combo skill when timing is outside trigger windows",
+          "state": "passed"
+        },
+        {
+          "name": "adds a combo skill when timing is inside a trigger window",
+          "fullName": "useComboActions > combo skill actions > adds a combo skill when timing is inside a trigger window",
+          "state": "passed"
+        },
+        {
+          "name": "blocks adding a combo skill that overlaps an existing one",
+          "fullName": "useComboActions > combo skill actions > blocks adding a combo skill that overlaps an existing one",
+          "state": "passed"
+        },
+        {
+          "name": "adds an ultimate when there is no overlap",
+          "fullName": "useComboActions > ultimate actions > adds an ultimate when there is no overlap",
+          "state": "passed"
+        },
+        {
+          "name": "blocks adding an ultimate that overlaps an existing one",
+          "fullName": "useComboActions > ultimate actions > blocks adding an ultimate that overlaps an existing one",
+          "state": "passed"
+        },
+        {
+          "name": "alerts normalAttackOverlap when moving a normal attack into another",
+          "fullName": "useComboActions > handleMoveAction overlap alerts by skill type > alerts normalAttackOverlap when moving a normal attack into another",
+          "state": "passed"
+        },
+        {
+          "name": "alerts comboSkillOverlap when moving a combo skill into another",
+          "fullName": "useComboActions > handleMoveAction overlap alerts by skill type > alerts comboSkillOverlap when moving a combo skill into another",
+          "state": "passed"
+        },
+        {
+          "name": "alerts ultimateOverlap when moving an ultimate into another",
+          "fullName": "useComboActions > handleMoveAction overlap alerts by skill type > alerts ultimateOverlap when moving an ultimate into another",
+          "state": "passed"
+        },
+        {
+          "name": "blocks moving a battle skill when SP becomes insufficient",
+          "fullName": "useComboActions > blocks moving a battle skill when SP becomes insufficient",
           "state": "passed"
         }
       ]
@@ -616,61 +641,6 @@
       ]
     },
     {
-      "moduleId": "G:/EndfieldComboBuilder/tests/unit/lib/storage.test.ts",
-      "tests": [
-        {
-          "name": "should save a combo to localStorage",
-          "fullName": "Storage Functions > saveCombo > should save a combo to localStorage",
-          "state": "passed"
-        },
-        {
-          "name": "should update existing combo with same name",
-          "fullName": "Storage Functions > saveCombo > should update existing combo with same name",
-          "state": "passed"
-        },
-        {
-          "name": "should load a combo by name",
-          "fullName": "Storage Functions > loadCombo > should load a combo by name",
-          "state": "passed"
-        },
-        {
-          "name": "should return null for non-existent combo",
-          "fullName": "Storage Functions > loadCombo > should return null for non-existent combo",
-          "state": "passed"
-        },
-        {
-          "name": "should delete a combo by name",
-          "fullName": "Storage Functions > deleteCombo > should delete a combo by name",
-          "state": "passed"
-        },
-        {
-          "name": "should return empty array when no combos saved",
-          "fullName": "Storage Functions > getSavedCombos > should return empty array when no combos saved",
-          "state": "passed"
-        },
-        {
-          "name": "should return all saved combos",
-          "fullName": "Storage Functions > getSavedCombos > should return all saved combos",
-          "state": "passed"
-        },
-        {
-          "name": "should generate a URL with encoded combo data",
-          "fullName": "Storage Functions > generateShareUrl > should generate a URL with encoded combo data",
-          "state": "passed"
-        },
-        {
-          "name": "should load combo from URL parameters",
-          "fullName": "Storage Functions > loadComboFromUrl > should load combo from URL parameters",
-          "state": "passed"
-        },
-        {
-          "name": "should return null when no combo in URL",
-          "fullName": "Storage Functions > loadComboFromUrl > should return null when no combo in URL",
-          "state": "passed"
-        }
-      ]
-    },
-    {
       "moduleId": "G:/EndfieldComboBuilder/tests/unit/lib/timeline.test.ts",
       "tests": [
         {
@@ -721,6 +691,61 @@
         {
           "name": "processes events for multiple operators correctly",
           "fullName": "buildStaggerMeterTimeline > processes events for multiple operators correctly",
+          "state": "passed"
+        }
+      ]
+    },
+    {
+      "moduleId": "G:/EndfieldComboBuilder/tests/unit/lib/storage.test.ts",
+      "tests": [
+        {
+          "name": "should save a combo to localStorage",
+          "fullName": "Storage Functions > saveCombo > should save a combo to localStorage",
+          "state": "passed"
+        },
+        {
+          "name": "should update existing combo with same name",
+          "fullName": "Storage Functions > saveCombo > should update existing combo with same name",
+          "state": "passed"
+        },
+        {
+          "name": "should load a combo by name",
+          "fullName": "Storage Functions > loadCombo > should load a combo by name",
+          "state": "passed"
+        },
+        {
+          "name": "should return null for non-existent combo",
+          "fullName": "Storage Functions > loadCombo > should return null for non-existent combo",
+          "state": "passed"
+        },
+        {
+          "name": "should delete a combo by name",
+          "fullName": "Storage Functions > deleteCombo > should delete a combo by name",
+          "state": "passed"
+        },
+        {
+          "name": "should return empty array when no combos saved",
+          "fullName": "Storage Functions > getSavedCombos > should return empty array when no combos saved",
+          "state": "passed"
+        },
+        {
+          "name": "should return all saved combos",
+          "fullName": "Storage Functions > getSavedCombos > should return all saved combos",
+          "state": "passed"
+        },
+        {
+          "name": "should generate a URL with encoded combo data",
+          "fullName": "Storage Functions > generateShareUrl > should generate a URL with encoded combo data",
+          "state": "passed"
+        },
+        {
+          "name": "should load combo from URL parameters",
+          "fullName": "Storage Functions > loadComboFromUrl > should load combo from URL parameters",
+          "state": "passed"
+        },
+        {
+          "name": "should return null when no combo in URL",
+          "fullName": "Storage Functions > loadComboFromUrl > should return null when no combo in URL",
           "state": "passed"
         }
       ]
