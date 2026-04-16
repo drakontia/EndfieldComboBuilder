@@ -201,8 +201,8 @@ export const BATTLE_SKILLS: Record<string, BattleSkill> = {
     skillPoints: 100
   },
   'rossi_battle_skill': {
-    // 突進攻撃で敵に物理ダメージを与え、浮遊状態にする。
-    // クラッシュ状態の敵への攻撃時は追突進から灼熱ダメージを追加する。
+    // 目標に突進し、物理ダメージと浮遊効果を与える。
+    // クラッシュ状態の目標に命中した場合、追加で目標に突進する狼の至宝を放ち、灼熱ダメージを与える。
     operatorId: 'rossi',
     type: SkillType.BATTLE_SKILL,
     name: 'skill.rossi_battle_skill.name',
@@ -552,9 +552,10 @@ export const COMBO_SKILLS: Record<string, ComboSkill> = {
     }
   },
   'rossi_combo_skill': {
-    // クラッシュかつアーツ付着状態の敵に発動可能。
-    // 1回目: 物理ダメージ。2回目: アーツ付着を全消費し物理ダメージ+浮遊。
-    // 完璧連携: クラッシュ1段を追加付与。
+    // 敵がクラッシュかつアーツ付着状態の時に発動可能。
+    // ロッシの連携技は連続で2回発動できる。1回目は目標に物理ダメージを与える。
+    // 2回目は全てのアーツ付着をすべて消費し、消費した段階数に応じてその目標に物理ダメージと浮遊効果を与える。同時に、一定時間自身の会心率と会心ダメージがアップする。
+    // 2回目の連携技が完璧連携となった場合、追加で目標にクラッシュを1段階付与する。
     operatorId: 'rossi',
     type: SkillType.COMBO_SKILL,
     name: 'rossi.combo_skill.name',
