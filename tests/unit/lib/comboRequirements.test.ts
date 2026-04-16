@@ -457,10 +457,10 @@ describe('comboRequirements', () => {
   })
 
   describe('requiresHeavyAttack チェック', () => {
-    it('ペルリカ - 重攻撃後5秒以内は発動可能', () => {
-      // perlica の通常攻撃 duration を確認するために laevatain で代用（operatorId=perlica でチェック）
+    it('ペリカ - 自身の重攻撃後5秒以内は発動可能', () => {
       // perlica の characterId = 'character.perlica.name', operatorId = 'perlica'
-      // perlica 通常攻撃 duration が必要 → laevatain(3300ms) で検証できないので直接 perlica で
+      // perlica 通常攻撃 duration = 3050ms (attacks.ts より)
+      // heavyAttackEndTime = 0 + 3050 = 3050, t=3500: 3050<=3500<8050 → true
       const actions: ComboAction[] = [
         {
           id: 'na1',
@@ -469,20 +469,34 @@ describe('comboRequirements', () => {
           timing: 0,
         },
       ]
-      // perlica の duration を確認するため、t=5000 で試す（どのdurationでも0+duration <= 5000 && 5000 < duration+5000）
-      // perlica duration は attacks.ts で 3317ms とする前提
-      // heavyAttackEndTime = duration, t=3500: 3317<=3500<8317 → true
       const result = canActivateComboSkill('perlica', actions, 3500)
       expect(result.canActivate).toBe(true)
     })
 
-    it('ペルリカ - 重攻撃なしでは発動不可', () => {
+    it('ペリカ - 他オペレーター（ラエヴァテイン）の重攻撃後5秒以内も発動可能', () => {
+      // laevatain 通常攻撃 duration = 3300ms (attacks.ts より)
+      // heavyAttackEndTime = 0 + 3300 = 3300, t=4000: 3300<=4000<8300 → true
+      const actions: ComboAction[] = [
+        {
+          id: 'na1',
+          characterId: 'character.laevatain.name',
+          type: SkillType.NORMAL,
+          timing: 0,
+        },
+      ]
+      const result = canActivateComboSkill('perlica', actions, 4000)
+      expect(result.canActivate).toBe(true)
+    })
+
+    it('ペリカ - 重攻撃なしでは発動不可', () => {
       const result = canActivateComboSkill('perlica', [], 5000)
       expect(result.canActivate).toBe(false)
       expect(result.missingEffects).toContain('requires_heavy_attack')
     })
 
-    it('ペルリカ - 重攻撃から5秒後は発動不可', () => {
+    it('ペリカ - 重攻撃から5秒後は発動不可', () => {
+      // perlica duration = 3050ms, heavyAttackEndTime = 3050
+      // t=8100: 3050+5000=8050 < 8100 → false
       const actions: ComboAction[] = [
         {
           id: 'na1',
@@ -491,10 +505,7 @@ describe('comboRequirements', () => {
           timing: 0,
         },
       ]
-      // heavyAttackEndTime + 5000 = duration+5000. t=duration+5001 → false
-      // duration > 0 なので timing=0 + duration + 5001 > 5001
-      // laevatain duration=3300ms を想定して t=8500: 3317+5000=8317 < 8500 → false
-      const result = canActivateComboSkill('perlica', actions, 8500)
+      const result = canActivateComboSkill('perlica', actions, 8100)
       expect(result.canActivate).toBe(false)
     })
   })

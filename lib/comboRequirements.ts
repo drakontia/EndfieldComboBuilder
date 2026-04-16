@@ -286,8 +286,8 @@ export const canActivateComboSkill = (
   if (requirement.requiresHeavyAttack) {
     const hasRecentHeavyAttack = actions.some((a) => {
       if (a.type !== SkillType.NORMAL) return false
-      if (getOperatorIdByName(a.characterId) !== operatorId) return false
-      const heavyAttackEndTime = a.timing + getNormalAttackDurationMs(operatorId)
+      const attackOperatorId = getOperatorIdByName(a.characterId) ?? ''
+      const heavyAttackEndTime = a.timing + getNormalAttackDurationMs(attackOperatorId)
       return heavyAttackEndTime <= time && time < heavyAttackEndTime + COMBO_SKILL_EXECUTION_WINDOW_MS
     })
     if (!hasRecentHeavyAttack) {
