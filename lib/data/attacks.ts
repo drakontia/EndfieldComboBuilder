@@ -174,6 +174,7 @@ export const NORMAL_ATTACKS: Record<string, BaseAttack> = {
     stagger: 18
   },
   'rossi_base_attack': {
+    // 通常攻撃：最大5段の攻撃で、敵に物理ダメージを与える。操作中のオペレーターの場合、重攻撃はブレイク値18を与える。
     operatorId: 'rossi',
     name: 'rossi.base_attack.name',
     description: 'rossi.base_attack.description',

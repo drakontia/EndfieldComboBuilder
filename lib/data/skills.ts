@@ -188,7 +188,11 @@ export const BATTLE_SKILLS: Record<string, BattleSkill> = {
     skillPoints: 100
   },
   'tangtang_battle_skill': {
-    // 水竜巻を引き起こし、敵に寒冷付着を付与する。
+    // 水中から飛び出して敵に接近し、射撃を行う。寒冷ダメージを与え、水竜巻を1つ発生させる。
+    // 同時に、周囲の湍水をすべて消費し、追加の水竜巻を発生させる。発生した数に応じて、SPが一定量返還される。
+    //水竜巻：範囲内の敵に寒冷付着を1段階付与し、持続的に寒冷ダメージを与える。
+    // 一度に複数の水竜巻を発生させた場合、追加で敵にアーツ脆弱を付与するが、寒冷付着は重複して付与されない。
+    // 水竜巻によるダメージは戦技ダメージとして見なされる。
     operatorId: 'tangtang',
     type: SkillType.BATTLE_SKILL,
     name: 'skill.tangtang_battle_skill.name',
@@ -534,8 +538,9 @@ export const COMBO_SKILLS: Record<string, ComboSkill> = {
     requirement: {}
   },
   'tangtang_combo_skill': {
-    // 敵が寒冷付着またはアーツ爆発状態になったときに発動可能。
-    // 激流を解き放ち、敵に寒冷ダメージを与える。
+    // 敵が寒冷付着またはアーツ爆発のダメージを受けたときに発動可能。
+    // 激流を放ち、前方の敵を貫いて寒冷ダメージを与え、湍水を1カ所生成する。
+    // 同時に存在できる湍水は2カ所まで。
     operatorId: 'tangtang',
     type: SkillType.COMBO_SKILL,
     name: 'tangtang.combo_skill.name',
@@ -766,6 +771,10 @@ export const ULTIMATES: Record<string, Ultimate> = {
     cooldown: 10000
   },
   'tangtang_ultimate': {
+    // タンタンが眼帯を外し、目に宿る古の紋様を解放する。
+    // 紋様の範囲内にいる敵を封鎖し、一定時間行動不能にすると同時に、持続的に寒冷ダメージを与える。
+    // 古の紋様の変化が終了したときに、大波が発生し、範囲内の敵に高い寒冷ダメージを与える。
+    // 操作中のオペレーターが古の紋様の範囲内で落下攻撃を行った場合、その時点で紋様の変化は終了し、大波が発生する。この場合、大波による寒冷ダメージがアップする。
     operatorId: 'tangtang',
     type: SkillType.ULTIMATE,
     name: 'tangtang.ultimate.name',
@@ -774,7 +783,8 @@ export const ULTIMATES: Record<string, Ultimate> = {
     cooldown: 10000
   },
   'rossi_ultimate': {
-    // 複数回の灼熱ダメージを与え、灼熱付着を付与する。
+    // 	マントを操り、連続で敵を突き刺す。
+    // 短時間で目標に灼熱ダメージを複数回与えたあと、ナイフによる斬撃を2段繰り出し、高い灼熱ダメージを与え、灼熱付着を付与する。
     operatorId: 'rossi',
     type: SkillType.ULTIMATE,
     name: 'rossi.ultimate.name',
