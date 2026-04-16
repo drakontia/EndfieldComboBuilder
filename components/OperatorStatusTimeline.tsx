@@ -137,6 +137,13 @@ export const OperatorStatusTimeline = ({
   const coldInfusionBgColor = STATUS_EFFECT_COLORS[Buff.COLD_INFUSION] || 'bg-blue-300'
   const coldInfusionLabel = t(getStatusEffectLabelKey(Buff.COLD_INFUSION))
 
+  const hasSupportCrystal = supportCrystalStates.length > 0
+  const hasColdInfusion = coldInfusionStates.length > 0
+
+  if (!hasSupportCrystal && !hasColdInfusion) {
+    return null
+  }
+
   return (
     <div className="flex flex-col">
       {showHeader && (
@@ -152,68 +159,71 @@ export const OperatorStatusTimeline = ({
           </div>
         </div>
       )}
-      
-      <div className="flex items-center border-b border-gray-600">
-        <div className="w-40 px-4 py-2 flex items-center gap-2">
-          <div className={`w-4 h-4 rounded ${supportCrystalBgColor}`} />
-          <span className="text-sm font-medium text-gray-200">{supportCrystalLabel}</span>
-        </div>
-        <div className="w-24 shrink-0" />
-        <div className="flex-1 relative h-12" style={{ width: `${TIMELINE_WIDTH}px` }}>
-          {supportCrystalStates.map((state, idx) => {
-            const leftPx = getActionPosition(state.startTime)
-            const widthPx = getActionPosition(state.endTime) - leftPx
-            
-            // Determine color based on recovery count
-            let segmentBgColor = supportCrystalBgColor
-            if (state.recoveryCount === 0) {
-              segmentBgColor = 'bg-gray-400 opacity-50' // Exhausted state
-            } else if (state.recoveryCount === 1) {
-              segmentBgColor = 'bg-purple-600 opacity-80' // Low recovery
-            }
-            
-            return (
-              <div
-                key={idx}
-                className={`absolute h-8 top-2 ${segmentBgColor} border border-slate-400 flex items-center justify-center`}
-                style={{
-                  left: `${leftPx}px`,
-                  width: `${Math.max(30, widthPx)}px`,
-                }}
-              >
-                <span className="text-xs font-bold text-white pointer-events-none">
-                  ×{state.recoveryCount}
-                </span>
-              </div>
-            )
-          })}
-        </div>
-      </div>
 
-      <div className="flex items-center border-b border-gray-600">
-        <div className="w-40 px-4 py-2 flex items-center gap-2">
-          <div className={`w-4 h-4 rounded ${coldInfusionBgColor}`} />
-          <span className="text-sm font-medium text-gray-200">{coldInfusionLabel}</span>
+      {hasSupportCrystal && (
+        <div className="flex items-center border-b border-gray-600">
+          <div className="w-40 px-4 py-2 flex items-center gap-2">
+            <div className={`w-4 h-4 rounded ${supportCrystalBgColor}`} />
+            <span className="text-sm font-medium text-gray-200">{supportCrystalLabel}</span>
+          </div>
+          <div className="w-24 shrink-0" />
+          <div className="flex-1 relative h-12" style={{ width: `${TIMELINE_WIDTH}px` }}>
+            {supportCrystalStates.map((state, idx) => {
+              const leftPx = getActionPosition(state.startTime)
+              const widthPx = getActionPosition(state.endTime) - leftPx
+
+              let segmentBgColor = supportCrystalBgColor
+              if (state.recoveryCount === 0) {
+                segmentBgColor = 'bg-gray-400 opacity-50'
+              } else if (state.recoveryCount === 1) {
+                segmentBgColor = 'bg-purple-600 opacity-80'
+              }
+
+              return (
+                <div
+                  key={idx}
+                  className={`absolute h-8 top-2 ${segmentBgColor} border border-slate-400 flex items-center justify-center`}
+                  style={{
+                    left: `${leftPx}px`,
+                    width: `${Math.max(30, widthPx)}px`,
+                  }}
+                >
+                  <span className="text-xs font-bold text-white pointer-events-none">
+                    ×{state.recoveryCount}
+                  </span>
+                </div>
+              )
+            })}
+          </div>
         </div>
-        <div className="w-24 shrink-0" />
-        <div className="flex-1 relative h-12" style={{ width: `${TIMELINE_WIDTH}px` }}>
-          {coldInfusionStates.map((state, idx) => {
-            const leftPx = getActionPosition(state.startTime)
-            const widthPx = getActionPosition(state.endTime) - leftPx
-            
-            return (
-              <div
-                key={idx}
-                className={`absolute h-8 top-2 ${coldInfusionBgColor} border border-slate-400`}
-                style={{
-                  left: `${leftPx}px`,
-                  width: `${Math.max(30, widthPx)}px`,
-                }}
-              />
-            )
-          })}
+      )}
+
+      {hasColdInfusion && (
+        <div className="flex items-center border-b border-gray-600">
+          <div className="w-40 px-4 py-2 flex items-center gap-2">
+            <div className={`w-4 h-4 rounded ${coldInfusionBgColor}`} />
+            <span className="text-sm font-medium text-gray-200">{coldInfusionLabel}</span>
+          </div>
+          <div className="w-24 shrink-0" />
+          <div className="flex-1 relative h-12" style={{ width: `${TIMELINE_WIDTH}px` }}>
+            {coldInfusionStates.map((state, idx) => {
+              const leftPx = getActionPosition(state.startTime)
+              const widthPx = getActionPosition(state.endTime) - leftPx
+
+              return (
+                <div
+                  key={idx}
+                  className={`absolute h-8 top-2 ${coldInfusionBgColor} border border-slate-400`}
+                  style={{
+                    left: `${leftPx}px`,
+                    width: `${Math.max(30, widthPx)}px`,
+                  }}
+                />
+              )
+            })}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }
