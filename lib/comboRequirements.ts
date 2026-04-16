@@ -155,6 +155,12 @@ export const getActiveStatusEffectsAtTime = (
     })
   })
 
+  // 浮遊または転倒がアクティブな場合、クラッシュ状態（VULNERABLE）を派生させる
+  // ゲーム仕様: 浮遊/転倒を受けた敵はクラッシュ状態になる
+  if (activeEffects.has(PhysicalStatus.LIFT) || activeEffects.has(PhysicalStatus.KNOCKDOWN)) {
+    activeEffects.add(PhysicalStatus.VULNERABLE)
+  }
+
   return activeEffects
 }
 

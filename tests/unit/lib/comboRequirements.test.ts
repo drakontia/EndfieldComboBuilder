@@ -7,7 +7,7 @@ import {
   checkSupportCrystalExhausted,
 } from '@/lib/comboRequirements'
 import { COMBO_SKILL_EXECUTION_WINDOW_MS } from '@/lib/timeline'
-import { SkillType, ArtsReaction, ArtsInfliction } from '@/types/combo'
+import { SkillType, ArtsReaction, ArtsInfliction, PhysicalStatus } from '@/types/combo'
 import type { ComboAction } from '@/types/combo'
 
 describe('comboRequirements', () => {
@@ -594,6 +594,112 @@ describe('comboRequirements', () => {
       // expiryTime=4000, expiryTime+5000=9000
       // t=9100: 9100 >= 9000 → false
       const result = canActivateComboSkill('alesh', actions, 9100)
+      expect(result.canActivate).toBe(false)
+    })
+  })
+
+  describe('クラッシュ状態（VULNERABLE）派生チェック', () => {
+    it('浮遊（LIFT）がアクティブな場合、クラッシュ状態（VULNERABLE）も派生する', () => {
+      // chen_qianyu battle_skill → LIFT付与
+      const actions: ComboAction[] = [
+        {
+          id: '1',
+          characterId: 'character.chen_qianyu.name',
+          type: SkillType.BATTLE_SKILL,
+          timing: 0,
+        },
+      ]
+      const activeEffects = getActiveStatusEffectsAtTime(actions, 500)
+      expect(activeEffects.has(PhysicalStatus.LIFT)).toBe(true)
+      expect(activeEffects.has(PhysicalStatus.VULNERABLE)).toBe(true)
+    })
+
+    it('転倒（KNOCKDOWN）がアクティブな場合、クラッシュ状態（VULNERABLE）も派生する', () => {
+      // ember battle_skill → KNOCKDOWN付与
+      const actions: ComboAction[] = [
+        {
+          id: '1',
+          characterId: 'character.ember.name',
+          type: SkillType.BATTLE_SKILL,
+          timing: 0,
+        },
+      ]
+      const activeEffects = getActiveStatusEffectsAtTime(actions, 500)
+      expect(activeEffects.has(PhysicalStatus.KNOCKDOWN)).toBe(true)
+      expect(activeEffects.has(PhysicalStatus.VULNERABLE)).toBe(true)
+    })
+
+    it('LIFT/KNOCKDOWNがない場合、VULNERABLEは派生しない', () => {
+      // laevatain battle_skill → HEAT付与のみ
+      const actions: ComboAction[] = [
+        {
+          id: '1',
+          characterId: 'character.laevatain.name',
+          type: SkillType.BATTLE_SKILL,
+          timing: 0,
+        },
+      ]
+      const activeEffects = getActiveStatusEffectsAtTime(actions, 500)
+      expect(activeEffects.has(PhysicalStatus.VULNERABLE)).toBe(false)
+    })
+
+    it('チェン・チアンユー - 浮遊付与後はクラッシュ状態として連携技発動可能', () => {
+      // chen_qianyu battle_skill → LIFT → VULNERABLE派生 → chen_qianyu combo skill発動可能
+      const actions: ComboAction[] = [
+        {
+          id: '1',
+          characterId: 'character.chen_qianyu.name',
+          type: SkillType.BATTLE_SKILL,
+          timing: 0,
+        },
+      ]
+      const result = canActivateComboSkill('chen_qianyu', actions, 500)
+      expect(result.canActivate).toBe(true)
+    })
+
+    it('ロッシ - 浮遊 + アーツ付着でクラッシュ状態として連携技発動可能', () => {
+      // chen_qianyu battle_skill → LIFT、akekuri battle_skill → ArtsInfliction.HEAT
+      const actions: ComboAction[] = [
+        {
+          id: '1',
+          characterId: 'character.chen_qianyu.name',
+          type: SkillType.BATTLE_SKILL,
+          timing: 0,
+        },
+        {
+          id: '2',
+          characterId: 'character.akekuri.name',
+          type: SkillType.BATTLE_SKILL,
+          timing: 0,
+        },
+      ]
+      const result = canActivateComboSkill('rossi', actions, 500)
+      expect(result.canActivate).toBe(true)
+    })
+
+    it('ロッシ - クラッシュ状態のみ（アーツ付着なし）では発動不可', () => {
+      const actions: ComboAction[] = [
+        {
+          id: '1',
+          characterId: 'character.chen_qianyu.name',
+          type: SkillType.BATTLE_SKILL,
+          timing: 0,
+        },
+      ]
+      const result = canActivateComboSkill('rossi', actions, 500)
+      expect(result.canActivate).toBe(false)
+    })
+
+    it('ロッシ - アーツ付着のみ（クラッシュ状態なし）では発動不可', () => {
+      const actions: ComboAction[] = [
+        {
+          id: '1',
+          characterId: 'character.akekuri.name',
+          type: SkillType.BATTLE_SKILL,
+          timing: 0,
+        },
+      ]
+      const result = canActivateComboSkill('rossi', actions, 500)
       expect(result.canActivate).toBe(false)
     })
   })
