@@ -21,7 +21,7 @@ export const OPERATORS: Record<string, Operator> = {
   // Yvonne
   'yvonne': {
     name: 'character.yvonne.name',
-    type: CharcterType.CASTER,
+    type: CharcterType.STRIKER,
     element: CharacterElement.CRYO,
     rarity: 6,
     imageUrl: '/images/operators/yvonne.png'
