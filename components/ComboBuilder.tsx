@@ -21,7 +21,7 @@ import { useComboActions } from '@/hooks/useComboActions'
 import { useComboCharacters } from '@/hooks/useComboCharacters'
 import { useComboControlPanel } from '@/hooks/useComboControlPanel'
 import { useComboLoadDialog } from '@/hooks/useComboLoadDialog'
-import { getNormalAttackDurationMs } from '@/lib/data/attacks'
+import { getNormalAttackDurationMs, getPlungeAttackDurationMs } from '@/lib/data/attacks'
 import { OPERATORS } from '@/lib/data/operators'
 import { loadComboFromUrl } from '@/lib/storage'
 import {
@@ -173,6 +173,12 @@ export const ComboBuilder = () => {
     return getNormalAttackDurationMs(operatorKey)
   }
 
+  const getPlungeAttackDurationMsForPlayer = () => {
+    const operatorKey = getOperatorKey(playerCharacter)
+    if (!operatorKey) return null
+    return getPlungeAttackDurationMs(operatorKey)
+  }
+
   const handleTimelineClick = (e: MouseEvent<HTMLDivElement>, character: Operator | null, type: SkillType) => {
     if (!character) return
     if (deleteMode) return
@@ -185,6 +191,20 @@ export const ComboBuilder = () => {
     const clampedX = Math.max(0, Math.min(x, rect.width))
     const timing = Math.round(((clampedX / rect.width) * timelineDurationMs) / 100) * 100
     handleAddAction(character.name, type, timing)
+  }
+
+  const handlePlungeTimelineClick = (e: MouseEvent<HTMLDivElement>, character: Operator | null, type: SkillType) => {
+    if (!character) return
+    if (deleteMode) return
+    const target = e.target as HTMLElement
+    if (target.closest('[data-action-id]')) return
+    const lineElement = e.currentTarget.querySelector('[data-timeline-line]') as HTMLDivElement | null
+    if (!lineElement) return
+    const rect = lineElement.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const clampedX = Math.max(0, Math.min(x, rect.width))
+    const timing = Math.round(((clampedX / rect.width) * timelineDurationMs) / 100) * 100
+    handleAddAction(character.name, type, timing, true)
   }
 
   return (
@@ -350,7 +370,9 @@ export const ComboBuilder = () => {
                 skillTypeBgColors={SKILL_TYPE_BG_COLORS}
                 getActionPosition={getActionPosition}
                 getNormalAttackDurationMsForPlayer={getNormalAttackDurationMsForPlayer}
+                getPlungeAttackDurationMsForPlayer={getPlungeAttackDurationMsForPlayer}
                 onTimelineClick={handleTimelineClick}
+                onPlungeTimelineClick={handlePlungeTimelineClick}
                 onRemoveAction={handleRemoveAction}
                 onMoveAction={handleMoveAction}
                 timelineDurationMs={timelineDurationMs}

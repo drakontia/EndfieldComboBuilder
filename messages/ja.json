@@ -35,9 +35,13 @@
   },
   "attackTypes": {
     "normal": "通常攻撃",
+    "plunge": "落下攻撃",
     "battleSkill": "戦技",
     "comboSkill": "連携技",
     "ultimate": "必殺技"
+  },
+  "plungeAttack": {
+    "description": "空中で通常攻撃を使用すると、落下して周囲の敵に物理ダメージを与える。"
   },
   "physicalStatus": {
     "vulnerable": "クラッシュ",
@@ -112,6 +116,7 @@
     "urlCopied": "共有URLをクリップボードにコピーしました！",
     "spInsufficient": "SPが不足しています（戦技: {cost}）",
     "normalAttackOverlap": "通常攻撃が重なっています",
+    "plungeAttackOverlap": "通常攻撃または落下攻撃が重なっています",
     "battleSkillOverlap": "戦技が重なっています",
     "comboSkillOverlap": "連携技がクールタイム中です",
     "comboSkillNotInWindow": "連携技の発動条件が満たされていません",

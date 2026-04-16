@@ -23,7 +23,9 @@ interface NormalAttackTimelineProps {
   skillTypeBgColors: Record<SkillType, string>
   getActionPosition: (timing: number) => number
   getNormalAttackDurationMsForPlayer: () => number | null
+  getPlungeAttackDurationMsForPlayer: () => number | null
   onTimelineClick: (e: MouseEvent<HTMLDivElement>, character: Operator | null, type: SkillType) => void
+  onPlungeTimelineClick: (e: MouseEvent<HTMLDivElement>, character: Operator | null, type: SkillType) => void
   onRemoveAction: (actionId: string) => void
   onMoveAction: (actionId: string, nextTiming: number) => void
   timelineDurationMs: number
@@ -108,25 +110,41 @@ const DraggableNormalAction = ({
   )
 }
 
-export const NormalAttackTimeline = ({
-  playerCharacter,
+interface AttackRowProps {
+  label: string
+  tooltipName?: string
+  tooltipDescription?: string
+  actions: ComboAction[]
+  skillTypeColors: Record<SkillType, string>
+  skillTypeBgColors: Record<SkillType, string>
+  getActionPosition: (timing: number) => number
+  getAttackDurationMsForPlayer: () => number | null
+  onRowClick: (e: MouseEvent<HTMLDivElement>) => void
+  onMoveAction: (actionId: string, nextTiming: number) => void
+  onRemoveAction: (actionId: string) => void
+  timelineDurationMs: number
+  secondMarkerWidthPx: number
+  playerCharacter: Operator | null
+  deleteMode: boolean
+}
+
+const AttackRow = ({
+  label,
+  tooltipName,
+  tooltipDescription,
   actions,
-  skillTypeLabels,
   skillTypeColors,
   skillTypeBgColors,
   getActionPosition,
-  getNormalAttackDurationMsForPlayer,
-  onTimelineClick,
-  onRemoveAction,
+  getAttackDurationMsForPlayer,
+  onRowClick,
   onMoveAction,
+  onRemoveAction,
   timelineDurationMs,
-  showCharacterLabel = true,
+  secondMarkerWidthPx,
+  playerCharacter,
   deleteMode,
-}: NormalAttackTimelineProps) => {
-  const t = useTranslations()
-  const secondMarkerWidthPx = getSecondMarkerWidthPx(timelineDurationMs)
-  const operatorId = playerCharacter ? getOperatorIdByName(playerCharacter.name) : null
-
+}: AttackRowProps) => {
   const clampTiming = (timing: number) => {
     if (timing <= 0) return 0
     if (timing >= timelineDurationMs) return timelineDurationMs
@@ -147,24 +165,19 @@ export const NormalAttackTimeline = ({
     onMoveAction(data.actionId, nextTiming)
   }
 
-  const timelineContent = (
-    <div
-      className="flex items-center"
-      onClick={(e) => onTimelineClick(e, playerCharacter, SkillType.NORMAL)}
-    >
+  return (
+    <div className="flex items-center" onClick={onRowClick}>
       <TooltipProvider delayDuration={300}>
         <Tooltip>
           <TooltipTrigger asChild>
             <div className="w-24 text-sm text-gray-400 cursor-default">
-              {skillTypeLabels[SkillType.NORMAL]}
+              {label}
             </div>
           </TooltipTrigger>
-          {operatorId && (
+          {tooltipName && tooltipDescription && (
             <TooltipContent side="right" className="max-w-xs">
-              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-              <p className="font-semibold text-sm">{t(`character.${operatorId}.base_attack.name` as any)}</p>
-              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-              <p className="text-xs mt-1">{t(`character.${operatorId}.base_attack.description` as any)}</p>
+              <p className="font-semibold text-sm">{tooltipName}</p>
+              <p className="text-xs mt-1">{tooltipDescription}</p>
             </TooltipContent>
           )}
         </Tooltip>
@@ -188,38 +201,100 @@ export const NormalAttackTimeline = ({
 
           <div className="absolute inset-0 z-5" style={{ position: 'absolute', inset: 0 }} />
 
-          {actions
-            .filter((action) => action.type === SkillType.NORMAL)
-            .map((action) => {
-              const statusEffect = getStatusEffectForAction(
-                getOperatorIdByName(action.characterId),
-                action.type
-              )
-              const durationMs = getNormalAttackDurationMsForPlayer()
-              const left = getActionPosition(action.timing)
-              const width = durationMs
-                ? Math.min(
-                    (durationMs / timelineDurationMs) * TIMELINE_WIDTH,
-                    TIMELINE_WIDTH - left
-                  )
-                : 60
+          {actions.map((action) => {
+            const statusEffect = getStatusEffectForAction(
+              getOperatorIdByName(action.characterId),
+              action.type
+            )
+            const durationMs = getAttackDurationMsForPlayer()
+            const left = getActionPosition(action.timing)
+            const width = durationMs
+              ? Math.min(
+                  (durationMs / timelineDurationMs) * TIMELINE_WIDTH,
+                  TIMELINE_WIDTH - left
+                )
+              : 60
 
-              return (
-                <DraggableNormalAction
-                  key={action.id}
-                  action={action}
-                  left={left}
-                  widthPx={width}
-                  statusEffect={statusEffect}
-                  skillTypeColors={skillTypeColors}
-                  skillTypeBgColors={skillTypeBgColors}
-                  onRemoveAction={onRemoveAction}
-                  deleteMode={deleteMode}
-                />
-              )
-            })}
+            return (
+              <DraggableNormalAction
+                key={action.id}
+                action={action}
+                left={left}
+                widthPx={width}
+                statusEffect={statusEffect}
+                skillTypeColors={skillTypeColors}
+                skillTypeBgColors={skillTypeBgColors}
+                onRemoveAction={onRemoveAction}
+                deleteMode={deleteMode}
+              />
+            )
+          })}
         </div>
       </DndContext>
+    </div>
+  )
+}
+
+export const NormalAttackTimeline = ({
+  playerCharacter,
+  actions,
+  skillTypeLabels,
+  skillTypeColors,
+  skillTypeBgColors,
+  getActionPosition,
+  getNormalAttackDurationMsForPlayer,
+  getPlungeAttackDurationMsForPlayer,
+  onTimelineClick,
+  onPlungeTimelineClick,
+  onRemoveAction,
+  onMoveAction,
+  timelineDurationMs,
+  showCharacterLabel = true,
+  deleteMode,
+}: NormalAttackTimelineProps) => {
+  const t = useTranslations()
+  const secondMarkerWidthPx = getSecondMarkerWidthPx(timelineDurationMs)
+  const operatorId = playerCharacter ? getOperatorIdByName(playerCharacter.name) : null
+
+  const normalAttacks = actions.filter((a) => a.type === SkillType.NORMAL && !a.isPlunge)
+  const plungeAttacks = actions.filter((a) => a.type === SkillType.NORMAL && a.isPlunge === true)
+
+  const timelineContent = (
+    <div className="space-y-1">
+      <AttackRow
+        label={skillTypeLabels[SkillType.NORMAL]}
+        tooltipName={operatorId ? t(`character.${operatorId}.base_attack.name` as Parameters<typeof t>[0]) : undefined}
+        tooltipDescription={operatorId ? t(`character.${operatorId}.base_attack.description` as Parameters<typeof t>[0]) : undefined}
+        actions={normalAttacks}
+        skillTypeColors={skillTypeColors}
+        skillTypeBgColors={skillTypeBgColors}
+        getActionPosition={getActionPosition}
+        getAttackDurationMsForPlayer={getNormalAttackDurationMsForPlayer}
+        onRowClick={(e) => onTimelineClick(e, playerCharacter, SkillType.NORMAL)}
+        onMoveAction={onMoveAction}
+        onRemoveAction={onRemoveAction}
+        timelineDurationMs={timelineDurationMs}
+        secondMarkerWidthPx={secondMarkerWidthPx}
+        playerCharacter={playerCharacter}
+        deleteMode={deleteMode}
+      />
+      <AttackRow
+        label={t('attackTypes.plunge')}
+        tooltipName={t('attackTypes.plunge')}
+        tooltipDescription={t('plungeAttack.description')}
+        actions={plungeAttacks}
+        skillTypeColors={skillTypeColors}
+        skillTypeBgColors={skillTypeBgColors}
+        getActionPosition={getActionPosition}
+        getAttackDurationMsForPlayer={getPlungeAttackDurationMsForPlayer}
+        onRowClick={(e) => onPlungeTimelineClick(e, playerCharacter, SkillType.NORMAL)}
+        onMoveAction={onMoveAction}
+        onRemoveAction={onRemoveAction}
+        timelineDurationMs={timelineDurationMs}
+        secondMarkerWidthPx={secondMarkerWidthPx}
+        playerCharacter={playerCharacter}
+        deleteMode={deleteMode}
+      />
     </div>
   )
 
@@ -243,3 +318,4 @@ export const NormalAttackTimeline = ({
     </div>
   )
 }
+

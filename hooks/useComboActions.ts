@@ -1,7 +1,7 @@
 import { useTranslations } from 'next-intl'
 import type { Dispatch, SetStateAction } from 'react'
 
-import { getNormalAttackDurationMs } from '@/lib/data/attacks'
+import { getNormalAttackDurationMs, getPlungeAttackDurationMs } from '@/lib/data/attacks'
 import { COMBO_SKILLS, ULTIMATES } from '@/lib/data/skills'
 import { BATTLE_SKILL_SP_COST, buildSpTimeline } from '@/lib/timeline'
 import { getComboSkillTriggerWindows } from '@/lib/comboRequirements'
@@ -29,6 +29,9 @@ export const useComboActions = ({
     if (action.type === SkillType.NORMAL) {
       const operatorId = getOperatorIdFromCharacterId(action.characterId)
       if (!operatorId) return 0
+      if (action.isPlunge) {
+        return getPlungeAttackDurationMs(operatorId)
+      }
       return getNormalAttackDurationMs(operatorId)
     }
 
@@ -61,6 +64,7 @@ export const useComboActions = ({
 
     const isSameLane = (action: ComboAction) => {
       if (candidate.type !== action.type) return false
+      // 通常攻撃と落下攻撃は共有レーンとして扱う（共存不可）
       if (candidate.type === SkillType.NORMAL) return true
       return candidate.characterId === action.characterId
     }
@@ -78,7 +82,7 @@ export const useComboActions = ({
       return candidateStart < end && start < candidateEnd
     })
   }
-  const handleAddAction = (characterId: string, type: SkillType, timing: number) => {
+  const handleAddAction = (characterId: string, type: SkillType, timing: number, isPlunge?: boolean) => {
     setActions((prev) => {
       const operatorId = getOperatorIdFromCharacterId(characterId)
       const newAction: ComboAction = {
@@ -86,22 +90,29 @@ export const useComboActions = ({
         characterId,
         type,
         timing,
+        ...(isPlunge ? { isPlunge: true } : {}),
       }
 
       if (type === SkillType.NORMAL) {
         if (operatorId) {
-          const durationMs = getNormalAttackDurationMs(operatorId)
+          const newDurationMs = isPlunge
+            ? getPlungeAttackDurationMs(operatorId)
+            : getNormalAttackDurationMs(operatorId)
           const newStart = timing
-          const newEnd = timing + durationMs
+          const newEnd = timing + newDurationMs
+          // 通常攻撃と落下攻撃は共有レーン（どちらとも重なれない）
           const hasOverlap = prev
             .filter((action) => action.type === SkillType.NORMAL)
             .some((action) => {
+              const existingDurationMs = action.isPlunge
+                ? getPlungeAttackDurationMs(operatorId)
+                : getNormalAttackDurationMs(operatorId)
               const existingStart = action.timing
-              const existingEnd = action.timing + durationMs
+              const existingEnd = action.timing + existingDurationMs
               return newStart < existingEnd && existingStart < newEnd
             })
           if (hasOverlap) {
-            alert(t('messages.normalAttackOverlap'))
+            alert(isPlunge ? t('messages.plungeAttackOverlap') : t('messages.normalAttackOverlap'))
             return prev
           }
         }
@@ -185,7 +196,7 @@ export const useComboActions = ({
 
       if (hasOverlapInLane(updatedAction, prev)) {
         if (updatedAction.type === SkillType.NORMAL) {
-          alert(t('messages.normalAttackOverlap'))
+          alert(updatedAction.isPlunge ? t('messages.plungeAttackOverlap') : t('messages.normalAttackOverlap'))
         } else if (updatedAction.type === SkillType.COMBO_SKILL) {
           alert(t('messages.comboSkillOverlap'))
         } else if (updatedAction.type === SkillType.ULTIMATE) {

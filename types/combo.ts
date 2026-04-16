@@ -147,6 +147,7 @@ export interface ComboAction {
   characterId: string
   type: SkillType
   timing: number
+  isPlunge?: boolean
 }
 
 export interface ComboState {

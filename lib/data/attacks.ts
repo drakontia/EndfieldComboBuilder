@@ -2,6 +2,7 @@
 import { BaseAttack } from '@/types/combo'
 
 export const NORMAL_ATTACK_DEFAULT_DURATION_MS = 3000
+export const PLUNGE_ATTACK_DURATION_MS = 300
 
 // Normal Attacks (通常攻撃)
 export const NORMAL_ATTACKS: Record<string, BaseAttack> = {
@@ -194,4 +195,12 @@ export const getNormalAttackStatusEffect = (operatorId: string) => {
 
 export const getNormalAttackStaggerDamage = (operatorId: string) => {
   return NORMAL_ATTACKS[`${operatorId}_base_attack`]?.stagger ?? 0
+}
+
+export const getPlungeAttackDurationMs = (_operatorId: string) => {
+  return PLUNGE_ATTACK_DURATION_MS
+}
+
+export const getPlungeAttackStaggerDamage = (_operatorId: string) => {
+  return 0
 }

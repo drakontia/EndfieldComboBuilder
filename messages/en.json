@@ -35,9 +35,13 @@
   },
   "attackTypes": {
     "normal": "Normal Attack",
+    "plunge": "Plunge Attack",
     "battleSkill": "Battle Skill",
     "synergySkill": "Synergy Skill",
     "ultimate": "Ultimate"
+  },
+  "plungeAttack": {
+    "description": "Using a Normal Attack while airborne causes you to plunge down and deal Physical damage to surrounding enemies."
   },
   "physicalStatus": {
     "vulnerable": "Crash",
@@ -112,6 +116,7 @@
     "urlCopied": "Share URL copied to clipboard!",
     "spInsufficient": "Not enough SP (Battle Skill: {cost}).",
     "normalAttackOverlap": "Normal attacks overlap.",
+    "plungeAttackOverlap": "Normal or plunge attacks overlap.",
     "battleSkillOverlap": "Battle skills overlap.",
     "comboSkillOverlap": "Combo skill is on cooldown.",
     "comboSkillNotInWindow": "Combo skill conditions are not met.",
