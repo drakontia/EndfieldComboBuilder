@@ -5,6 +5,42 @@ export const NORMAL_ATTACK_DEFAULT_DURATION_MS = 3000
 
 // Normal Attacks (通常攻撃)
 export const NORMAL_ATTACKS: Record<string, BaseAttack> = {
+  'rossi_base_attack': {
+    // 通常攻撃：最大5段の攻撃で、敵に物理ダメージを与える。操作中のオペレーターの場合、重攻撃はブレイク値18を与える。
+    operatorId: 'rossi',
+    name: 'rossi.base_attack.name',
+    description: 'rossi.base_attack.description',
+    duration: 3000,
+    stagger: 18
+  },
+  'tangtang_base_attack': {
+    operatorId: 'tangtang',
+    name: 'tangtang.base_attack.name',
+    description: 'tangtang.base_attack.description',
+    duration: 3000,
+    stagger: 18
+  },
+  'yvonne_base_attack': {
+    operatorId: 'yvonne',
+    name: 'yvonne.base_attack.name',
+    description: 'yvonne.base_attack.description',
+    duration: 3317,
+    stagger: 17
+  },
+  'gilberta_base_attack': {
+    operatorId: 'gilberta',
+    name: 'gilberta.base_attack.name',
+    description: 'gilberta.base_attack.description',
+    duration: 3133,
+    stagger: 16
+  },
+  'laevatain_base_attack': {
+    operatorId: 'laevatain',
+    name: 'laevatain.base_attack.name',
+    description: 'laevatain.base_attack.description',
+    duration: 3300,
+    stagger: 18
+  },
   'endministrator_base_attack': {
     operatorId: 'endministrator',
     name: 'endministrator.base_attack.name',
@@ -60,20 +96,6 @@ export const NORMAL_ATTACKS: Record<string, BaseAttack> = {
     description: 'avywenna.base_attack.description',
     duration: 3167,
     stagger: 17
-  },
-  'gilberta_base_attack': {
-    operatorId: 'gilberta',
-    name: 'gilberta.base_attack.name',
-    description: 'gilberta.base_attack.description',
-    duration: 3133,
-    stagger: 16
-  },
-  'laevatain_base_attack': {
-    operatorId: 'laevatain',
-    name: 'laevatain.base_attack.name',
-    description: 'laevatain.base_attack.description',
-    duration: 3300,
-    stagger: 18
   },
   'xaihi_base_attack': {
     operatorId: 'xaihi',
@@ -158,28 +180,6 @@ export const NORMAL_ATTACKS: Record<string, BaseAttack> = {
     description: 'catcher.base_attack.description',
     duration: 3817,
     stagger: 17
-  },
-  'yvonne_base_attack': {
-    operatorId: 'yvonne',
-    name: 'yvonne.base_attack.name',
-    description: 'yvonne.base_attack.description',
-    duration: 3317,
-    stagger: 17
-  },
-  'tangtang_base_attack': {
-    operatorId: 'tangtang',
-    name: 'tangtang.base_attack.name',
-    description: 'tangtang.base_attack.description',
-    duration: 3000,
-    stagger: 18
-  },
-  'rossi_base_attack': {
-    // 通常攻撃：最大5段の攻撃で、敵に物理ダメージを与える。操作中のオペレーターの場合、重攻撃はブレイク値18を与える。
-    operatorId: 'rossi',
-    name: 'rossi.base_attack.name',
-    description: 'rossi.base_attack.description',
-    duration: 3000,
-    stagger: 18
   }
 }
 

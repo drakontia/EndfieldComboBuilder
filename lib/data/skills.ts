@@ -3,12 +3,36 @@ import { SkillType, PhysicalStatus, ArtsInfliction, ArtsReaction, BattleSkill, U
 
 // Battle Skills (戦技)
 export const BATTLE_SKILLS: Record<string, BattleSkill> = {
-  'laevatain_battle_skill': {
-    operatorId: 'laevatain',
+  'rossi_battle_skill': {
+    // 目標に突進し、物理ダメージと浮遊効果を与える。
+    // クラッシュ状態の目標に命中した場合、追加で目標に突進する狼の至宝を放ち、灼熱ダメージを与える。
+    operatorId: 'rossi',
     type: SkillType.BATTLE_SKILL,
-    name: 'skill.laevatain_battle_skill.name',
-    description: 'skill.laevatain_battle_skill.description',
-    statusEffect: [ArtsReaction.COMBUSTION],
+    name: 'skill.rossi_battle_skill.name',
+    description: 'skill.rossi_battle_skill.description',
+    statusEffect: [PhysicalStatus.LIFT],
+    stagger: 5,
+    skillPoints: 100
+  },
+  'tangtang_battle_skill': {
+    // 水中から飛び出して敵に接近し、射撃を行う。寒冷ダメージを与え、水竜巻を1つ発生させる。
+    // 同時に、周囲の湍水をすべて消費し、追加の水竜巻を発生させる。発生した数に応じて、SPが一定量返還される。
+    //水竜巻：範囲内の敵に寒冷付着を1段階付与し、持続的に寒冷ダメージを与える。
+    // 一度に複数の水竜巻を発生させた場合、追加で敵にアーツ脆弱を付与するが、寒冷付着は重複して付与されない。
+    // 水竜巻によるダメージは戦技ダメージとして見なされる。
+    operatorId: 'tangtang',
+    type: SkillType.BATTLE_SKILL,
+    name: 'skill.tangtang_battle_skill.name',
+    description: 'skill.tangtang_battle_skill.description',
+    statusEffect: [ArtsInfliction.CRYO],
+    skillPoints: 100
+  },
+  'yvonne_battle_skill': {
+    operatorId: 'yvonne',
+    type: SkillType.BATTLE_SKILL,
+    name: 'skill.yvonne_battle_skill.name',
+    description: 'skill.yvonne_battle_skill.description',
+    statusEffect: [],
     skillPoints: 100
   },
   'gilberta_battle_skill': {
@@ -19,12 +43,12 @@ export const BATTLE_SKILLS: Record<string, BattleSkill> = {
     statusEffect: [ArtsInfliction.NATURE],
     skillPoints: 100
   },
-  'yvonne_battle_skill': {
-    operatorId: 'yvonne',
+  'laevatain_battle_skill': {
+    operatorId: 'laevatain',
     type: SkillType.BATTLE_SKILL,
-    name: 'skill.yvonne_battle_skill.name',
-    description: 'skill.yvonne_battle_skill.description',
-    statusEffect: [],
+    name: 'skill.laevatain_battle_skill.name',
+    description: 'skill.laevatain_battle_skill.description',
+    statusEffect: [ArtsReaction.COMBUSTION],
     skillPoints: 100
   },
   'endministrator_battle_skill': {
@@ -186,62 +210,42 @@ export const BATTLE_SKILLS: Record<string, BattleSkill> = {
     description: 'skill.fluorite_battle_skill.description',
     statusEffect: [Debuff.SLOW, ArtsInfliction.NATURE],
     skillPoints: 100
-  },
-  'tangtang_battle_skill': {
-    // 水中から飛び出して敵に接近し、射撃を行う。寒冷ダメージを与え、水竜巻を1つ発生させる。
-    // 同時に、周囲の湍水をすべて消費し、追加の水竜巻を発生させる。発生した数に応じて、SPが一定量返還される。
-    //水竜巻：範囲内の敵に寒冷付着を1段階付与し、持続的に寒冷ダメージを与える。
-    // 一度に複数の水竜巻を発生させた場合、追加で敵にアーツ脆弱を付与するが、寒冷付着は重複して付与されない。
-    // 水竜巻によるダメージは戦技ダメージとして見なされる。
-    operatorId: 'tangtang',
-    type: SkillType.BATTLE_SKILL,
-    name: 'skill.tangtang_battle_skill.name',
-    description: 'skill.tangtang_battle_skill.description',
-    statusEffect: [ArtsInfliction.CRYO],
-    skillPoints: 100
-  },
-  'rossi_battle_skill': {
-    // 目標に突進し、物理ダメージと浮遊効果を与える。
-    // クラッシュ状態の目標に命中した場合、追加で目標に突進する狼の至宝を放ち、灼熱ダメージを与える。
-    operatorId: 'rossi',
-    type: SkillType.BATTLE_SKILL,
-    name: 'skill.rossi_battle_skill.name',
-    description: 'skill.rossi_battle_skill.description',
-    statusEffect: [PhysicalStatus.LIFT],
-    stagger: 5,
-    skillPoints: 100
   }
 }
 
 // Combo Skills (連携技)
 export const COMBO_SKILLS: Record<string, ComboSkill> = {
-  'laevatain_combo_skill': {
-    // 敵が燃焼または腐食状態になったときに発動可能。
-    // 燃焼または腐食状態の敵の足元から炎を噴き上げ、灼熱ダメージを与える。
-    // 敵に命中すると、劫火を1回獲得する。
-    // 命中した敵1体につき、追加で必殺チャージを回復する。
-    operatorId: 'laevatain',
+  'rossi_combo_skill': {
+    // 敵がクラッシュかつアーツ付着状態の時に発動可能。
+    // ロッシの連携技は連続で2回発動できる。1回目は目標に物理ダメージを与える。
+    // 2回目は全てのアーツ付着をすべて消費し、消費した段階数に応じてその目標に物理ダメージと浮遊効果を与える。同時に、一定時間自身の会心率と会心ダメージがアップする。
+    // 2回目の連携技が完璧連携となった場合、追加で目標にクラッシュを1段階付与する。
+    operatorId: 'rossi',
     type: SkillType.COMBO_SKILL,
-    name: 'laevatain.combo_skill.name',
-    description: 'laevatain.combo_skill.description',
+    name: 'rossi.combo_skill.name',
+    description: 'rossi.combo_skill.description',
     cooldown: 16000,
-    statusEffect: [],
+    statusEffect: [PhysicalStatus.LIFT],
+    stagger: 5,
     requirement: {
-      statusEffects: [ArtsReaction.COMBUSTION, ArtsReaction.CORROSION]
+      statusEffectGroups: [
+        [PhysicalStatus.VULNERABLE],
+        [ArtsInfliction.HEAT, ArtsInfliction.CRYO, ArtsInfliction.ELECTRIC, ArtsInfliction.NATURE]
+      ]
     }
   },
-  'gilberta_combo_skill': {
-    // 敵がアーツ異常状態になった場合に発動可能。
-    // 短時間のチャージ後、重力で目標および周囲の敵を引き寄せ、
-    // 自然ダメージを与え、強制的に浮遊効果を発動させる。
-    operatorId: 'gilberta',
+  'tangtang_combo_skill': {
+    // 敵が寒冷付着またはアーツ爆発のダメージを受けたときに発動可能。
+    // 激流を放ち、前方の敵を貫いて寒冷ダメージを与え、湍水を1カ所生成する。
+    // 同時に存在できる湍水は2カ所まで。
+    operatorId: 'tangtang',
     type: SkillType.COMBO_SKILL,
-    name: 'gilberta.combo_skill.name',
-    description: 'gilberta.combo_skill.description',
-    cooldown: 16000,
-    statusEffectForcibly: [PhysicalStatus.LIFT],
+    name: 'tangtang.combo_skill.name',
+    description: 'tangtang.combo_skill.description',
+    cooldown: 12000,
+    statusEffect: [ArtsInfliction.CRYO],
     requirement: {
-      statusEffects: [ArtsReaction.COMBUSTION, ArtsReaction.FREEZE, ArtsReaction.SHOCK, ArtsReaction.CORROSION]
+      statusEffects: [ArtsInfliction.CRYO]
     }
   },
   'yvonne_combo_skill': {
@@ -259,6 +263,35 @@ export const COMBO_SKILLS: Record<string, ComboSkill> = {
     requirement: {
       statusEffects: [ArtsReaction.FREEZE],
       requiresHeavyAttack: true
+    }
+  },
+  'gilberta_combo_skill': {
+    // 敵がアーツ異常状態になった場合に発動可能。
+    // 短時間のチャージ後、重力で目標および周囲の敵を引き寄せ、
+    // 自然ダメージを与え、強制的に浮遊効果を発動させる。
+    operatorId: 'gilberta',
+    type: SkillType.COMBO_SKILL,
+    name: 'gilberta.combo_skill.name',
+    description: 'gilberta.combo_skill.description',
+    cooldown: 16000,
+    statusEffectForcibly: [PhysicalStatus.LIFT],
+    requirement: {
+      statusEffects: [ArtsReaction.COMBUSTION, ArtsReaction.FREEZE, ArtsReaction.SHOCK, ArtsReaction.CORROSION]
+    }
+  },
+  'laevatain_combo_skill': {
+    // 敵が燃焼または腐食状態になったときに発動可能。
+    // 燃焼または腐食状態の敵の足元から炎を噴き上げ、灼熱ダメージを与える。
+    // 敵に命中すると、劫火を1回獲得する。
+    // 命中した敵1体につき、追加で必殺チャージを回復する。
+    operatorId: 'laevatain',
+    type: SkillType.COMBO_SKILL,
+    name: 'laevatain.combo_skill.name',
+    description: 'laevatain.combo_skill.description',
+    cooldown: 16000,
+    statusEffect: [],
+    requirement: {
+      statusEffects: [ArtsReaction.COMBUSTION, ArtsReaction.CORROSION]
     }
   },
   'endministrator_combo_skill': {
@@ -536,51 +569,42 @@ export const COMBO_SKILLS: Record<string, ComboSkill> = {
     cooldown: 16000,
     statusEffect: [Buff.SHIELD],
     requirement: {}
-  },
-  'tangtang_combo_skill': {
-    // 敵が寒冷付着またはアーツ爆発のダメージを受けたときに発動可能。
-    // 激流を放ち、前方の敵を貫いて寒冷ダメージを与え、湍水を1カ所生成する。
-    // 同時に存在できる湍水は2カ所まで。
-    operatorId: 'tangtang',
-    type: SkillType.COMBO_SKILL,
-    name: 'tangtang.combo_skill.name',
-    description: 'tangtang.combo_skill.description',
-    cooldown: 12000,
-    statusEffect: [ArtsInfliction.CRYO],
-    requirement: {
-      statusEffects: [ArtsInfliction.CRYO]
-    }
-  },
-  'rossi_combo_skill': {
-    // 敵がクラッシュかつアーツ付着状態の時に発動可能。
-    // ロッシの連携技は連続で2回発動できる。1回目は目標に物理ダメージを与える。
-    // 2回目は全てのアーツ付着をすべて消費し、消費した段階数に応じてその目標に物理ダメージと浮遊効果を与える。同時に、一定時間自身の会心率と会心ダメージがアップする。
-    // 2回目の連携技が完璧連携となった場合、追加で目標にクラッシュを1段階付与する。
-    operatorId: 'rossi',
-    type: SkillType.COMBO_SKILL,
-    name: 'rossi.combo_skill.name',
-    description: 'rossi.combo_skill.description',
-    cooldown: 16000,
-    statusEffect: [PhysicalStatus.LIFT],
-    stagger: 5,
-    requirement: {
-      statusEffectGroups: [
-        [PhysicalStatus.VULNERABLE],
-        [ArtsInfliction.HEAT, ArtsInfliction.CRYO, ArtsInfliction.ELECTRIC, ArtsInfliction.NATURE]
-      ]
-    }
   }
 }
 
 // Ultimates (必殺技)
 export const ULTIMATES: Record<string, Ultimate> = {
-  'laevatain_ultimate': {
-    operatorId: 'laevatain',
+  'rossi_ultimate': {
+    // 	マントを操り、連続で敵を突き刺す。
+    // 短時間で目標に灼熱ダメージを複数回与えたあと、ナイフによる斬撃を2段繰り出し、高い灼熱ダメージを与え、灼熱付着を付与する。
+    operatorId: 'rossi',
     type: SkillType.ULTIMATE,
-    name: 'laevatain.ultimate.name',
-    description: 'laevatain.ultimate.description',
-    chargeGain: 80,
+    name: 'rossi.ultimate.name',
+    description: 'rossi.ultimate.description',
+    chargeGain: 110,
     statusEffect: [ArtsInfliction.HEAT],
+    stagger: 25,
+    cooldown: 10000
+  },
+  'tangtang_ultimate': {
+    // タンタンが眼帯を外し、目に宿る古の紋様を解放する。
+    // 紋様の範囲内にいる敵を封鎖し、一定時間行動不能にすると同時に、持続的に寒冷ダメージを与える。
+    // 古の紋様の変化が終了したときに、大波が発生し、範囲内の敵に高い寒冷ダメージを与える。
+    // 操作中のオペレーターが古の紋様の範囲内で落下攻撃を行った場合、その時点で紋様の変化は終了し、大波が発生する。この場合、大波による寒冷ダメージがアップする。
+    operatorId: 'tangtang',
+    type: SkillType.ULTIMATE,
+    name: 'tangtang.ultimate.name',
+    description: 'tangtang.ultimate.description',
+    chargeGain: 90,
+    cooldown: 10000
+  },
+  'yvonne_ultimate': {
+    operatorId: 'yvonne',
+    type: SkillType.ULTIMATE,
+    name: 'yvonne.ultimate.name',
+    description: 'yvonne.ultimate.description',
+    chargeGain: 75,
+    statusEffect: [ArtsReaction.FREEZE],
     cooldown: 10000
   },
   'gilberta_ultimate': {
@@ -592,13 +616,13 @@ export const ULTIMATES: Record<string, Ultimate> = {
     statusEffect: [ArtsInfliction.NATURE],
     cooldown: 10000
   },
-  'yvonne_ultimate': {
-    operatorId: 'yvonne',
+  'laevatain_ultimate': {
+    operatorId: 'laevatain',
     type: SkillType.ULTIMATE,
-    name: 'yvonne.ultimate.name',
-    description: 'yvonne.ultimate.description',
-    chargeGain: 75,
-    statusEffect: [ArtsReaction.FREEZE],
+    name: 'laevatain.ultimate.name',
+    description: 'laevatain.ultimate.description',
+    chargeGain: 80,
+    statusEffect: [ArtsInfliction.HEAT],
     cooldown: 10000
   },
   'endministrator_ultimate': {
@@ -771,30 +795,6 @@ export const ULTIMATES: Record<string, Ultimate> = {
     statusEffect: [ArtsInfliction.NATURE],
     cooldown: 10000
   },
-  'tangtang_ultimate': {
-    // タンタンが眼帯を外し、目に宿る古の紋様を解放する。
-    // 紋様の範囲内にいる敵を封鎖し、一定時間行動不能にすると同時に、持続的に寒冷ダメージを与える。
-    // 古の紋様の変化が終了したときに、大波が発生し、範囲内の敵に高い寒冷ダメージを与える。
-    // 操作中のオペレーターが古の紋様の範囲内で落下攻撃を行った場合、その時点で紋様の変化は終了し、大波が発生する。この場合、大波による寒冷ダメージがアップする。
-    operatorId: 'tangtang',
-    type: SkillType.ULTIMATE,
-    name: 'tangtang.ultimate.name',
-    description: 'tangtang.ultimate.description',
-    chargeGain: 90,
-    cooldown: 10000
-  },
-  'rossi_ultimate': {
-    // 	マントを操り、連続で敵を突き刺す。
-    // 短時間で目標に灼熱ダメージを複数回与えたあと、ナイフによる斬撃を2段繰り出し、高い灼熱ダメージを与え、灼熱付着を付与する。
-    operatorId: 'rossi',
-    type: SkillType.ULTIMATE,
-    name: 'rossi.ultimate.name',
-    description: 'rossi.ultimate.description',
-    chargeGain: 110,
-    statusEffect: [ArtsInfliction.HEAT],
-    stagger: 25,
-    cooldown: 10000
-  }
 }
 
 export const getStatusEffectForciblyForAction = (operatorId: string | null, type: SkillType) => {

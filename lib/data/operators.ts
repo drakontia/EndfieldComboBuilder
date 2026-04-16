@@ -2,13 +2,29 @@
 import { Operator, CharcterType, CharacterElement } from '@/types/combo'
 
 export const OPERATORS: Record<string, Operator> = {
-  // Laevatain
-  'laevatain': {
-    name: 'character.laevatain.name',
-    type: CharcterType.STRIKER,
-    element: CharacterElement.HEAT,
+  // Rossi
+  'rossi': {
+    name: 'character.rossi.name',
+    type: CharcterType.GUARD,
+    element: CharacterElement.PHYSICS,
     rarity: 6,
-    imageUrl: '/images/operators/laevatain.png'
+    imageUrl: '/images/operators/rossi.png'
+  },
+  // Tangtang
+  'tangtang': {
+    name: 'character.tangtang.name',
+    type: CharcterType.CASTER,
+    element: CharacterElement.CRYO,
+    rarity: 6,
+    imageUrl: '/images/operators/tangtang.png'
+  },
+  // Yvonne
+  'yvonne': {
+    name: 'character.yvonne.name',
+    type: CharcterType.STRIKER,
+    element: CharacterElement.CRYO,
+    rarity: 6,
+    imageUrl: '/images/operators/yvonne.png'
   },
   // Gilberta
   'gilberta': {
@@ -18,13 +34,13 @@ export const OPERATORS: Record<string, Operator> = {
     rarity: 6,
     imageUrl: '/images/operators/gilberta.png'
   },
-  // Yvonne
-  'yvonne': {
-    name: 'character.yvonne.name',
+  // Laevatain
+  'laevatain': {
+    name: 'character.laevatain.name',
     type: CharcterType.STRIKER,
-    element: CharacterElement.CRYO,
+    element: CharacterElement.HEAT,
     rarity: 6,
-    imageUrl: '/images/operators/yvonne.png'
+    imageUrl: '/images/operators/laevatain.png'
   },
   'endministrator': {
     name: 'character.endministrator.name',
@@ -177,22 +193,6 @@ export const OPERATORS: Record<string, Operator> = {
     element: CharacterElement.NATURE,
     rarity: 4,
     imageUrl: '/images/operators/fluorite.png'
-  },
-  // Tangtang
-  'tangtang': {
-    name: 'character.tangtang.name',
-    type: CharcterType.CASTER,
-    element: CharacterElement.CRYO,
-    rarity: 6,
-    imageUrl: '/images/operators/tangtang.png'
-  },
-  // Rossi
-  'rossi': {
-    name: 'character.rossi.name',
-    type: CharcterType.GUARD,
-    element: CharacterElement.PHYSICS,
-    rarity: 6,
-    imageUrl: '/images/operators/rossi.png'
   }
 }
 
