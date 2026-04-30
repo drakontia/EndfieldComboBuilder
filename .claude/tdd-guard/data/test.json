@@ -1,211 +1,106 @@
 {
   "testModules": [
     {
-      "moduleId": "G:/EndfieldComboBuilder/tests/unit/lib/comboRequirements.test.ts",
+      "moduleId": "G:/EndfieldComboBuilder/tests/unit/hooks/useComboActions.test.ts",
       "tests": [
         {
-          "name": "指定時刻でアクティブなステータス効果を取得する",
-          "fullName": "comboRequirements > getActiveStatusEffectsAtTime > 指定時刻でアクティブなステータス効果を取得する",
+          "name": "prevents overlapping normal attacks",
+          "fullName": "useComboActions > prevents overlapping normal attacks",
           "state": "passed"
         },
         {
-          "name": "複数のステータス効果が重なる場合を処理する",
-          "fullName": "comboRequirements > getActiveStatusEffectsAtTime > 複数のステータス効果が重なる場合を処理する",
+          "name": "blocks battle skill when SP is insufficient",
+          "fullName": "useComboActions > blocks battle skill when SP is insufficient",
           "state": "passed"
         },
         {
-          "name": "発動条件を満たす場合、trueを返す - レーヴァテイン",
-          "fullName": "comboRequirements > canActivateComboSkill > 発動条件を満たす場合、trueを返す - レーヴァテイン",
+          "name": "prevents moving actions into overlapping lanes",
+          "fullName": "useComboActions > prevents moving actions into overlapping lanes",
           "state": "passed"
         },
         {
-          "name": "発動条件を満たさない場合、falseを返す",
-          "fullName": "comboRequirements > canActivateComboSkill > 発動条件を満たさない場合、falseを返す",
+          "name": "removes an action by id",
+          "fullName": "useComboActions > removes an action by id",
           "state": "passed"
         },
         {
-          "name": "イヴォンヌの連携技 - 凍結 + 重攻撃が必要",
-          "fullName": "comboRequirements > canActivateComboSkill > イヴォンヌの連携技 - 凍結 + 重攻撃が必要",
+          "name": "does nothing when handleMoveAction is called with the same timing",
+          "fullName": "useComboActions > does nothing when handleMoveAction is called with the same timing",
           "state": "passed"
         },
         {
-          "name": "イヴォンヌの連携技 - 凍結のみ（重攻撃なし）では発動不可",
-          "fullName": "comboRequirements > canActivateComboSkill > イヴォンヌの連携技 - 凍結のみ（重攻撃なし）では発動不可",
+          "name": "prevents adding a battle skill when it overlaps an existing battle skill",
+          "fullName": "useComboActions > prevents adding a battle skill when it overlaps an existing battle skill",
           "state": "passed"
         },
         {
-          "name": "エンドミニストラ - チーム連携技なしでは発動不可",
-          "fullName": "comboRequirements > canActivateComboSkill > エンドミニストラ - チーム連携技なしでは発動不可",
+          "name": "blocks adding a combo skill when timing is outside trigger windows",
+          "fullName": "useComboActions > combo skill actions > blocks adding a combo skill when timing is outside trigger windows",
           "state": "passed"
         },
         {
-          "name": "エンドミニストラ - 他キャラの連携技直後は発動可能",
-          "fullName": "comboRequirements > canActivateComboSkill > エンドミニストラ - 他キャラの連携技直後は発動可能",
+          "name": "adds a combo skill when timing is inside a trigger window",
+          "fullName": "useComboActions > combo skill actions > adds a combo skill when timing is inside a trigger window",
           "state": "passed"
         },
         {
-          "name": "エンドミニストラ - 他キャラの連携技から5秒後は発動不可",
-          "fullName": "comboRequirements > canActivateComboSkill > エンドミニストラ - 他キャラの連携技から5秒後は発動不可",
+          "name": "blocks adding a combo skill that overlaps an existing one",
+          "fullName": "useComboActions > combo skill actions > blocks adding a combo skill that overlaps an existing one",
           "state": "passed"
         },
         {
-          "name": "ポグラニチニク - クラッシュ重ね掛け消費が必要",
-          "fullName": "comboRequirements > canActivateComboSkill > ポグラニチニク - クラッシュ重ね掛け消費が必要",
+          "name": "adds an ultimate when there is no overlap",
+          "fullName": "useComboActions > ultimate actions > adds an ultimate when there is no overlap",
           "state": "passed"
         },
         {
-          "name": "ラストリット - 寒冷付着が3段階以上で発動可能",
-          "fullName": "comboRequirements > canActivateComboSkill > ラストリット - 寒冷付着が3段階以上で発動可能",
+          "name": "blocks adding an ultimate that overlaps an existing one",
+          "fullName": "useComboActions > ultimate actions > blocks adding an ultimate that overlaps an existing one",
           "state": "passed"
         },
         {
-          "name": "フローライト - 寒冷または自然の付着段階が2以上で発動可能",
-          "fullName": "comboRequirements > canActivateComboSkill > フローライト - 寒冷または自然の付着段階が2以上で発動可能",
+          "name": "adds a plunge attack at a non-overlapping timing",
+          "fullName": "useComboActions > plunge attack actions > adds a plunge attack at a non-overlapping timing",
           "state": "passed"
         },
         {
-          "name": "連携技が発動可能な時間範囲を取得する",
-          "fullName": "comboRequirements > getComboSkillAvailableTimeRanges > 連携技が発動可能な時間範囲を取得する",
+          "name": "blocks a plunge attack that overlaps an existing normal attack",
+          "fullName": "useComboActions > plunge attack actions > blocks a plunge attack that overlaps an existing normal attack",
           "state": "passed"
         },
         {
-          "name": "複数の時間範囲がある場合を処理する",
-          "fullName": "comboRequirements > getComboSkillAvailableTimeRanges > 複数の時間範囲がある場合を処理する",
+          "name": "blocks a normal attack that overlaps an existing plunge attack",
+          "fullName": "useComboActions > plunge attack actions > blocks a normal attack that overlaps an existing plunge attack",
           "state": "passed"
         },
         {
-          "name": "発動可能区間の先頭から5秒間のウィンドウを返す",
-          "fullName": "comboRequirements > getComboSkillTriggerWindows > 発動可能区間の先頭から5秒間のウィンドウを返す",
+          "name": "blocks a plunge attack that overlaps another plunge attack",
+          "fullName": "useComboActions > plunge attack actions > blocks a plunge attack that overlaps another plunge attack",
           "state": "passed"
         },
         {
-          "name": "発動可能区間がない場合、空配列を返す",
-          "fullName": "comboRequirements > getComboSkillTriggerWindows > 発動可能区間がない場合、空配列を返す",
+          "name": "alerts plungeAttackOverlap when moving a plunge attack into a normal attack",
+          "fullName": "useComboActions > plunge attack actions > alerts plungeAttackOverlap when moving a plunge attack into a normal attack",
           "state": "passed"
         },
         {
-          "name": "発動可能区間が5秒未満の場合、その区間の長さのウィンドウを返す",
-          "fullName": "comboRequirements > getComboSkillTriggerWindows > 発動可能区間が5秒未満の場合、その区間の長さのウィンドウを返す",
+          "name": "alerts normalAttackOverlap when moving a normal attack into another",
+          "fullName": "useComboActions > handleMoveAction overlap alerts by skill type > alerts normalAttackOverlap when moving a normal attack into another",
           "state": "passed"
         },
         {
-          "name": "複数の発動可能区間がある場合、それぞれに5秒ウィンドウを返す",
-          "fullName": "comboRequirements > getComboSkillTriggerWindows > 複数の発動可能区間がある場合、それぞれに5秒ウィンドウを返す",
+          "name": "alerts comboSkillOverlap when moving a combo skill into another",
+          "fullName": "useComboActions > handleMoveAction overlap alerts by skill type > alerts comboSkillOverlap when moving a combo skill into another",
           "state": "passed"
         },
         {
-          "name": "サポートクリスタルが付与されていない場合は false を返す",
-          "fullName": "comboRequirements > checkSupportCrystalExhausted > サポートクリスタルが付与されていない場合は false を返す",
+          "name": "alerts ultimateOverlap when moving an ultimate into another",
+          "fullName": "useComboActions > handleMoveAction overlap alerts by skill type > alerts ultimateOverlap when moving an ultimate into another",
           "state": "passed"
         },
         {
-          "name": "戦技直後（通常攻撃0回）は false を返す",
-          "fullName": "comboRequirements > checkSupportCrystalExhausted > 戦技直後（通常攻撃0回）は false を返す",
-          "state": "passed"
-        },
-        {
-          "name": "通常攻撃1回後は false を返す（まだ1チャージ残り）",
-          "fullName": "comboRequirements > checkSupportCrystalExhausted > 通常攻撃1回後は false を返す（まだ1チャージ残り）",
-          "state": "passed"
-        },
-        {
-          "name": "通常攻撃2回後は true を返す（チャージ消耗）",
-          "fullName": "comboRequirements > checkSupportCrystalExhausted > 通常攻撃2回後は true を返す（チャージ消耗）",
-          "state": "passed"
-        },
-        {
-          "name": "2回目の通常攻撃タイミング以前は false を返す",
-          "fullName": "comboRequirements > checkSupportCrystalExhausted > 2回目の通常攻撃タイミング以前は false を返す",
-          "state": "passed"
-        },
-        {
-          "name": "Xaihiの連携技: サポートクリスタル消耗前は発動不可",
-          "fullName": "comboRequirements > checkSupportCrystalExhausted > Xaihiの連携技: サポートクリスタル消耗前は発動不可",
-          "state": "passed"
-        },
-        {
-          "name": "Xaihiの連携技: サポートクリスタル消耗後は発動可能",
-          "fullName": "comboRequirements > checkSupportCrystalExhausted > Xaihiの連携技: サポートクリスタル消耗後は発動可能",
-          "state": "passed"
-        },
-        {
-          "name": "ペリカ - 自身の重攻撃後5秒以内は発動可能",
-          "fullName": "comboRequirements > requiresHeavyAttack チェック > ペリカ - 自身の重攻撃後5秒以内は発動可能",
-          "state": "passed"
-        },
-        {
-          "name": "ペリカ - 他オペレーター（ラエヴァテイン）の重攻撃後5秒以内も発動可能",
-          "fullName": "comboRequirements > requiresHeavyAttack チェック > ペリカ - 他オペレーター（ラエヴァテイン）の重攻撃後5秒以内も発動可能",
-          "state": "passed"
-        },
-        {
-          "name": "ペリカ - 重攻撃なしでは発動不可",
-          "fullName": "comboRequirements > requiresHeavyAttack チェック > ペリカ - 重攻撃なしでは発動不可",
-          "state": "passed"
-        },
-        {
-          "name": "ペリカ - 重攻撃から5秒後は発動不可",
-          "fullName": "comboRequirements > requiresHeavyAttack チェック > ペリカ - 重攻撃から5秒後は発動不可",
-          "state": "passed"
-        },
-        {
-          "name": "アルデリア - 除外効果なし + 重攻撃あり → 発動可能",
-          "fullName": "comboRequirements > excludedStatusEffects チェック > アルデリア - 除外効果なし + 重攻撃あり → 発動可能",
-          "state": "passed"
-        },
-        {
-          "name": "アルデリア - アーツ付着状態では発動不可",
-          "fullName": "comboRequirements > excludedStatusEffects チェック > アルデリア - アーツ付着状態では発動不可",
-          "state": "passed"
-        },
-        {
-          "name": "アレシュ - アーツ異常が消費された直後（期限切れ）は発動可能",
-          "fullName": "comboRequirements > requiresStatusEffectConsumed チェック > アレシュ - アーツ異常が消費された直後（期限切れ）は発動可能",
-          "state": "passed"
-        },
-        {
-          "name": "アレシュ - アーツ異常がまだアクティブ（未消費）の間は発動不可",
-          "fullName": "comboRequirements > requiresStatusEffectConsumed チェック > アレシュ - アーツ異常がまだアクティブ（未消費）の間は発動不可",
-          "state": "passed"
-        },
-        {
-          "name": "アレシュ - アーツ異常消費から5秒後は発動不可",
-          "fullName": "comboRequirements > requiresStatusEffectConsumed チェック > アレシュ - アーツ異常消費から5秒後は発動不可",
-          "state": "passed"
-        },
-        {
-          "name": "浮遊（LIFT）がアクティブな場合、クラッシュ状態（VULNERABLE）も派生する",
-          "fullName": "comboRequirements > クラッシュ状態（VULNERABLE）派生チェック > 浮遊（LIFT）がアクティブな場合、クラッシュ状態（VULNERABLE）も派生する",
-          "state": "passed"
-        },
-        {
-          "name": "転倒（KNOCKDOWN）がアクティブな場合、クラッシュ状態（VULNERABLE）も派生する",
-          "fullName": "comboRequirements > クラッシュ状態（VULNERABLE）派生チェック > 転倒（KNOCKDOWN）がアクティブな場合、クラッシュ状態（VULNERABLE）も派生する",
-          "state": "passed"
-        },
-        {
-          "name": "LIFT/KNOCKDOWNがない場合、VULNERABLEは派生しない",
-          "fullName": "comboRequirements > クラッシュ状態（VULNERABLE）派生チェック > LIFT/KNOCKDOWNがない場合、VULNERABLEは派生しない",
-          "state": "passed"
-        },
-        {
-          "name": "チェン・チアンユー - 浮遊付与後はクラッシュ状態として連携技発動可能",
-          "fullName": "comboRequirements > クラッシュ状態（VULNERABLE）派生チェック > チェン・チアンユー - 浮遊付与後はクラッシュ状態として連携技発動可能",
-          "state": "passed"
-        },
-        {
-          "name": "ロッシ - 浮遊 + アーツ付着でクラッシュ状態として連携技発動可能",
-          "fullName": "comboRequirements > クラッシュ状態（VULNERABLE）派生チェック > ロッシ - 浮遊 + アーツ付着でクラッシュ状態として連携技発動可能",
-          "state": "passed"
-        },
-        {
-          "name": "ロッシ - クラッシュ状態のみ（アーツ付着なし）では発動不可",
-          "fullName": "comboRequirements > クラッシュ状態（VULNERABLE）派生チェック > ロッシ - クラッシュ状態のみ（アーツ付着なし）では発動不可",
-          "state": "passed"
-        },
-        {
-          "name": "ロッシ - アーツ付着のみ（クラッシュ状態なし）では発動不可",
-          "fullName": "comboRequirements > クラッシュ状態（VULNERABLE）派生チェック > ロッシ - アーツ付着のみ（クラッシュ状態なし）では発動不可",
+          "name": "blocks moving a battle skill when SP becomes insufficient",
+          "fullName": "useComboActions > blocks moving a battle skill when SP becomes insufficient",
           "state": "passed"
         }
       ]
