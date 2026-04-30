@@ -8,27 +8,85 @@
     "slot": "Slot {number}",
     "playerControlled": "Player",
     "selectCharacter": "Select...",
-    "remove": "Remove"
+    "remove": "Remove",
+    "selectTitle": "Select Operator",
+    "noAvailable": "No operators available",
+    "noImage": "No image",
+    "searchPlaceholder": "Search by name",
+    "filterType": "Type",
+    "filterElement": "Element",
+    "filterRarity": "Rarity",
+    "filterAll": "All",
+    "changeCharacter": "Change",
+    "dragHandle": "Drag handle"
   },
   "timeline": {
     "title": "Combo Timeline",
     "enemyStatus": "Enemy Status",
-    "statusEffects": "Status Effects"
+    "statusEffects": "Status Effects",
+    "settingsTitle": "Timeline Settings",
+    "durationLabel": "Timeline Length",
+    "initialSpLabel": "Initial SP",
+    "ultimateChargeLabel": "Ultimate Charge (Slot {slot})",
+    "spLabel": "SP",
+    "spInitial": "Initial {value} / Max {max} / Regen {regen}/s / Battle Skill {cost}",
+    "staggerLabel": "Stagger",
+    "staggerInitial": "Initial {value}"
   },
   "attackTypes": {
     "normal": "Normal Attack",
+    "plunge": "Plunge Attack",
     "battleSkill": "Battle Skill",
     "synergySkill": "Synergy Skill",
     "ultimate": "Ultimate"
   },
-  "statusEffects": {
-    "burn": "Burn",
+  "plungeAttack": {
+    "description": "Using a Normal Attack while airborne causes you to plunge down and deal Physical damage to surrounding enemies."
+  },
+  "physicalStatus": {
+    "vulnerable": "Crash",
+    "lift": "Lift",
+    "knockdown": "Knockdown",
+    "crush": "Smash",
+    "shatter": "Shatter"
+  },
+  "artsInfliction": {
+    "heat": "Heat",
+    "cryo": "Cryo",
+    "electric": "Electric",
+    "nature": "Nature"
+  },
+  "artsBurst": {
+    "heat": "Heat",
+    "cryo": "Cryo",
+    "electric": "Electric",
+    "nature": "Nature"
+  },
+  "artsReaction": {
+    "combustion": "Combustion",
     "freeze": "Freeze",
     "shock": "Shock",
-    "poison": "Poison",
-    "stun": "Stun",
-    "weakness": "Weakness",
-    "none": "None"
+    "corrosion": "Corrosion"
+  },
+  "specialEffects": {
+    "originium_crystals": "Originium Crystals"
+  },
+  "buff": {
+    "shield": "Shield",
+    "protect": "Protect",
+    "susceptible": "Fragile",
+    "amp": "Amplification",
+    "link": "Link",
+    "dispel": "Cleanse",
+    "support_crystal": "Support Crystal",
+    "cold_infusion": "Cold Infusion"
+  },
+  "debuff": {
+    "weaken": "Weaken",
+    "susceptible": "Fragile",
+    "slow": "Slow",
+    "physical_susceptibility": "Physical Fragile",
+    "arts_susceptibility": "Arts Fragile"
   },
   "actions": {
     "save": "Save",
@@ -39,7 +97,9 @@
     "close": "Close",
     "edit": "Edit",
     "delete": "Delete",
-    "clickToDelete": "Left-click: Delete / Right-click: Edit"
+    "clickToDelete": "Left-click: Delete / Right-click: Edit",
+    "deleteModeOff": "Delete Mode: OFF",
+    "deleteModeOn": "Delete Mode: ON"
   },
   "dialog": {
     "loadTitle": "Load Combo",
@@ -53,10 +113,322 @@
     "loaded": "Combo loaded!",
     "exported": "Image exported!",
     "exportFailed": "Failed to export image",
-    "urlCopied": "Share URL copied to clipboard!"
+    "urlCopied": "Share URL copied to clipboard!",
+    "spInsufficient": "Not enough SP (Battle Skill: {cost}).",
+    "normalAttackOverlap": "Normal attacks overlap.",
+    "plungeAttackOverlap": "Normal or plunge attacks overlap.",
+    "battleSkillOverlap": "Battle skills overlap.",
+    "comboSkillOverlap": "Combo skill is on cooldown.",
+    "comboSkillNotInWindow": "Combo skill conditions are not met.",
+    "ultimateOverlap": "Ultimate is on cooldown."
   },
   "stats": {
     "characters": "{count} characters",
     "actions": "{count} actions"
+  },
+  "character": {
+    "laevatain": {
+      "name": "Laevatain",
+      "combo_skill": {
+        "name": "Wildfire",
+        "description": "Activate when enemy is in Combustion or Corrosion state. Deals Heat damage."
+      },
+      "ultimate": {
+        "name": "Ragnarok",
+        "description": "Summons Fire Sword. Switches to controlled operator. Enhanced normal attacks with Heat damage and infliction."
+      }
+    },
+    "gilberta": {
+      "name": "Gilberta",
+      "combo_skill": {
+        "name": "Matrix Transfer",
+        "description": "Activate when enemy enters Arts Reaction state. Deals Nature damage and forces Lift effect."
+      },
+      "ultimate": {
+        "name": "Gravity Field",
+        "description": "Creates gravitational anomaly field. Deals Nature damage with Nature Infliction. Enemies become Slowed and Arts Vulnerable."
+      }
+    },
+    "yvonne": {
+      "name": "Yvonne",
+      "combo_skill": {
+        "name": "Ice-chan u37",
+        "description": "Activate after heavy attack on Frozen enemy. Deploys Ice-chan that damages and eventually Freezes enemies."
+      },
+      "ultimate": {
+        "name": "Ice Shooter",
+        "description": "Deploys Pita-chan. Switches to controlled operator. Enhanced normal attacks with increased critical rate and Cryo damage."
+      }
+    },
+    "endministrator": {
+      "name": "Endministrator",
+      "combo_skill": {
+        "name": "Sealing Array",
+        "description": "Activate when other operators' synergy skills deal damage. Deals Physical damage and applies Originium Crystals."
+      },
+      "ultimate": {
+        "name": "Assault Array",
+        "description": "Launches Arts attack dealing high Physical damage. Consumes Originium Crystals for additional damage."
+      }
+    },
+    "ardelia": {
+      "name": "Ardelia",
+      "combo_skill": {
+        "name": "Eruption Column",
+        "description": "Activate when heavy attack hits non-Crash/Arts Infliction enemy. Deals Nature damage and forces Corrosion."
+      },
+      "ultimate": {
+        "name": "Fluffy Party",
+        "description": "Continuously releases Arts. Summons Dorry clones dealing Nature damage to surrounding enemies."
+      }
+    },
+    "pogranichnik": {
+      "name": "Pogranichnik",
+      "combo_skill": {
+        "name": "Full Moon Counter",
+        "description": "Activate when Crash stacks are consumed by Smash or Shatter. Performs up to 3 slashes based on consumed stacks."
+      },
+      "ultimate": {
+        "name": "Shield Legion, Advance",
+        "description": "Summons 4 shield soldiers. They march forward dealing Physical damage and gaining Iron Oath stacks."
+      }
+    },
+    "last_rite": {
+      "name": "Last Rite",
+      "combo_skill": {
+        "name": "Winter Hunger",
+        "description": "Activate when enemy has 3+ Cryo stacks. Consumes all Cryo stacks to deal damage and recover charge."
+      },
+      "ultimate": {
+        "name": "Final Farewell",
+        "description": "Dons frost armor and generates ice scythe. Performs 3 slashes dealing high Cryo damage. Becomes invulnerable."
+      }
+    },
+    "ember": {
+      "name": "Ember",
+      "combo_skill": {
+        "name": "Frontline Support",
+        "description": "Activate when controlled operator takes damage. Leaps to enemy dealing Physical damage and Knockdown."
+      },
+      "ultimate": {
+        "name": "Flame of Oath",
+        "description": "Strikes ground dealing Heat damage. Grants all team members Shield based on Ember's max HP."
+      }
+    },
+    "lifeng": {
+      "name": "Lifeng",
+      "combo_skill": {
+        "name": "Wrath Form",
+        "description": "Activate after heavy attack on Vulnerable or Shattered enemy. Deals Physical damage and gains Link status."
+      },
+      "ultimate": {
+        "name": "Immovable Heart",
+        "description": "Releases avatar to strike ground. Deals Physical damage with Knockdown and pulls enemies to center."
+      }
+    },
+    "chen_qianyu": {
+      "name": "Chen Qianyu",
+      "combo_skill": {
+        "name": "Heavenly River Ascent",
+        "description": "Activate when enemy enters Crash state. Performs continuous slashes dealing Physical damage and Lift."
+      },
+      "ultimate": {
+        "name": "Frozen Wind Slash",
+        "description": "Performs 7 slashes dealing Physical damage each time. Final slash deals higher damage."
+      }
+    },
+    "wolfgard": {
+      "name": "Wolfgard",
+      "combo_skill": {
+        "name": "Frag Grenade β",
+        "description": "Activate when enemy gains Arts Infliction. Throws grenade dealing Heat damage and Heat Infliction."
+      },
+      "ultimate": {
+        "name": "Wolf's Rage",
+        "description": "Rapidly fires Wolf's Rage at surrounding enemies. Deals Heat damage 5 times and forces Combustion."
+      }
+    },
+    "avywenna": {
+      "name": "Avywenna",
+      "combo_skill": {
+        "name": "Thunder Spear: Flash Strike",
+        "description": "Activate after heavy attack on Electric Infliction or Shocked enemy. Throws 3 spears dealing Electric damage."
+      },
+      "ultimate": {
+        "name": "Thunder Spear: Decisive Quake",
+        "description": "Throws enhanced spear to target area dealing high Electric damage to surrounding enemies."
+      }
+    },
+    "xaihi": {
+      "name": "Xaihi",
+      "combo_skill": {
+        "name": "Stress Test",
+        "description": "Activate when Support Crystal healing uses are depleted. Throws crystal dealing Cryo damage and Cryo Infliction."
+      },
+      "ultimate": {
+        "name": "Stack Overflow",
+        "description": "Grants all team members Cryo Amplification and Nature Amplification. Effect increases with Intelligence."
+      }
+    },
+    "alesh": {
+      "name": "Alesh",
+      "combo_skill": {
+        "name": "Ice Fishing Tactics",
+        "description": "Activate when nearby enemy's Arts Reaction or Originium Crystals are consumed. Deals Physical damage."
+      },
+      "ultimate": {
+        "name": "Big Catch!",
+        "description": "Catches and throws massive scale beast at enemies. Deals wide-range Cryo damage with Cryo Infliction."
+      }
+    },
+    "arclight": {
+      "name": "Arclight",
+      "combo_skill": {
+        "name": "Thunder Roar",
+        "description": "Activate when enemy is Shocked or Shock is consumed. Performs continuous slashes dealing Physical damage."
+      },
+      "ultimate": {
+        "name": "Thunderbolt Split",
+        "description": "Charges with electricity to rush forward. Deals Electric damage with Electric Infliction and forces Shock."
+      }
+    },
+    "snowshine": {
+      "name": "Snowshine",
+      "combo_skill": {
+        "name": "Arctic Rescue",
+        "description": "Activate when controlled operator is attacked below 60% HP. Throws rescue kit that heals nearby operators."
+      },
+      "ultimate": {
+        "name": "Freezing Frost",
+        "description": "Jumps and slams shield dealing high Cryo damage. Creates persistent ice field that Freezes enemies."
+      }
+    },
+    "perlica": {
+      "name": "Perlica",
+      "combo_skill": {
+        "name": "Instant Protocol: Flash Chain",
+        "description": "Activate when controlled operator deals heavy attack. Releases energy dealing Electric damage and forcing Shock."
+      },
+      "ultimate": {
+        "name": "Protocol ε: 70.41k",
+        "description": "Transfers massive orbital object to target area. Deals devastating Electric damage to enemies in range."
+      }
+    },
+    "estella": {
+      "name": "Estella",
+      "combo_skill": {
+        "name": "Distortion",
+        "description": "Activate when enemy enters Freeze state. Deals Physical damage and forces Lift effect."
+      },
+      "ultimate": {
+        "name": "Tremolo",
+        "description": "Strikes ground with spear shaft. Deals Physical damage and forces Lift on Vulnerable enemies."
+      }
+    },
+    "antal": {
+      "name": "Antal",
+      "combo_skill": {
+        "name": "Magnetic Storm Lab",
+        "description": "Activate when focused enemy gains Physical Reaction or Arts Infliction. Causes energy explosion dealing Electric damage."
+      },
+      "ultimate": {
+        "name": "Limiter Release",
+        "description": "Grants all team members Electric Amplification and Heat Amplification."
+      }
+    },
+    "da_pan": {
+      "name": "Da Pan",
+      "combo_skill": {
+        "name": "Seasoning!",
+        "description": "Activate when enemy Crash reaches 4 stacks. Swings wok dealing high Physical damage with enhanced Smash."
+      },
+      "ultimate": {
+        "name": "Add Ingredients!",
+        "description": "Slams cutting board forcing Lift. Performs 6 consecutive attacks and slams enemies down with Knockdown."
+      }
+    },
+    "catcher": {
+      "name": "Catcher",
+      "combo_skill": {
+        "name": "Immediate Suppression",
+        "description": "Activate when enemy charges or operator HP drops below 40%. Deals Physical damage and grants Shield."
+      },
+      "ultimate": {
+        "name": "Textbook Perfect",
+        "description": "Swings greatsword for 2 quick slashes applying Weaken. Then slams ground dealing high damage with Knockdown."
+      }
+    },
+    "fluorite": {
+      "name": "Fluorite",
+      "combo_skill": {
+        "name": "Special Service",
+        "description": "Activate when enemy has 2+ Cryo or Nature stacks. Causes explosion dealing Nature damage."
+      },
+      "ultimate": {
+        "name": "Boring Drama",
+        "description": "Moves in arc while rapidly shooting inside. Deals Nature damage 4 times. Enhanced bomb explosion if present."
+      }
+    },
+    "akekuri": {
+      "name": "Akekuri",
+      "combo_skill": {
+        "name": "Assault Flash",
+        "description": "Activate when enemy reaches Break state or point. Performs charging attacks dealing Physical damage."
+      },
+      "ultimate": {
+        "name": "Everyone, Assemble!",
+        "description": "Continuously releases Arts firing 3 rally flares. Each flare recovers SP."
+      }
+    },
+    "tangtang": {
+      "name": "Tangtang",
+      "combo_skill": {
+        "name": "River, Obey Me!",
+        "description": "Activate when enemy has Cryo Infliction or Arts Burst. Unleashes torrents dealing Cryo damage and applying Cryo Infliction."
+      },
+      "ultimate": {
+        "name": "The Big Boss is Watching!",
+        "description": "Unleashes a massive wave dealing Cryo damage to enemies in range."
+      }
+    },
+    "rossi": {
+      "name": "Rossi",
+      "base_attack": {
+        "name": "Boiling Wolf Blood",
+        "description": "Normal Attack: Up to 5-hit combo dealing Physical damage. Heavy Attack deals additional Break Value 18."
+      },
+      "battle_skill": {
+        "name": "Crimson Shadow",
+        "description": "Dashes forward dealing Physical damage and inflicting Lift. Against enemies in Crash state, follows up with an additional dash dealing Heat damage."
+      },
+      "combo_skill": {
+        "name": "Fleeting Shadow",
+        "description": "Activate when enemy is in Crash state AND has any Arts Infliction. 1st hit: Physical damage. 2nd hit: Consumes all Arts Infliction dealing Physical damage and Lift. Perfect Combo: grants 1 additional Crash stack."
+      },
+      "ultimate": {
+        "name": "\"Razor Claw\" Ambush",
+        "description": "Deals multiple hits of Heat damage and applies Heat Infliction."
+      }
+    }
+  },
+  "characterType": {
+    "guard": "Guard",
+    "caster": "Caster",
+    "striker": "Striker",
+    "vanguard": "Vanguard",
+    "defender": "Defender",
+    "supporter": "Supporter"
+  },
+  "characterElement": {
+    "physics": "Physical",
+    "heat": "Heat",
+    "cryo": "Cryo",
+    "electric": "Electric",
+    "nature": "Nature"
+  },
+  "rarity": {
+    "star6": "6-Star",
+    "star5": "5-Star",
+    "star4": "4-Star"
   }
 }

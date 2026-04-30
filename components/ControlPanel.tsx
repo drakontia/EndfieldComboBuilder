@@ -1,7 +1,9 @@
 'use client'
 
-import { ComboState } from '@/types/combo'
-import { useState } from 'react'
+import { FolderOpen, Image, Link, Pencil, Save, Trash2 } from 'lucide-react'
+
+import { Button } from './ui/button'
+import { Input } from './ui/input'
 
 interface ControlPanelProps {
   comboName: string
@@ -11,6 +13,9 @@ interface ControlPanelProps {
   onExportImage: () => void
   onShare: () => void
   onClear: () => void
+  deleteMode: boolean
+  onToggleDeleteMode: () => void
+  deleteModeLabel: string
 }
 
 export default function ControlPanel({
@@ -21,52 +26,72 @@ export default function ControlPanel({
   onExportImage,
   onShare,
   onClear,
+  deleteMode,
+  onToggleDeleteMode,
+  deleteModeLabel,
 }: ControlPanelProps) {
   return (
     <div className="bg-gray-800 p-4 rounded-lg mb-4">
-      <div className="flex items-center gap-4 flex-wrap">
-        <input
+      <div className="flex items-center gap-2 flex-wrap">
+        <Input
           type="text"
           value={comboName}
           onChange={(e) => onComboNameChange(e.target.value)}
           placeholder="コンボ名を入力..."
-          className="flex-1 min-w-[200px] px-4 py-2 bg-gray-700 text-white rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="flex-1 min-w-50 px-4 py-2 bg-gray-700 text-white rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-        
-        <button
+
+        <Button
+          onClick={onToggleDeleteMode}
+          className={
+            deleteMode
+              ? 'gap-1.5 px-3 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded transition'
+              : 'gap-1.5 px-3 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded transition'
+          }
+        >
+          <Pencil size={15} />
+          {deleteModeLabel}
+        </Button>
+
+        <Button
           onClick={onSave}
-          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition"
+          className="gap-1.5 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition"
         >
+          <Save size={15} />
           保存
-        </button>
-        
-        <button
+        </Button>
+
+        <Button
           onClick={onLoad}
-          className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded transition"
+          className="gap-1.5 px-3 py-2 bg-gray-600 hover:bg-gray-500 text-white border border-gray-500 rounded transition"
         >
+          <FolderOpen size={15} />
           読込
-        </button>
-        
-        <button
+        </Button>
+
+        <Button
           onClick={onExportImage}
-          className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded transition"
+          className="gap-1.5 px-3 py-2 bg-gray-600 hover:bg-gray-500 text-white border border-gray-500 rounded transition"
         >
-          画像エクスポート
-        </button>
-        
-        <button
+          <Image size={15} />
+          エクスポート
+        </Button>
+
+        <Button
           onClick={onShare}
-          className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded transition"
+          className="gap-1.5 px-3 py-2 bg-gray-600 hover:bg-gray-500 text-white border border-gray-500 rounded transition"
         >
+          <Link size={15} />
           共有
-        </button>
-        
-        <button
+        </Button>
+
+        <Button
           onClick={onClear}
-          className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition"
+          className="gap-1.5 px-3 py-2 bg-red-700 hover:bg-red-600 text-white rounded transition"
         >
+          <Trash2 size={15} />
           クリア
-        </button>
+        </Button>
       </div>
     </div>
   )

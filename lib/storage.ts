@@ -62,10 +62,9 @@ export const exportComboAsJson = (combo: ComboState): void => {
 }
 
 export const generateShareUrl = (combo: ComboState): string => {
-  // Properly handle Unicode characters by encoding to UTF-8 first
   const jsonStr = JSON.stringify(combo)
   const utf8Bytes = new TextEncoder().encode(jsonStr)
-  const base64 = btoa(String.fromCharCode(...utf8Bytes))
+  const base64 = btoa(Array.from(utf8Bytes, b => String.fromCharCode(b)).join(''))
   return `${window.location.origin}${window.location.pathname}?combo=${base64}`
 }
 

@@ -32,13 +32,99 @@
 - **リンター/フォーマッター**: ESLint + Prettier
 - **型チェック**: TypeScript strict mode
 
+## 主要ドメイン仕様（要点）
+- キャラクターのレアリティは、星4，星5、星6 の3種類。
+- 属性は、物理、灼熱、寒冷、自然、電磁
+- タイプは、前衛、突撃、先鋒、補助、術師、重装
+- アーツ付着には4種類ある。灼熱、電磁、寒冷、自然。付着は最大4段階まで行える。
+- 同じ付着を重ねると、アーツ爆発が発生する
+- 他のアーツ付着状態の敵がさらに灼熱付着を受けた場合、燃焼状態になる。
+- 他のアーツ付着状態の敵がさらに電磁付着を受けた場合、感電状態になる。
+- 他のアーツ付着状態の敵がさらに寒冷付着を受けた場合、凍結状態になる。
+- 他のアーツ付着状態の敵がさらに自然付着を受けた場合、腐食状態になる。
+- アーツ異常の継続時間は、10秒間である。
+- 敵が1回目の物理異常を受けたとき、効果は直ちに発動せず、まずクラッシュ状態になる。
+  - クラッシュ状態は浮遊と転倒によって最大4段階まで増加し、猛撃と破砕によって消費される。
+- バフ・デバフには、シールド、弱体化、籠、脆弱、スロー、増幅、リンクがある。
+- SP(Skill Points)は、戦技を使用するのに必要なポイントである。時間経過で自動回復し、および捜査中のオペレーターの重攻撃でも一定量回復する。
+  - SPの最大値は、300である。
+
 ## アーキテクチャ指針
+
+### コンポーネント階層
+
+```
+ComboBuilder（メインオーケストレーター）
+├── ControlPanel（保存/読込/エクスポート）
+├── タイムライン設定（期間/SP/チャージ入力）
+├── SpTimelineChart（Recharts: SP回復グラフ）
+├── OperatorStatusTimeline（オペレーター状態異常）
+├── NormalAttackTimeline（通常攻撃タイムライン）
+├── CharacterColumn × 4（キャラ選択・並び替え）
+│   └── CharacterCard（キャラカード表示）
+├── TimelineColumn × 4（スキルタイムライン）
+│   └── TimelineRow（dnd-kit ドラッグ可能アクション）
+└── EnemyStatusTimeline（敵状態異常・スタッガーメーター）
+```
+
+### 状態管理とカスタムフックの分離
+
+`useComboStore`（単一 Zustand ストア）に全グローバル状態を集約。ビジネスロジックはカスタムフックに抽出：
+
+| フック | 責務 |
+|--------|------|
+| `useComboActions` | アクション追加/削除/移動・重複チェック |
+| `useComboCharacters` | キャラ選択・並び替え |
+| `useComboControlPanel` | 保存/読込/エクスポート/URL共有 |
+| `useComboLoadDialog` | 読込ダイアログ状態管理 |
+
+コンポーネント内から直接 `useComboStore` を呼ぶより、対応するカスタムフック経由を優先する。
+
+### Zustand ストアの主要 State
+
+```typescript
+comboName: string
+characters: (Operator | null)[]     // 4スロット固定
+actions: ComboAction[]
+timelineDurationMs: number           // 10000〜60000ms
+initialTeamSp: number                // 0〜300
+initialUltimateCharges: number[]     // キャラごとに 0〜100
+initialEnemyStaggerMeter: number
+```
+
+### タイムライン座標変換
+
+`lib/timeline.ts` の定数・変換式は **変更前に必ず参照すること**：
+
+- `TIMELINE_WIDTH = 1000`（ピクセル）—タイムライン表示幅（固定）
+- ピクセル→ミリ秒: `(pixelX / TIMELINE_WIDTH) * timelineDurationMs`
+- アクションは **100ms 単位にスナップ**
+- SP は毎秒 10 回復（`TEAM_SP_REGEN_PER_SECOND = 10`）、戦技コスト 100（`BATTLE_SKILL_SP_COST = 100`）
+
+### データキーの命名規則（`lib/data/`）
+
+```typescript
+// operators.ts: スネークケース小文字
+'laevatain', 'endministrator', 'perlica'
+
+// skills.ts: `${operatorId}_${skill_type}` 形式
+'laevatain_battle_skill', 'laevatain_combo_skill', 'laevatain_ultimate'
+
+// i18n キー: 'character.{operatorId}.name' 形式
+'character.laevatain.name'
+```
+
+### dnd-kit の使用パターン
+
+`TimelineRow.tsx` でスキルアクションの水平ドラッグを実装：
+- `DndContext` + `restrictToHorizontalAxis` モディファイア
+- `useDraggable` フックにアクションデータをペイロードとして渡す
+- ドラッグデルタをミリ秒に変換してタイムライン境界にクランプ
 
 ### コンポーネント設計
 
-- **Atomic Design の部分的採用**: `/components/ui` に基本コンポーネント、`/components` 内に機能特化コンポーネント
-- **Composition Pattern**: 小さなコンポーネントを組み合わせて複雑な UI を構築
-- **Container/Presentational Pattern**: ロジックと表示を分離（Zustand stores でロジックを抽出）
+- **Atomic Design の部分的採用**: `components/ui` に基本コンポーネント（shadcn/ui）、`components/` に機能特化コンポーネント
+- **Container/Presentational Pattern**: ロジックをカスタムフックに抽出し、コンポーネントは表示に集中
 
 ### 状態管理の方針
 
@@ -67,6 +153,38 @@
 
 ## コーディング規約
 
+## UI 実装ガイド
+
+### コンポーネント設計原則
+
+- **Single Responsibility**: 1つのコンポーネントは1つの責務のみ
+- **Props の型定義**: 全ての props に明示的な型を定義
+- **デフォルトエクスポートを避ける**: Named export を使用し、リファクタリングを容易に
+- **children パターン**: 柔軟性が必要な場合は `children` を活用
+
+### スタイリング
+
+- **Tailwind CSS をベースに使用**: ユーティリティファーストのアプローチ
+- **共通スタイルの定義**: `styles/globals.css` でカスタムユーティリティクラスを定義
+- **CSS Modules**: コンポーネント固有の複雑なスタイルが必要な場合のみ使用
+- **レスポンシブ対応**: Tailwind のブレークポイント (`sm:`, `md:`, `lg:`) を活用
+
+### アクセシビリティ (a11y)
+
+- **セマンティック HTML**: 適切な HTML タグを使用 (`<button>`, `<nav>`, `<main>` 等)
+- **aria 属性**: 必要に応じて `aria-label`, `aria-describedby` 等を付与
+- **キーボード操作**: すべての操作をキーボードで実行可能に
+- **フォーカス管理**: `focus-visible` で適切なフォーカススタイルを適用
+
+### パフォーマンス最適化
+
+- **React.memo**: 不要な再レンダリングを防ぐ
+- **useMemo / useCallback**: 高コストな計算や関数の再生成を防ぐ
+- **Code Splitting**: React.lazy + Suspense で遅延ロード
+- **画像最適化**: WebP 形式、適切なサイズ、lazy loading
+
+## コーディング規約・ベストプラクティス
+
 ### TypeScript
 
 - **厳格な型付け**: `any` の使用を避ける
@@ -91,18 +209,66 @@
 - **レスポンシブ**: モバイルファースト
 - **ダークモード**: 将来的な対応を考慮
 
+### インポート順序
+
+1. React 関連
+2. 外部ライブラリ
+3. 内部モジュール (features, shared, lib)
+4. 型定義
+5. スタイル
+
+```typescript
+import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+
+import { TaskList } from '@/features/task/components';
+import { Button } from '@/components/ui';
+import { formatDate } from '@/utils';
+
+import type { Task } from '@/features/task/types';
+
+import styles from './Home.module.css';
+```
+
+### コメント
+
+- **JSDoc**: 複雑な関数には JSDoc コメントを付与
+- **TODO コメント**: 一時的な実装には `// TODO:` を残す
+- **コメントアウト**: 不要なコードは削除し、コメントアウトは残さない
+
+## コマンド早見表
+
+```bash
+pnpm dev              # 開発サーバー起動（http://localhost:3000）
+pnpm build            # プロダクションビルド
+pnpm lint             # ESLint 実行
+pnpm test             # Vitest ウォッチモード
+pnpm test:coverage    # カバレッジ付きユニットテスト
+pnpm test:e2e         # Playwright E2E テスト
+pnpm test:ui          # Vitest UI モード
+
+# 単一テストファイルの実行
+pnpm vitest run tests/unit/lib/timeline.test.ts
+pnpm vitest run tests/unit/hooks/useComboActions.test.ts
+
+# 単一 E2E テストの実行
+pnpm playwright test tests/e2e/combo-builder.spec.ts
+```
+
 ## テスト指針
 
 ### ユニットテスト（Vitest）
 
-- **配置**: `/tests/unit`
-- **カバレッジ**: 重要なロジックは必ずテスト
+- **配置**: `tests/unit/{lib,hooks,components}/`
+- **環境**: jsdom（`vitest.config.ts` でブラウザライク環境を設定）
+- **ライブラリ**: `@testing-library/react` + `vi.fn()` モック
+- **パターン**: コンポーネントは render + fireEvent + コールバック検証、フックは直接関数呼び出し + 状態アサーション
 - **実行**: `pnpm test` or `pnpm test:coverage`
 
 ### E2Eテスト（Playwright）
 
-- **配置**: `/tests/e2e`
-- **実行**: `pnpm test:e2e`
+- **配置**: `tests/e2e/`
+- **実行**: `pnpm test:e2e`（サーバーを自動起動する）
 - **対象**: ユーザーフロー全体
 
 ## CI/CD
@@ -118,7 +284,22 @@
 - **使用**: `useTranslations()` hook
 - **URL**: localePrefix なし（/ja や /en のプレフィックスなし）
 
-## コミット規約
+## 実装ルール
+- 型安全: すべて TypeScript で厳密に型定義を尊重（`types/combo.ts` を参照）。主要 Enum: `SkillType`, `ArtsInfliction`, `ArtsReaction`, `PhysicalStatus`, `Buff`, `Debuff`。
+- i18n: 表示文言は next-intl のキーを用い、`messages/ja.json` と `messages/en.json` の両方にキー追加。ロケールは `NEXT_LOCALE` Cookie で管理（デフォルト: `ja`）。
+- UI: Tailwind v4 記法に準拠。Shadcn UI コンポーネントのスタイル/アクセシビリティを維持。
+- 最小変更: 既存 API/挙動を壊さず、差分を限定的に。
+- URL共有: `lib/storage.ts` がコンボを URL クエリパラメータにシリアライズ/デシリアライズする。URL共有に関わる変更はこのファイルを参照。
+- ドメイン整合性: `lib/statusEffects.ts`（状態異常処理）と `lib/comboRequirements.ts`（スキル使用条件）のルールを守る。
+
+## 変更の作法（PR作成の指針）
+- ブランチ: `feature/<短く要点>` / `fix/<短く要点>` など意味のある名前。
+- コミット: 1つの目的に絞った小さなコミット。メッセージは動詞先行で簡潔に。
+- PR説明: 目的/背景、仕様への整合性、UI変更のスクリーンショット（必要時）、テスト実行結果の要約。
+- テスト: 変更に関係するユニットテストを追加/更新。UIに影響がある場合は E2E 更新も検討。
+- i18n: 新規文言は全言語にキー追加。未翻訳は一時的にフォールバック（英語 or 日本語）。
+
+### コミット規約
 
 - feat: 新機能
 - fix: バグ修正
@@ -127,6 +308,64 @@
 - docs: ドキュメント
 - style: コードスタイル
 - chore: その他
+
+## 破壊的変更の禁止例
+- 型定義の互換性を壊す変更（引数/戻り値の型を勝手に変更）
+- i18nキー構造の破壊（既存キーの削除・意味変更）
+- 既存コンポーネントの公開プロップの後方互換性を損なう変更
+
+## セキュリティ / 品質
+- XSS/CSRF 等は Next.js/React 標準挙動に準拠しつつ、危険な HTML を挿入しない。
+- コード整形は既存のスタイルに合わせる。不要なリファクタリングは避ける。
+- 大規模改修は要分割・段階的 PR。
+
+## 失敗時の対応
+- ビルド/テスト失敗時は差分を見直し、最小修正で復旧。
+- i18nエラー（キー欠落等）はフォールバックを暫定使用し、キーを追って追加。
+
+## アンチパターン
+
+以下のパターンは避けてください。既存コードで発見した場合は、リファクタリングを提案してください。
+
+### コンポーネント設計
+
+- **巨大コンポーネント**: 1つのコンポーネントが200行を超える場合は分割を検討
+- **Prop Drilling**: 深い階層での props バケツリレーは、Context や状態管理ライブラリで解決
+- **useEffect の濫用**: データフェッチは React Query、イベントハンドラーで済む処理は useEffect を使わない
+
+### 状態管理
+
+- **過度なグローバル状態**: 真にグローバルな状態のみを Zustand で管理
+- **useState の濫用**: 複雑な状態は useReducer で管理
+- **直接的な状態変更**: イミュータブルな更新を心がける
+
+### パフォーマンス
+
+- **不要な再レンダリング**: React DevTools Profiler で計測し、必要に応じて最適化
+- **過度な最適化**: 実測せずに useMemo/useCallback を多用しない
+- **巨大なバンドル**: Code Splitting を活用し、初期ロードを軽量化
+
+### TypeScript
+
+- **any の濫用**: 型推論が難しい場合は `unknown` を使用し、型ガードで絞り込む
+- **型アサーション (as)**: 必要最小限に留め、型の安全性を保つ
+- **オプショナルの濫用**: 本当に必要な場合のみ `?` を使用
+
+## セキュリティとプライバシー
+
+- **環境変数**: API キーは `.env` で管理し、`.gitignore` に追加
+- **XSS 対策**: ユーザー入力は適切にサニタイズ、React の JSX は自動エスケープ
+- **CSRF 対策**: Firebase Authentication のトークンベース認証で対応
+- **HTTPS 通信**: 本番環境では必ず HTTPS を使用
+- **CSP (Content Security Policy)**: 適切な CSP ヘッダーを設定
+
+## アクセシビリティ (a11y) ガイドライン
+
+- **WCAG 2.1 AA レベル**: 準拠を目指す
+- **スクリーンリーダー対応**: ARIA 属性を適切に使用
+- **キーボードナビゲーション**: Tab, Enter, Escape キーでの操作をサポート
+- **カラーコントラスト**: 4.5:1 以上のコントラスト比を維持
+- **axe DevTools**: 開発時に定期的にチェック
 
 ## 注意事項
 

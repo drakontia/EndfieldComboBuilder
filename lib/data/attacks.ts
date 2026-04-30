@@ -1,171 +1,206 @@
 // Attack skills data for Arknights: Endfield
-import { AttackType, StatusEffect } from '@/types/combo'
+import { BaseAttack } from '@/types/combo'
 
-export interface AttackSkillData {
-  id: string
-  operatorId: string
-  type: AttackType
-  name: {
-    ja: string
-    en: string
-  }
-  description: {
-    ja: string
-    en: string
-  }
-  cooldown?: number // in milliseconds
-  chargeGain?: number // ultimate charge gained
-  statusEffect?: StatusEffect
-  damage?: number
-  duration?: number
-}
+export const NORMAL_ATTACK_DEFAULT_DURATION_MS = 3000
+export const PLUNGE_ATTACK_DURATION_MS = 300
 
 // Normal Attacks (通常攻撃)
-export const NORMAL_ATTACKS: AttackSkillData[] = [
-  {
-    id: 'normal_1',
-    operatorId: '1',
-    type: AttackType.NORMAL,
-    name: {
-      ja: '通常攻撃',
-      en: 'Normal Attack'
-    },
-    description: {
-      ja: '5段攻撃。最後が重攻撃。',
-      en: '5-hit combo. Last hit is heavy attack.'
-    },
-    chargeGain: 5,
-    damage: 100
-  }
-]
-
-// Battle Skills (戦技)
-export const BATTLE_SKILLS: AttackSkillData[] = [
-  {
-    id: 'skill_1_1',
-    operatorId: '1',
-    type: AttackType.BATTLE_SKILL,
-    name: {
-      ja: '突進斬り',
-      en: 'Rush Slash'
-    },
-    description: {
-      ja: '前方に突進して敵を斬る',
-      en: 'Rush forward and slash enemies'
-    },
-    cooldown: 5000,
-    chargeGain: 15,
-    damage: 250
+export const NORMAL_ATTACKS: Record<string, BaseAttack> = {
+  'rossi_base_attack': {
+    // 通常攻撃：最大5段の攻撃で、敵に物理ダメージを与える。操作中のオペレーターの場合、重攻撃はブレイク値18を与える。
+    operatorId: 'rossi',
+    name: 'rossi.base_attack.name',
+    description: 'rossi.base_attack.description',
+    duration: 3000,
+    stagger: 18
   },
-  {
-    id: 'skill_2_1',
-    operatorId: '2',
-    type: AttackType.BATTLE_SKILL,
-    name: {
-      ja: '連続斬り',
-      en: 'Rapid Slash'
-    },
-    description: {
-      ja: '素早く連続攻撃',
-      en: 'Quick consecutive attacks'
-    },
-    cooldown: 4000,
-    chargeGain: 15,
-    statusEffect: StatusEffect.WEAKNESS,
-    damage: 200
-  }
-]
-
-// Synergy Skills (連携技)
-export const SYNERGY_SKILLS: AttackSkillData[] = [
-  {
-    id: 'synergy_1_1',
-    operatorId: '1',
-    type: AttackType.SYNERGY_SKILL,
-    name: {
-      ja: '炎の連携',
-      en: 'Fire Synergy'
-    },
-    description: {
-      ja: '味方と連携して炎属性攻撃',
-      en: 'Coordinate with allies for fire attack'
-    },
-    cooldown: 8000,
-    chargeGain: 20,
-    statusEffect: StatusEffect.BURN,
-    damage: 400
+  'tangtang_base_attack': {
+    operatorId: 'tangtang',
+    name: 'tangtang.base_attack.name',
+    description: 'tangtang.base_attack.description',
+    duration: 3000,
+    stagger: 18
   },
-  {
-    id: 'synergy_2_1',
-    operatorId: '2',
-    type: AttackType.SYNERGY_SKILL,
-    name: {
-      ja: '氷結連携',
-      en: 'Freeze Synergy'
-    },
-    description: {
-      ja: '味方と連携して氷結攻撃',
-      en: 'Coordinate with allies for freeze attack'
-    },
-    cooldown: 8000,
-    chargeGain: 20,
-    statusEffect: StatusEffect.FREEZE,
-    damage: 400
-  }
-]
-
-// Ultimates (必殺技)
-export const ULTIMATES: AttackSkillData[] = [
-  {
-    id: 'ultimate_1_1',
-    operatorId: '1',
-    type: AttackType.ULTIMATE,
-    name: {
-      ja: '烈火の一閃',
-      en: 'Blazing Flash'
-    },
-    description: {
-      ja: '全力で炎を纏った一撃を放つ',
-      en: 'Unleash a powerful flame-wrapped strike'
-    },
-    chargeGain: 0, // Ultimates consume charge
-    statusEffect: StatusEffect.BURN,
-    damage: 1000,
-    duration: 3000
+  'yvonne_base_attack': {
+    operatorId: 'yvonne',
+    name: 'yvonne.base_attack.name',
+    description: 'yvonne.base_attack.description',
+    duration: 3317,
+    stagger: 17
   },
-  {
-    id: 'ultimate_2_1',
-    operatorId: '2',
-    type: AttackType.ULTIMATE,
-    name: {
-      ja: '絶対零度',
-      en: 'Absolute Zero'
-    },
-    description: {
-      ja: '周囲を凍てつかせる必殺技',
-      en: 'Freeze the surroundings with ultimate power'
-    },
-    chargeGain: 0,
-    statusEffect: StatusEffect.FREEZE,
-    damage: 1200,
-    duration: 4000
+  'gilberta_base_attack': {
+    operatorId: 'gilberta',
+    name: 'gilberta.base_attack.name',
+    description: 'gilberta.base_attack.description',
+    duration: 3133,
+    stagger: 16
+  },
+  'laevatain_base_attack': {
+    operatorId: 'laevatain',
+    name: 'laevatain.base_attack.name',
+    description: 'laevatain.base_attack.description',
+    duration: 3300,
+    stagger: 18
+  },
+  'endministrator_base_attack': {
+    operatorId: 'endministrator',
+    name: 'endministrator.base_attack.name',
+    description: 'endministrator.base_attack.description',
+    duration: 3633,
+    stagger: 18
+  },
+  'ardelia_base_attack': {
+    operatorId: 'ardelia',
+    name: 'ardelia.base_attack.name',
+    description: 'ardelia.base_attack.description',
+    duration: 3517,
+    stagger: 18
+  },
+  'pogranichnik_base_attack': {
+    operatorId: 'pogranichnik',
+    name: 'pogranichnik.base_attack.name',
+    description: 'pogranichnik.base_attack.description',
+    duration: 3450,
+    stagger: 25
+  },
+  'last_rite_base_attack': {
+    operatorId: 'last_rite',
+    name: 'last_rite.base_attack.name',
+    description: 'last_rite.base_attack.description',
+    duration: 4433,
+    stagger: 25
+  },
+  'ember_base_attack': {
+    operatorId: 'ember',
+    name: 'ember.base_attack.name',
+    description: 'ember.base_attack.description',
+    duration: 4033,
+    stagger: 25
+  },
+  'lifeng_base_attack': {
+    operatorId: 'lifeng',
+    name: 'lifeng.base_attack.name',
+    description: 'lifeng.base_attack.description',
+    duration: 3067,
+    stagger: 19
+  },
+  'chen_qianyu_base_attack': {
+    operatorId: 'chen_qianyu',
+    name: 'chen_qianyu.base_attack.name',
+    description: 'chen_qianyu.base_attack.description',
+    duration: 2817,
+    stagger: 17
+  },
+  'avywenna_base_attack': {
+    operatorId: 'avywenna',
+    name: 'avywenna.base_attack.name',
+    description: 'avywenna.base_attack.description',
+    duration: 3167,
+    stagger: 17
+  },
+  'xaihi_base_attack': {
+    operatorId: 'xaihi',
+    name: 'xaihi.base_attack.name',
+    description: 'xaihi.base_attack.description',
+    duration: 2967,
+    stagger: 15
+  },
+  'wolfgard_base_attack': {
+    operatorId: 'wolfgard',
+    name: 'wolfgard.base_attack.name',
+    description: 'wolfgard.base_attack.description',
+    duration: 3600,
+    stagger: 18
+  },
+  'alesh_base_attack': {
+    operatorId: 'alesh',
+    name: 'alesh.base_attack.name',
+    description: 'alesh.base_attack.description',
+    duration: 3167,
+    stagger: 17
+  },
+  'fluorite_base_attack': {
+    operatorId: 'fluorite',
+    name: 'fluorite.base_attack.name',
+    description: 'fluorite.base_attack.description',
+    duration: 3017,
+    stagger: 15
+  },
+  'akekuri_base_attack': {
+    operatorId: 'akekuri',
+    name: 'akekuri.base_attack.name',
+    description: 'akekuri.base_attack.description',
+    duration: 3017,
+    stagger: 23
+  },
+  'arclight_base_attack': {
+    operatorId: 'arclight',
+    name: 'arclight.base_attack.name',
+    description: 'arclight.base_attack.description',
+    duration: 2767,
+    stagger: 16
+  },
+  'snowshine_base_attack': {
+    operatorId: 'snowshine',
+    name: 'snowshine.base_attack.name',
+    description: 'snowshine.base_attack.description',
+    duration: 3950,
+    stagger: 15
+  },
+  'perlica_base_attack': {
+    operatorId: 'perlica',
+    name: 'perlica.base_attack.name',
+    description: 'perlica.base_attack.description',
+    duration: 3050,
+    stagger: 17
+  },
+  'estella_base_attack': {
+    operatorId: 'estella',
+    name: 'estella.base_attack.name',
+    description: 'estella.base_attack.description',
+    duration: 3633,
+    stagger: 16
+  },
+  'antal_base_attack': {
+    operatorId: 'antal',
+    name: 'antal.base_attack.name',
+    description: 'antal.base_attack.description',
+    duration: 2967,
+    stagger: 23
+  },
+  'da_pan_base_attack': {
+    operatorId: 'da_pan',
+    name: 'da_pan.base_attack.name',
+    description: 'da_pan.base_attack.description',
+    duration: 3600,
+    stagger: 23
+  },
+  'catcher_base_attack': {
+    operatorId: 'catcher',
+    name: 'catcher.base_attack.name',
+    description: 'catcher.base_attack.description',
+    duration: 3817,
+    stagger: 17
   }
-]
-
-// Helper functions
-export function getAttackSkillsByOperator(operatorId: string, type?: AttackType): AttackSkillData[] {
-  const allSkills = [...NORMAL_ATTACKS, ...BATTLE_SKILLS, ...SYNERGY_SKILLS, ...ULTIMATES]
-  return allSkills.filter(skill => 
-    skill.operatorId === operatorId && (type === undefined || skill.type === type)
-  )
 }
 
-export function getAttackSkillById(id: string): AttackSkillData | undefined {
-  const allSkills = [...NORMAL_ATTACKS, ...BATTLE_SKILLS, ...SYNERGY_SKILLS, ...ULTIMATES]
-  return allSkills.find(skill => skill.id === id)
+export const getNormalAttackDurationMs = (operatorId: string) => {
+  const attack = NORMAL_ATTACKS[`${operatorId}_base_attack`]
+  return attack?.duration ?? NORMAL_ATTACK_DEFAULT_DURATION_MS
 }
 
-export function getAttackSkillName(id: string, locale: 'ja' | 'en' = 'ja'): string {
-  const skill = getAttackSkillById(id)
-  return skill ? skill.name[locale] : ''
+export const getNormalAttackStatusEffect = (operatorId: string) => {
+  return NORMAL_ATTACKS[`${operatorId}_base_attack`]?.statusEffect
+}
+
+export const getNormalAttackStaggerDamage = (operatorId: string) => {
+  return NORMAL_ATTACKS[`${operatorId}_base_attack`]?.stagger ?? 0
+}
+
+export const getPlungeAttackDurationMs = (_operatorId: string) => {
+  return PLUNGE_ATTACK_DURATION_MS
+}
+
+export const getPlungeAttackStaggerDamage = (_operatorId: string) => {
+  return 0
 }

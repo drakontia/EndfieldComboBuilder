@@ -1,0 +1,111 @@
+{
+  "testModules": [
+    {
+      "moduleId": "G:/EndfieldComboBuilder/tests/unit/hooks/useComboActions.test.ts",
+      "tests": [
+        {
+          "name": "prevents overlapping normal attacks",
+          "fullName": "useComboActions > prevents overlapping normal attacks",
+          "state": "passed"
+        },
+        {
+          "name": "blocks battle skill when SP is insufficient",
+          "fullName": "useComboActions > blocks battle skill when SP is insufficient",
+          "state": "passed"
+        },
+        {
+          "name": "prevents moving actions into overlapping lanes",
+          "fullName": "useComboActions > prevents moving actions into overlapping lanes",
+          "state": "passed"
+        },
+        {
+          "name": "removes an action by id",
+          "fullName": "useComboActions > removes an action by id",
+          "state": "passed"
+        },
+        {
+          "name": "does nothing when handleMoveAction is called with the same timing",
+          "fullName": "useComboActions > does nothing when handleMoveAction is called with the same timing",
+          "state": "passed"
+        },
+        {
+          "name": "prevents adding a battle skill when it overlaps an existing battle skill",
+          "fullName": "useComboActions > prevents adding a battle skill when it overlaps an existing battle skill",
+          "state": "passed"
+        },
+        {
+          "name": "blocks adding a combo skill when timing is outside trigger windows",
+          "fullName": "useComboActions > combo skill actions > blocks adding a combo skill when timing is outside trigger windows",
+          "state": "passed"
+        },
+        {
+          "name": "adds a combo skill when timing is inside a trigger window",
+          "fullName": "useComboActions > combo skill actions > adds a combo skill when timing is inside a trigger window",
+          "state": "passed"
+        },
+        {
+          "name": "blocks adding a combo skill that overlaps an existing one",
+          "fullName": "useComboActions > combo skill actions > blocks adding a combo skill that overlaps an existing one",
+          "state": "passed"
+        },
+        {
+          "name": "adds an ultimate when there is no overlap",
+          "fullName": "useComboActions > ultimate actions > adds an ultimate when there is no overlap",
+          "state": "passed"
+        },
+        {
+          "name": "blocks adding an ultimate that overlaps an existing one",
+          "fullName": "useComboActions > ultimate actions > blocks adding an ultimate that overlaps an existing one",
+          "state": "passed"
+        },
+        {
+          "name": "adds a plunge attack at a non-overlapping timing",
+          "fullName": "useComboActions > plunge attack actions > adds a plunge attack at a non-overlapping timing",
+          "state": "passed"
+        },
+        {
+          "name": "blocks a plunge attack that overlaps an existing normal attack",
+          "fullName": "useComboActions > plunge attack actions > blocks a plunge attack that overlaps an existing normal attack",
+          "state": "passed"
+        },
+        {
+          "name": "blocks a normal attack that overlaps an existing plunge attack",
+          "fullName": "useComboActions > plunge attack actions > blocks a normal attack that overlaps an existing plunge attack",
+          "state": "passed"
+        },
+        {
+          "name": "blocks a plunge attack that overlaps another plunge attack",
+          "fullName": "useComboActions > plunge attack actions > blocks a plunge attack that overlaps another plunge attack",
+          "state": "passed"
+        },
+        {
+          "name": "alerts plungeAttackOverlap when moving a plunge attack into a normal attack",
+          "fullName": "useComboActions > plunge attack actions > alerts plungeAttackOverlap when moving a plunge attack into a normal attack",
+          "state": "passed"
+        },
+        {
+          "name": "alerts normalAttackOverlap when moving a normal attack into another",
+          "fullName": "useComboActions > handleMoveAction overlap alerts by skill type > alerts normalAttackOverlap when moving a normal attack into another",
+          "state": "passed"
+        },
+        {
+          "name": "alerts comboSkillOverlap when moving a combo skill into another",
+          "fullName": "useComboActions > handleMoveAction overlap alerts by skill type > alerts comboSkillOverlap when moving a combo skill into another",
+          "state": "passed"
+        },
+        {
+          "name": "alerts ultimateOverlap when moving an ultimate into another",
+          "fullName": "useComboActions > handleMoveAction overlap alerts by skill type > alerts ultimateOverlap when moving an ultimate into another",
+          "state": "passed"
+        },
+        {
+          "name": "blocks moving a battle skill when SP becomes insufficient",
+          "fullName": "useComboActions > blocks moving a battle skill when SP becomes insufficient",
+          "state": "passed"
+        }
+      ]
+    }
+  ],
+  "unhandledErrors": [],
+  "reason": "passed"
+}

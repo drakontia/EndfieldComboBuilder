@@ -1,0 +1,44 @@
+[     116ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/675eb_next_dist_d964ce87._.js:2297
+[     466ms] [LOG] [Fast Refresh] done in 456ms @ http://localhost:3000/_next/static/chunks/675eb_next_dist_d964ce87._.js:2297
+[    1847ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/675eb_next_dist_d964ce87._.js:2297
+[    1879ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/675eb_next_dist_d964ce87._.js:2297
+[    2259ms] [LOG] %c[Vercel Web Analytics]%c Debug mode is enabled by default in development. No requests will be sent to the server. color: rgb(120, 120, 120) color: inherit @ http://localhost:3000/_next/static/chunks/675eb_next_dist_d964ce87._.js:2297
+[    2259ms] [LOG] %c[Vercel Web Analytics]%c [view] http://localhost:3000/ color: rgb(120, 120, 120) color: inherit {o: http://localhost:3000/, sv: 0.1.3, sdkn: @vercel/analytics/react, sdkv: 1.6.1, ts: 1775401263390} /_vercel/insights/view @ http://localhost:3000/_next/static/chunks/675eb_next_dist_d964ce87._.js:2297
+[  247459ms] [WARNING] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}. @ http://localhost:3000/_next/static/chunks/675eb_next_dist_d964ce87._.js:2297
+[  247462ms] [WARNING] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}. @ http://localhost:3000/_next/static/chunks/675eb_next_dist_d964ce87._.js:2297
+[  282695ms] [WARNING] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}. @ http://localhost:3000/_next/static/chunks/675eb_next_dist_d964ce87._.js:2297
+[  282698ms] [WARNING] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}. @ http://localhost:3000/_next/static/chunks/675eb_next_dist_d964ce87._.js:2297
+[  287936ms] [WARNING] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}. @ http://localhost:3000/_next/static/chunks/675eb_next_dist_d964ce87._.js:2297
+[  287938ms] [WARNING] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}. @ http://localhost:3000/_next/static/chunks/675eb_next_dist_d964ce87._.js:2297
+[  298178ms] [WARNING] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}. @ http://localhost:3000/_next/static/chunks/675eb_next_dist_d964ce87._.js:2297
+[  298180ms] [WARNING] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}. @ http://localhost:3000/_next/static/chunks/675eb_next_dist_d964ce87._.js:2297
+[  303663ms] [WARNING] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}. @ http://localhost:3000/_next/static/chunks/675eb_next_dist_d964ce87._.js:2297
+[  303666ms] [WARNING] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}. @ http://localhost:3000/_next/static/chunks/675eb_next_dist_d964ce87._.js:2297
+[  364590ms] [WARNING] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}. @ http://localhost:3000/_next/static/chunks/675eb_next_dist_d964ce87._.js:2297
+[  364592ms] [WARNING] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}. @ http://localhost:3000/_next/static/chunks/675eb_next_dist_d964ce87._.js:2297
+[  367044ms] [WARNING] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}. @ http://localhost:3000/_next/static/chunks/675eb_next_dist_d964ce87._.js:2297
+[  367046ms] [WARNING] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}. @ http://localhost:3000/_next/static/chunks/675eb_next_dist_d964ce87._.js:2297
+[  368665ms] [WARNING] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}. @ http://localhost:3000/_next/static/chunks/675eb_next_dist_d964ce87._.js:2297
+[  368667ms] [WARNING] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}. @ http://localhost:3000/_next/static/chunks/675eb_next_dist_d964ce87._.js:2297
+[  371435ms] [WARNING] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}. @ http://localhost:3000/_next/static/chunks/675eb_next_dist_d964ce87._.js:2297
+[  371437ms] [WARNING] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}. @ http://localhost:3000/_next/static/chunks/675eb_next_dist_d964ce87._.js:2297
+[ 3594761ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/675eb_next_dist_d964ce87._.js:2297
+[ 3594793ms] [LOG] [Fast Refresh] done in 114ms @ http://localhost:3000/_next/static/chunks/675eb_next_dist_d964ce87._.js:2297
+[ 3633805ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/675eb_next_dist_d964ce87._.js:2297
+[ 3633894ms] [LOG] [Fast Refresh] done in 66ms @ http://localhost:3000/_next/static/chunks/675eb_next_dist_d964ce87._.js:2297
+[ 3674948ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/675eb_next_dist_d964ce87._.js:2297
+[ 3675037ms] [LOG] [Fast Refresh] done in 81ms @ http://localhost:3000/_next/static/chunks/675eb_next_dist_d964ce87._.js:2297
+[ 3694982ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/675eb_next_dist_d964ce87._.js:2297
+[ 3695088ms] [LOG] [Fast Refresh] done in 68ms @ http://localhost:3000/_next/static/chunks/675eb_next_dist_d964ce87._.js:2297
+[ 3729372ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=0XJBq3fgPcSOJYAzADoTS' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/675eb_next_dist_client_4309f8eb._.js:10878
+[ 3732695ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=0XJBq3fgPcSOJYAzADoTS' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/675eb_next_dist_client_4309f8eb._.js:10878
+[ 3736026ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=0XJBq3fgPcSOJYAzADoTS' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/675eb_next_dist_client_4309f8eb._.js:10878
+[ 3739372ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=0XJBq3fgPcSOJYAzADoTS' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/675eb_next_dist_client_4309f8eb._.js:10878
+[ 3742749ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=0XJBq3fgPcSOJYAzADoTS' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/675eb_next_dist_client_4309f8eb._.js:10878
+[ 3750133ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=0XJBq3fgPcSOJYAzADoTS' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/675eb_next_dist_client_4309f8eb._.js:10878
+[ 3757490ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=0XJBq3fgPcSOJYAzADoTS' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/675eb_next_dist_client_4309f8eb._.js:10878
+[ 3764846ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=0XJBq3fgPcSOJYAzADoTS' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/675eb_next_dist_client_4309f8eb._.js:10878
+[ 3772223ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=0XJBq3fgPcSOJYAzADoTS' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/675eb_next_dist_client_4309f8eb._.js:10878
+[ 3779589ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=0XJBq3fgPcSOJYAzADoTS' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/675eb_next_dist_client_4309f8eb._.js:10878
+[ 3786993ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=0XJBq3fgPcSOJYAzADoTS' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/675eb_next_dist_client_4309f8eb._.js:10878
+[ 3794435ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=0XJBq3fgPcSOJYAzADoTS' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/675eb_next_dist_client_4309f8eb._.js:10878
