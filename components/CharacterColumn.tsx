@@ -18,8 +18,6 @@ interface CharacterColumnProps {
   onCharacterSelect: (character: Operator | null, index: number) => void
   onCharacterReorder: (fromIndex: number, toIndex: number) => void
   deleteMode: boolean
-  onToggleDeleteMode: () => void
-  deleteModeLabel: string
 }
 
 function CharacterSlotItem({
@@ -101,8 +99,6 @@ export default function CharacterColumn({
   onCharacterSelect,
   onCharacterReorder,
   deleteMode,
-  onToggleDeleteMode,
-  deleteModeLabel,
 }: CharacterColumnProps) {
   const t = useTranslations()
   const [isSelectorOpen, setIsSelectorOpen] = useState(false)
@@ -174,15 +170,6 @@ export default function CharacterColumn({
           <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
             <SortableContext items={characters.map((_, i) => `slot-${i}`)} strategy={verticalListSortingStrategy}>
               <div className="space-y-2">
-                <Button
-                  type="button"
-                  variant={deleteMode ? 'destructive' : 'outline'}
-                  size="sm"
-                  onClick={onToggleDeleteMode}
-                  className="w-full"
-                >
-                  {deleteModeLabel}
-                </Button>
                 {characters.map((character, index) => (
                   <CharacterSlotItem
                     key={`slot-${index}`}
@@ -199,15 +186,6 @@ export default function CharacterColumn({
         </div>
       ) : (
         <div className="w-56 shrink-0 space-y-2">
-          <Button
-            type="button"
-            variant={deleteMode ? 'destructive' : 'outline'}
-            size="sm"
-            onClick={onToggleDeleteMode}
-            className="w-full"
-          >
-            {deleteModeLabel}
-          </Button>
           <div className="space-y-2">
             {characters.map((character, index) => (
               <div key={`slot-${index}`} className="px-3 py-2 bg-gray-700 rounded">
