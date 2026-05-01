@@ -50,6 +50,7 @@ export const StaggerMeterChart = ({
             />
             <YAxis
               width={24}
+              orientation="right"
               tickLine={false}
               axisLine={false}
               fontSize={10}
