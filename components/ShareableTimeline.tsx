@@ -5,8 +5,7 @@ import { useTranslations } from 'next-intl'
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
 
 import { getOperatorIdByName, OPERATORS } from '@/lib/data/operators'
-import { getStatusEffectForAction } from '@/lib/data/skills'
-import { TIMELINE_WIDTH, getSecondMarkerWidthPx } from '@/lib/timeline'
+import { TIMELINE_DURATION, TIMELINE_WIDTH } from '@/lib/timeline'
 
 import { SkillType } from '@/types/combo'
 import type { ComboAction, Operator } from '@/types/combo'
@@ -14,7 +13,6 @@ import type { ComboAction, Operator } from '@/types/combo'
 import {
   SKILL_TYPE_LABELS,
   SKILL_TYPE_BG_COLORS,
-  SKILL_TYPE_TEXT_COLORS,
   SKILL_TYPE_ACCENT_COLORS,
 } from '@/components/combo-timeline/skillTypeConfig'
 
@@ -32,7 +30,8 @@ export default function ShareableTimeline({
   timelineDurationMs,
 }: ShareableTimelineProps) {
   const t = useTranslations()
-  const secondMarkerWidthPx = getSecondMarkerWidthPx(timelineDurationMs)
+  const shareableTimelineWidthPx = (timelineDurationMs / TIMELINE_DURATION) * TIMELINE_WIDTH
+  const secondMarkerWidthPx = shareableTimelineWidthPx / (timelineDurationMs / 1000)
 
   const getActionPosition = (timing: number) => {
     return (timing / timelineDurationMs) * TIMELINE_WIDTH
@@ -78,56 +77,59 @@ export default function ShareableTimeline({
               </div>
 
               {/* Timeline content - single unified timeline */}
-              <div
-                className="relative bg-gray-700 rounded flex-1"
-                style={{ height: TIMELINE_ROW_HEIGHT_PX, width: `${TIMELINE_WIDTH}px` }}
-                data-timeline-line
-              >
-                {/* Grid background */}
+              <div className="min-w-0 flex-1 overflow-x-auto">
                 <div
-                  className="absolute inset-0 pointer-events-none z-10 rounded"
-                  style={{
-                    backgroundImage: 'linear-gradient(to right, rgba(255, 255, 255, 0.2) 1px, transparent 1px)',
-                    backgroundSize: `${secondMarkerWidthPx}px 100%`,
-                  }}
-                />
+                  className="relative bg-gray-700 rounded shrink-0"
+                  style={{ height: TIMELINE_ROW_HEIGHT_PX, width: `${shareableTimelineWidthPx}px` }}
+                  data-timeline-line
+                  data-testid="shareable-timeline-line"
+                >
+                  {/* Grid background */}
+                  <div
+                    className="absolute inset-0 pointer-events-none z-10 rounded"
+                    style={{
+                      backgroundImage: 'linear-gradient(to right, rgba(255, 255, 255, 0.2) 1px, transparent 1px)',
+                      backgroundSize: `${secondMarkerWidthPx}px 100%`,
+                    }}
+                  />
 
-                {/* Action markers for all skill types */}
-                {actions
-                  .filter((a) => character && a.characterId === character.name)
-                  .sort((a, b) => a.timing - b.timing)
-                  .map((action) => {
-                    const left = getActionPosition(action.timing)
-                    const skillLabel = SKILL_TYPE_LABELS[action.type] || ''
+                  {/* Action markers for all skill types */}
+                  {actions
+                    .filter((a) => character && a.characterId === character.name)
+                    .sort((a, b) => a.timing - b.timing)
+                    .map((action) => {
+                      const left = getActionPosition(action.timing)
+                      const skillLabel = SKILL_TYPE_LABELS[action.type] || ''
 
-                    return (
-                      <TooltipProvider key={action.id} delayDuration={300}>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <div
-                              className={`absolute top-1 z-20 h-7 ${SKILL_TYPE_BG_COLORS[action.type]} rounded px-2 text-xs flex items-center justify-center pointer-events-none overflow-hidden border-l-2 font-medium`}
-                              style={{
-                                left: `${left}px`,
-                                width: '50px',
-                                borderLeftColor: SKILL_TYPE_ACCENT_COLORS[action.type],
-                              }}
-                              title={skillLabel}
-                            >
-                              <span className="truncate text-xs">{skillLabel}</span>
-                            </div>
-                          </TooltipTrigger>
-                          {operatorKey && (
-                            <TooltipContent side="top" className="max-w-xs">
-                              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                              <p className="font-semibold text-sm">{t(`character.${operatorKey}.${getSkillI18nSection(action.type)}.name` as any)}</p>
-                              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                              <p className="text-xs mt-1">{t(`character.${operatorKey}.${getSkillI18nSection(action.type)}.description` as any)}</p>
-                            </TooltipContent>
-                          )}
-                        </Tooltip>
-                      </TooltipProvider>
-                    )
-                  })}
+                      return (
+                        <TooltipProvider key={action.id} delayDuration={300}>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <div
+                                className={`absolute top-1 z-20 h-7 ${SKILL_TYPE_BG_COLORS[action.type]} rounded px-2 text-xs flex items-center justify-center pointer-events-none overflow-hidden border-l-2 font-medium`}
+                                style={{
+                                  left: `${left}px`,
+                                  width: '50px',
+                                  borderLeftColor: SKILL_TYPE_ACCENT_COLORS[action.type],
+                                }}
+                                title={skillLabel}
+                              >
+                                <span className="truncate text-xs">{skillLabel}</span>
+                              </div>
+                            </TooltipTrigger>
+                            {operatorKey && (
+                              <TooltipContent side="top" className="max-w-xs">
+                                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                                <p className="font-semibold text-sm">{t(`character.${operatorKey}.${getSkillI18nSection(action.type)}.name` as any)}</p>
+                                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                                <p className="text-xs mt-1">{t(`character.${operatorKey}.${getSkillI18nSection(action.type)}.description` as any)}</p>
+                              </TooltipContent>
+                            )}
+                          </Tooltip>
+                        </TooltipProvider>
+                      )
+                    })}
+                </div>
               </div>
             </div>
           )
