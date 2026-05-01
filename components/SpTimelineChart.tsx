@@ -4,7 +4,11 @@ import { useTranslations } from 'next-intl'
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts'
 
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
-import { TIMELINE_WIDTH } from '@/lib/timeline'
+import {
+  TIMELINE_CHART_CANVAS_WIDTH,
+  TIMELINE_CHART_RIGHT_MARGIN,
+  TIMELINE_CHART_Y_AXIS_WIDTH,
+} from '@/lib/timeline'
 
 interface SpTimelineChartProps {
   spChartData: { timing: number; sp: number }[]
@@ -30,7 +34,7 @@ export const SpTimelineChart = ({
   const chartContent = (
     <>
       <div className="w-24 shrink-0" />
-      <div className="relative" style={{ width: `${TIMELINE_WIDTH}px`, height: '96px' }}>
+      <div className="relative" style={{ width: `${TIMELINE_CHART_CANVAS_WIDTH}px`, height: '96px' }}>
         <ChartContainer
           id="sp-timeline"
           config={{
@@ -42,7 +46,7 @@ export const SpTimelineChart = ({
           className="w-full aspect-auto rounded bg-gray-700/40"
           style={{ height: '100%' }}
         >
-          <BarChart data={spChartData} margin={{ left: 0, right: 12, top: 8, bottom: 0 }}>
+          <BarChart data={spChartData} margin={{ left: 0, right: TIMELINE_CHART_RIGHT_MARGIN, top: 8, bottom: 0 }}>
             <CartesianGrid vertical={false} strokeDasharray="4 4" stroke="rgba(255, 255, 255, 0.08)" />
             <XAxis
               dataKey="timing"
@@ -55,7 +59,7 @@ export const SpTimelineChart = ({
               tickFormatter={(value) => `${value / 1000}s`}
             />
             <YAxis
-              width={24}
+              width={TIMELINE_CHART_Y_AXIS_WIDTH}
               orientation="right"
               tickLine={false}
               axisLine={false}
