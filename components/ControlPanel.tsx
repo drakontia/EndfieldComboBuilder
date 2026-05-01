@@ -34,6 +34,7 @@ export default function ControlPanel({
     <div className="bg-gray-800 p-4 rounded-lg mb-4">
       <div className="flex items-center gap-2 flex-wrap">
         <Input
+          data-testid="combo-name-input"
           type="text"
           value={comboName}
           onChange={(e) => onComboNameChange(e.target.value)}
@@ -74,7 +75,7 @@ export default function ControlPanel({
           className="gap-1.5 px-3 py-2 bg-gray-600 hover:bg-gray-500 text-white border border-gray-500 rounded transition"
         >
           <Image size={15} />
-          エクスポート
+          画像エクスポート
         </Button>
 
         <Button

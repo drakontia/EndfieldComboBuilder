@@ -62,6 +62,7 @@ const buildSpChartData = (points: SpTimelinePoint[], timelineDurationMs: number)
 export const ComboBuilder = () => {
   const t = useTranslations()
   const [deleteMode, setDeleteMode] = useState(false)
+  
   const comboName = useComboStore((state) => state.comboName)
   const characters = useComboStore((state) => state.characters)
   const actions = useComboStore((state) => state.actions)
@@ -69,6 +70,9 @@ export const ComboBuilder = () => {
   const initialTeamSp = useComboStore((state) => state.initialTeamSp)
   const initialUltimateCharges = useComboStore((state) => state.initialUltimateCharges)
   const initialEnemyStaggerMeter = useComboStore((state) => state.initialEnemyStaggerMeter)
+  
+  const getComboState = useComboStore((state) => state.getComboState)
+  const loadCombo = useComboStore((state) => state.loadCombo)
   const setComboName = useComboStore((state) => state.setComboName)
   const setCharacters = useComboStore((state) => state.setCharacters)
   const setActions = useComboStore((state) => state.setActions)
@@ -94,16 +98,30 @@ export const ComboBuilder = () => {
     setInitialEnemyStaggerMeter(combo.initialEnemyStaggerMeter ?? 100)
   }, [setActions, setCharacters, setComboName, setInitialTeamSp, setInitialUltimateCharges, setTimelineDurationMs, setInitialEnemyStaggerMeter])
 
+  // URL復元ロジック 第1段階 - URL パラメータから直接コンボを復元（最初に実行）
   useEffect(() => {
-    if (!comboName) {
+    if (typeof window === 'undefined') return
+    
+    const comboFromUrl = loadComboFromUrl()
+    if (!comboFromUrl) return
+    
+    // loadCombo メソッドを使用してまとめて復元
+    const store = useComboStore.getState()
+    store.loadCombo(comboFromUrl)
+  }, [])
+
+  // Placeholder を設定する効果 - URL からコンボが復元された場合は skip する
+  // このeffectはURL復元の後に実行されるため、URL復元でcomboNameが既に設定されている場合はスキップ
+  useEffect(() => {
+    // URLにcomboパラメータがある場合はプレースホルダーを設定しない
+    const hasUrlCombo = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('combo')
+    
+    // comboNameが空で、かつURLからの復元もない場合のみプレースホルダーを設定
+    if (!comboName && !hasUrlCombo) {
+      // Store の初期化後、プレースホルダーを設定
       setComboName(t('dialog.comboNamePlaceholder'))
     }
   }, [comboName, setComboName, t])
-
-  useEffect(() => {
-    const comboFromUrl = loadComboFromUrl()
-    if (comboFromUrl) loadComboState(comboFromUrl)
-  }, [loadComboState])
 
   const { handleCharacterSelect, handleCharacterReorder } = useComboCharacters(
     setCharacters,
