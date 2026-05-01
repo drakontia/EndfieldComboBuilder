@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState, useSyncExternalStore } from 'react'
 import { useTranslations } from 'next-intl'
 import { DndContext, closestCenter, DragEndEvent } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
@@ -10,6 +10,7 @@ import { CSS } from '@dnd-kit/utilities'
 import CharacterSelectDialog from '@/components/CharacterSelectDialog'
 import { Button } from '@/components/ui/button'
 import { OPERATORS } from '@/lib/data/operators'
+import { TIMELINE_ROW_HEIGHT_PX } from '@/lib/timeline'
 
 import type { Operator } from '@/types/combo'
 
@@ -45,13 +46,14 @@ function CharacterSlotItem({
   const style = {
     transform: CSS.Transform.toString(transform),
     opacity: isDragging ? 0.5 : 1,
+    height: TIMELINE_ROW_HEIGHT_PX,
   }
 
   return (
     <div
       ref={setNodeRef}
       style={style}
-      className={`flex items-center gap-2 px-3 py-2 bg-gray-700 rounded h-10 ${deleteMode ? '' : 'hover:bg-gray-600'} ${isDragging ? 'z-50' : ''}`}
+      className={`flex items-center gap-2 px-3 py-2 bg-gray-700 rounded ${deleteMode ? '' : 'hover:bg-gray-600'} ${isDragging ? 'z-50' : ''}`}
       data-testid={`character-slot-${index}`}
       onClick={(event) => {
         // If clicking on buttons, let them handle the click
@@ -103,11 +105,11 @@ export default function CharacterColumn({
   const t = useTranslations()
   const [isSelectorOpen, setIsSelectorOpen] = useState(false)
   const [selectingSlotIndex, setSelectingSlotIndex] = useState<number | null>(null)
-  const [isMounted, setIsMounted] = useState(false)
-
-  useEffect(() => {
-    setIsMounted(true)
-  }, [])
+  const isMounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  )
 
   const availableCharacters = useMemo(
     () =>
@@ -169,7 +171,7 @@ export default function CharacterColumn({
         <div className="w-56 shrink-0 space-y-2">
           <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
             <SortableContext items={characters.map((_, i) => `slot-${i}`)} strategy={verticalListSortingStrategy}>
-              <div className="space-y-2">
+              <div className="space-y-8">
                 {characters.map((character, index) => (
                   <CharacterSlotItem
                     key={`slot-${index}`}
@@ -186,9 +188,9 @@ export default function CharacterColumn({
         </div>
       ) : (
         <div className="w-56 shrink-0 space-y-2">
-          <div className="space-y-2">
+          <div className="space-y-8">
             {characters.map((character, index) => (
-              <div key={`slot-${index}`} className="px-3 py-2 bg-gray-700 rounded">
+              <div key={`slot-${index}`} className="px-3 py-2 bg-gray-700 rounded flex items-center" style={{ height: TIMELINE_ROW_HEIGHT_PX }}>
                 <p className="text-sm font-medium text-gray-100 truncate">
                   {character?.name ? t(character.name) : t('team.selectCharacter')}
                 </p>
