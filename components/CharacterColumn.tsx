@@ -55,6 +55,13 @@ function CharacterSlotItem({
       style={style}
       className={`flex items-center gap-2 px-3 py-2 bg-gray-700 rounded h-10 ${deleteMode ? '' : 'hover:bg-gray-600'} ${isDragging ? 'z-50' : ''}`}
       data-testid={`character-slot-${index}`}
+      onClick={(event) => {
+        // If clicking on buttons, let them handle the click
+        if ((event.target as HTMLElement).closest('button')) return
+        if (!deleteMode) {
+          onOpenSelector(index)
+        }
+      }}
     >
       <div className="flex-1 min-w-0 cursor-grab active:cursor-grabbing" {...attributes} {...listeners}>
         <p className="text-sm font-medium text-gray-100 truncate">
