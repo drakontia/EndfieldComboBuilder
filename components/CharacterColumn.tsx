@@ -165,19 +165,18 @@ export default function CharacterColumn({
     <>
       {isMounted ? (
         <div className="w-56 shrink-0 space-y-2">
-          <Button
-            type="button"
-            variant={deleteMode ? 'destructive' : 'outline'}
-            size="sm"
-            onClick={onToggleDeleteMode}
-            className="w-full"
-          >
-            {deleteModeLabel}
-          </Button>
-
           <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
             <SortableContext items={characters.map((_, i) => `slot-${i}`)} strategy={verticalListSortingStrategy}>
               <div className="space-y-2">
+                <Button
+                  type="button"
+                  variant={deleteMode ? 'destructive' : 'outline'}
+                  size="sm"
+                  onClick={onToggleDeleteMode}
+                  className="w-full"
+                >
+                  {deleteModeLabel}
+                </Button>
                 {characters.map((character, index) => (
                   <CharacterSlotItem
                     key={`slot-${index}`}
