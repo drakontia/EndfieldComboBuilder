@@ -29,6 +29,7 @@ test.describe('URL 共有機能', () => {
     await builder.setComboName('URL 復元テスト')
     await builder.selectCharacter(0, 'レーヴァテイン')
     await builder.selectCharacter(1, 'ギルベルタ')
+    await page.locator('#timeline-duration').fill('60')
 
     await builder.shareButton.click()
     const sharedUrl = await page.evaluate(() => navigator.clipboard.readText())
@@ -78,6 +79,8 @@ test.describe('URL 共有機能', () => {
     
     // Now check the combo name
     await expect(comboNameInput).toHaveValue('URL 復元テスト')
+    await expect(newPage.locator('#timeline-duration')).toHaveValue('60')
+    await expect(restoredBuilder.page.getByTestId('shareable-timeline-line').first()).toHaveCSS('width', '2000px')
 
     await newPage.close()
   })
