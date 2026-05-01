@@ -168,10 +168,18 @@ test.describe('Combo Skill Requirements - Logic Verification', () => {
 
   test('canActivateComboSkill: エンドミニストラ - ステータス効果なしで発動可能', async () => {
     const { canActivateComboSkill } = await import('../../lib/comboRequirements')
+    const { SkillType } = await import('../../types/combo')
     
-    const actions: ComboAction[] = []
+    const actions: ComboAction[] = [
+      {
+        id: 'action1',
+        characterId: 'character.laevatain.name',
+        type: SkillType.COMBO_SKILL,
+        timing: 1000,
+      }
+    ]
     
-    const result = canActivateComboSkill('endministrator', actions, 2000)
+    const result = canActivateComboSkill('endministrator', actions, 1500)
     
     expect(result.canActivate).toBe(true)
     expect(result.missingEffects).toEqual([])

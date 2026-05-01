@@ -31,6 +31,7 @@ export default function ControlPanel({
     <div className="bg-gray-800 p-4 rounded-lg mb-4">
       <div className="flex items-center gap-2 flex-wrap">
         <Input
+          data-testid="combo-name-input"
           type="text"
           value={comboName}
           onChange={(e) => onComboNameChange(e.target.value)}
