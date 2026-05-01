@@ -24,7 +24,7 @@ interface ShareableTimelineProps {
   timelineDurationMs: number
 }
 
-const TIMELINE_ROW_HEIGHT_PX = 56
+const TIMELINE_ROW_HEIGHT_PX = 48
 
 export default function ShareableTimeline({
   characters,
@@ -41,11 +41,6 @@ export default function ShareableTimeline({
   const getOperatorKey = (operator: Operator | null) => {
     if (!operator) return null
     return getOperatorIdByName(operator.name)
-  }
-
-  const getSkillTypesForCharacter = () => {
-    // 共有用では通常攻撃を除く
-    return [SkillType.BATTLE_SKILL, SkillType.COMBO_SKILL, SkillType.ULTIMATE]
   }
 
   const getSkillI18nSection = (type: SkillType) => {
@@ -82,76 +77,62 @@ export default function ShareableTimeline({
                 )}
               </div>
 
-              {/* Timeline content */}
+              {/* Timeline content - single unified timeline */}
               <div
-                className="h-full flex flex-row gap-2 bg-black/20 flex-1 rounded p-2"
-                style={{ height: TIMELINE_ROW_HEIGHT_PX }}
+                className="relative bg-gray-700 rounded flex-1"
+                style={{ height: TIMELINE_ROW_HEIGHT_PX, width: `${TIMELINE_WIDTH}px` }}
+                data-timeline-line
               >
-                {getSkillTypesForCharacter().map((type) => (
-                  <div key={type} className="flex items-center gap-2">
-                    <TooltipProvider delayDuration={300}>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <div
-                            className={`w-16 text-xs font-medium pl-1 flex-shrink-0 ${SKILL_TYPE_TEXT_COLORS[type]}`}
-                            style={{ borderLeft: `3px solid ${SKILL_TYPE_ACCENT_COLORS[type]}` }}
-                          >
-                            {SKILL_TYPE_LABELS[type]}
-                          </div>
-                        </TooltipTrigger>
-                        {operatorKey && (
-                          <TooltipContent side="right" className="max-w-xs">
-                            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                            <p className="font-semibold text-sm">{t(`character.${operatorKey}.${getSkillI18nSection(type)}.name` as any)}</p>
-                            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                            <p className="text-xs mt-1">{t(`character.${operatorKey}.${getSkillI18nSection(type)}.description` as any)}</p>
-                          </TooltipContent>
-                        )}
-                      </Tooltip>
-                    </TooltipProvider>
+                {/* Grid background */}
+                <div
+                  className="absolute inset-0 pointer-events-none z-10 rounded"
+                  style={{
+                    backgroundImage: 'linear-gradient(to right, rgba(255, 255, 255, 0.2) 1px, transparent 1px)',
+                    backgroundSize: `${secondMarkerWidthPx}px 100%`,
+                  }}
+                />
 
-                    <div
-                      className="relative h-10 bg-gray-700 rounded flex-1"
-                      style={{ width: `${TIMELINE_WIDTH}px`, position: 'relative' }}
-                      data-timeline-line
-                    >
-                      {/* Grid background */}
-                      <div
-                        className="absolute inset-0 pointer-events-none z-10"
-                        style={{
-                          backgroundImage: 'linear-gradient(to right, rgba(255, 255, 255, 0.2) 1px, transparent 1px)',
-                          backgroundSize: `${secondMarkerWidthPx}px 100%`,
-                        }}
-                      />
+                {/* Action markers for all skill types */}
+                {actions
+                  .filter((a) => character && a.characterId === character.name)
+                  .sort((a, b) => a.timing - b.timing)
+                  .map((action, actionIndex) => {
+                    const statusEffect = getStatusEffectForAction(
+                      getOperatorKey(character),
+                      action.type
+                    )
+                    const left = getActionPosition(action.timing)
+                    const skillLabel = SKILL_TYPE_LABELS[action.type] || ''
 
-                      {/* Action markers */}
-                      {actions
-                        .filter((a) => character && a.characterId === character.name && a.type === type)
-                        .map((action) => {
-                          const statusEffect = getStatusEffectForAction(
-                            getOperatorKey(character),
-                            action.type
-                          )
-                          const left = getActionPosition(action.timing)
-
-                          return (
+                    return (
+                      <TooltipProvider key={action.id} delayDuration={300}>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
                             <div
-                              key={action.id}
-                              className={`absolute top-1 z-20 h-8 ${SKILL_TYPE_BG_COLORS[type]} rounded px-2 text-xs flex items-center gap-1 pointer-events-none overflow-hidden`}
+                              className={`absolute top-1 z-20 h-7 ${SKILL_TYPE_BG_COLORS[action.type]} rounded px-2 text-xs flex items-center gap-1 pointer-events-none overflow-hidden border-l-2`}
                               style={{
                                 left: `${left}px`,
-                                width: '48px',
+                                width: '50px',
+                                borderLeftColor: SKILL_TYPE_ACCENT_COLORS[action.type],
                               }}
-                              title={`${action.timing / 1000}s`}
+                              title={`${skillLabel} ${action.timing / 1000}s`}
                             >
-                              <span className="truncate">{action.timing / 1000}s</span>
-                              {statusEffect && <span className="text-yellow-300">⚡</span>}
+                              <span className="truncate text-xs font-medium">{action.timing / 1000}s</span>
+                              {statusEffect && <span className="text-yellow-300 text-xs">⚡</span>}
                             </div>
-                          )
-                        })}
-                    </div>
-                  </div>
-                ))}
+                          </TooltipTrigger>
+                          {operatorKey && (
+                            <TooltipContent side="top" className="max-w-xs">
+                              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                              <p className="font-semibold text-sm">{t(`character.${operatorKey}.${getSkillI18nSection(action.type)}.name` as any)}</p>
+                              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                              <p className="text-xs mt-1">{t(`character.${operatorKey}.${getSkillI18nSection(action.type)}.description` as any)}</p>
+                            </TooltipContent>
+                          )}
+                        </Tooltip>
+                      </TooltipProvider>
+                    )
+                  })}
               </div>
             </div>
           )
