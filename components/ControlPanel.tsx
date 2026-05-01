@@ -1,6 +1,6 @@
 'use client'
 
-import { FolderOpen, Image, Link, Pencil, Save, Trash2 } from 'lucide-react'
+import { FolderOpen, Image, Link, Save, Trash2 } from 'lucide-react'
 
 import { Button } from './ui/button'
 import { Input } from './ui/input'

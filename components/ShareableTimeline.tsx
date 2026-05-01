@@ -77,7 +77,7 @@ export default function ShareableTimeline({
                   />
                 ) : (
                   <div className="w-12 h-12 bg-gray-600 rounded flex items-center justify-center text-gray-400 text-xs">
-                    {t('empty')}
+                    {t('team.selectCharacter')}
                   </div>
                 )}
               </div>
