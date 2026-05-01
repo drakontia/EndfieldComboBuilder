@@ -22,6 +22,7 @@
   },
   "timeline": {
     "title": "Combo Timeline",
+    "shareableTitle": "Shareable Timeline",
     "enemyStatus": "Enemy Status",
     "statusEffects": "Status Effects",
     "settingsTitle": "Timeline Settings",
@@ -96,6 +97,7 @@
     "clear": "Clear",
     "close": "Close",
     "edit": "Edit",
+    "change": "Change",
     "delete": "Delete",
     "clickToDelete": "Left-click: Delete / Right-click: Edit",
     "deleteModeOff": "Delete Mode: OFF",

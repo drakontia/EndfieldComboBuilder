@@ -4,6 +4,7 @@ import { type MouseEvent, useCallback, useEffect, useMemo, useState } from 'reac
 import { useTranslations } from 'next-intl'
 import CharacterColumn from '@/components/CharacterColumn'
 import TimelineColumn from '@/components/TimelineColumn'
+import ShareableTimeline from '@/components/ShareableTimeline'
 import {
   SKILL_TYPE_BG_COLORS,
   SKILL_TYPE_COLORS,
@@ -100,28 +101,9 @@ export const ComboBuilder = () => {
 
   // URL復元ロジック 第1段階 - URL パラメータから直接コンボを復元（最初に実行）
   useEffect(() => {
-    if (typeof window === 'undefined') return
-    
     const comboFromUrl = loadComboFromUrl()
-    if (!comboFromUrl) return
-    
-    // loadCombo メソッドを使用してまとめて復元
-    const store = useComboStore.getState()
-    store.loadCombo(comboFromUrl)
-  }, [])
-
-  // Placeholder を設定する効果 - URL からコンボが復元された場合は skip する
-  // このeffectはURL復元の後に実行されるため、URL復元でcomboNameが既に設定されている場合はスキップ
-  useEffect(() => {
-    // URLにcomboパラメータがある場合はプレースホルダーを設定しない
-    const hasUrlCombo = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('combo')
-    
-    // comboNameが空で、かつURLからの復元もない場合のみプレースホルダーを設定
-    if (!comboName && !hasUrlCombo) {
-      // Store の初期化後、プレースホルダーを設定
-      setComboName(t('dialog.comboNamePlaceholder'))
-    }
-  }, [comboName, setComboName, t])
+    if (comboFromUrl) loadComboState(comboFromUrl)
+  }, [loadComboState])
 
   const { handleCharacterSelect, handleCharacterReorder } = useComboCharacters(
     setCharacters,
@@ -237,9 +219,12 @@ export const ComboBuilder = () => {
         onExportImage={handleExportImage}
         onShare={handleShare}
         onClear={handleClear}
-        deleteMode={deleteMode}
-        onToggleDeleteMode={() => setDeleteMode((prev) => !prev)}
-        deleteModeLabel={deleteMode ? t('actions.deleteModeOn') : t('actions.deleteModeOff')}
+      />
+
+      <ShareableTimeline
+        characters={characters}
+        actions={actions}
+        timelineDurationMs={timelineDurationMs}
       />
 
       <div className="bg-gray-800 p-4 rounded-lg mb-4">
@@ -404,6 +389,9 @@ export const ComboBuilder = () => {
               characters={characters}
               onCharacterSelect={handleCharacterSelect}
               onCharacterReorder={handleCharacterReorder}
+              deleteMode={deleteMode}
+              onToggleDeleteMode={() => setDeleteMode((prev) => !prev)}
+              deleteModeLabel={deleteMode ? t('actions.deleteModeOn') : t('actions.deleteModeOff')}
             />
             <TimelineColumn
               characters={characters}

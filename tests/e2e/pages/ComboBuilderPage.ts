@@ -43,6 +43,9 @@ export class ComboBuilderPage {
   async goto() {
     await this.page.goto('/')
     await this.page.waitForLoadState('networkidle')
+    
+    // Wait for the delete mode button to be visible (indicates component is fully hydrated)
+    await expect(this.deleteModeButton).toBeVisible()
   }
 
   /** キャラクタースロットを取得 */
@@ -52,16 +55,24 @@ export class ComboBuilderPage {
 
   /** 指定スロットにオペレーターを選択する */
   async selectCharacter(slotIndex: number, name: string) {
-    const slot = this.characterSlot(slotIndex)
-    await expect(slot).toBeVisible()
-    await slot.click({ force: true })
-    await expect(this.operatorSelectDialog).toBeVisible()
-    await this.operatorSelectDialog
+    // Click the "変更" button to open the character selector
+    const changeButtons = this.page.getByRole('button', { name: '変更' })
+    const changeButton = changeButtons.nth(slotIndex)
+    await expect(changeButton).toBeVisible()
+    await changeButton.click()
+    
+    // Wait for dialog title to appear
+    await expect(this.page.getByText('オペレーター選択')).toBeVisible({ timeout: 5000 })
+    
+    // Find the character button and click it
+    await this.page
       .getByRole('button', { name: new RegExp(name) })
       .first()
-      .click({ force: true })
-    await expect(this.operatorSelectDialog).toBeHidden()
-    await expect(slot.getByText(name)).toBeVisible()
+      .click()
+    
+    // Wait for dialog to disappear and character is selected
+    await expect(this.page.getByText('オペレーター選択')).toBeHidden()
+    await expect(this.characterSlot(slotIndex).getByText(name)).toBeVisible()
   }
 
   /** コンボ名を設定する */

@@ -1,13 +1,14 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 import { DndContext, closestCenter, DragEndEvent } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 
 import CharacterSelectDialog from '@/components/CharacterSelectDialog'
-import CharacterCard from '@/components/combo-timeline/CharacterCard'
+import { Button } from '@/components/ui/button'
 import { OPERATORS } from '@/lib/data/operators'
 
 import type { Operator } from '@/types/combo'
@@ -16,12 +17,92 @@ interface CharacterColumnProps {
   characters: (Operator | null)[]
   onCharacterSelect: (character: Operator | null, index: number) => void
   onCharacterReorder: (fromIndex: number, toIndex: number) => void
+  deleteMode: boolean
+  onToggleDeleteMode: () => void
+  deleteModeLabel: string
+}
+
+function CharacterSlotItem({
+  character,
+  index,
+  onOpenSelector,
+  deleteMode,
+  onRemoveCharacter,
+}: {
+  character: Operator | null
+  index: number
+  onOpenSelector: (index: number) => void
+  deleteMode: boolean
+  onRemoveCharacter: (index: number) => void
+}) {
+  const t = useTranslations()
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    isDragging,
+  } = useSortable({ id: `slot-${index}` })
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    opacity: isDragging ? 0.5 : 1,
+  }
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`flex items-center gap-2 px-3 py-2 bg-gray-700 rounded h-10 ${deleteMode ? '' : 'hover:bg-gray-600'} ${isDragging ? 'z-50' : ''}`}
+      data-testid={`character-slot-${index}`}
+      onClick={(event) => {
+        // If clicking on buttons, let them handle the click
+        if ((event.target as HTMLElement).closest('button')) return
+        if (!deleteMode) {
+          onOpenSelector(index)
+        }
+      }}
+    >
+      <div className="flex-1 min-w-0 cursor-grab active:cursor-grabbing" {...attributes} {...listeners}>
+        <p className="text-sm font-medium text-gray-100 truncate">
+          {character?.name ? t(character.name) : t('team.selectCharacter')}
+        </p>
+      </div>
+      <div className="flex items-center gap-1 flex-shrink-0 pointer-events-auto">
+        {!deleteMode && (
+          <>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => onOpenSelector(index)}
+              className="h-8 px-2 text-xs"
+            >
+              {t('actions.change')}
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => onRemoveCharacter(index)}
+              className="h-8 px-2 text-xs text-red-400 hover:text-red-300 hover:bg-red-950"
+            >
+              {t('actions.delete')}
+            </Button>
+          </>
+        )}
+      </div>
+    </div>
+  )
 }
 
 export default function CharacterColumn({
   characters,
   onCharacterSelect,
   onCharacterReorder,
+  deleteMode,
+  onToggleDeleteMode,
+  deleteModeLabel,
 }: CharacterColumnProps) {
   const t = useTranslations()
   const [isSelectorOpen, setIsSelectorOpen] = useState(false)
@@ -82,75 +163,60 @@ export default function CharacterColumn({
     setSelectingSlotIndex(null)
   }
 
+  const handleRemoveCharacter = (index: number) => {
+    onCharacterSelect(null, index)
+  }
+
   return (
     <>
       {isMounted ? (
-        <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-          <SortableContext items={characters.map((_, i) => `slot-${i}`)} strategy={verticalListSortingStrategy}>
-            <div className="w-40 shrink-0 space-y-8">
-              {characters.map((character, index) => (
-                <CharacterCard
-                  key={`slot-${index}`}
-                  character={character}
-                  index={index}
-                  onOpenSelector={handleOpenSelector}
-                />
-              ))}
-            </div>
-          </SortableContext>
-        </DndContext>
-      ) : (
-        <div className="w-40 shrink-0 space-y-8">
-          {characters.map((character, index) => (
-            <div key={`slot-${index}`} className="flex items-stretch">
-              <div className="w-40 shrink-0">
-                <div className={`bg-gray-700 p-2 rounded h-40 ${character ? 'cursor-move' : ''}`}>
-                  {character ? (
-                    <button
-                      type="button"
-                      onClick={() => handleOpenSelector(index)}
-                      className="w-full h-full"
-                      aria-label={t('team.selectCharacter')}
-                    >
-                      <div className="h-full flex items-center justify-center">
-                        <div className="flex flex-col items-center gap-2">
-                          <div className="h-12 w-12 rounded bg-gray-600 overflow-hidden flex items-center justify-center">
-                            {character.imageUrl ? (
-                              <Image
-                                src={character.imageUrl}
-                                alt={character?.name ? t(character.name) : ''}
-                                width={48}
-                                height={48}
-                                className="h-full w-full object-cover"
-                              />
-                            ) : (
-                              <span className="text-xs text-gray-200">{t('team.noImage')}</span>
-                            )}
-                          </div>
-                          <span className="text-sm text-gray-100 text-center">
-                            {character?.name ? t(character.name) : ''}
-                          </span>
-                        </div>
-                      </div>
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => handleOpenSelector(index)}
-                      className="w-full h-full bg-gray-600 hover:bg-gray-500 text-white rounded px-2 py-2"
-                    >
-                      <div className="flex flex-col items-center gap-2">
-                        <div className="h-12 w-12 rounded bg-gray-500/60 flex items-center justify-center">
-                          <span className="text-xs text-gray-200">{t('team.noImage')}</span>
-                        </div>
-                        <span className="text-sm text-gray-100 text-center">{t('team.selectCharacter')}</span>
-                      </div>
-                    </button>
-                  )}
-                </div>
+        <div className="w-56 shrink-0 space-y-2">
+          <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            <SortableContext items={characters.map((_, i) => `slot-${i}`)} strategy={verticalListSortingStrategy}>
+              <div className="space-y-2">
+                <Button
+                  type="button"
+                  variant={deleteMode ? 'destructive' : 'outline'}
+                  size="sm"
+                  onClick={onToggleDeleteMode}
+                  className="w-full"
+                >
+                  {deleteModeLabel}
+                </Button>
+                {characters.map((character, index) => (
+                  <CharacterSlotItem
+                    key={`slot-${index}`}
+                    character={character}
+                    index={index}
+                    onOpenSelector={handleOpenSelector}
+                    deleteMode={deleteMode}
+                    onRemoveCharacter={handleRemoveCharacter}
+                  />
+                ))}
               </div>
-            </div>
-          ))}
+            </SortableContext>
+          </DndContext>
+        </div>
+      ) : (
+        <div className="w-56 shrink-0 space-y-2">
+          <Button
+            type="button"
+            variant={deleteMode ? 'destructive' : 'outline'}
+            size="sm"
+            onClick={onToggleDeleteMode}
+            className="w-full"
+          >
+            {deleteModeLabel}
+          </Button>
+          <div className="space-y-2">
+            {characters.map((character, index) => (
+              <div key={`slot-${index}`} className="px-3 py-2 bg-gray-700 rounded">
+                <p className="text-sm font-medium text-gray-100 truncate">
+                  {character?.name ? t(character.name) : t('team.selectCharacter')}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 

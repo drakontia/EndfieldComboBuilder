@@ -25,14 +25,26 @@ test.describe('Endfield Combo Builder', () => {
 
   test('should allow selecting characters', async ({ page }) => {
     await page.goto('/')
-    const dialog = page.getByRole('dialog', { name: 'オペレーター選択' })
+    await page.waitForLoadState('networkidle')
+    
+    // Wait for the delete mode button to be visible (indicates component is fully hydrated)
+    await expect(page.getByRole('button', { name: /削除モード/i })).toBeVisible()
+    
     const selectCharacter = async (slotIndex: number, name: string) => {
-      const slotButton = page.getByTestId(`character-slot-${slotIndex}`)
-      await expect(slotButton).toBeVisible()
-      await slotButton.click({ force: true })
-      await expect(dialog).toBeVisible()
-      await dialog.getByRole('button', { name: new RegExp(name) }).first().click({ force: true })
-      await expect(dialog).toBeHidden()
+      // Click the "変更" button to open the character selector
+      const changeButtons = page.getByRole('button', { name: '変更' })
+      const changeButton = changeButtons.nth(slotIndex)
+      await expect(changeButton).toBeVisible()
+      await changeButton.click()
+      
+      // Wait for dialog title to appear - if it appears, the dialog is open
+      await expect(page.getByText('オペレーター選択')).toBeVisible({ timeout: 5000 })
+      
+      // Find the character button and click it
+      await page.getByRole('button', { name: new RegExp(name) }).first().click()
+      
+      // Wait for dialog to disappear
+      await expect(page.getByText('オペレーター選択')).toBeHidden()
     }
     
     // Select first character
@@ -53,14 +65,26 @@ test.describe('Endfield Combo Builder', () => {
 
   test('should allow saving and loading combos', async ({ page }) => {
     await page.goto('/')
-    const dialog = page.getByRole('dialog', { name: 'オペレーター選択' })
+    await page.waitForLoadState('networkidle')
+    
+    // Wait for the delete mode button to be visible (indicates component is fully hydrated)
+    await expect(page.getByRole('button', { name: /削除モード/i })).toBeVisible()
+    
     const selectCharacter = async (slotIndex: number, name: string) => {
-      const slotButton = page.getByTestId(`character-slot-${slotIndex}`)
-      await expect(slotButton).toBeVisible()
-      await slotButton.click({ force: true })
-      await expect(dialog).toBeVisible()
-      await dialog.getByRole('button', { name: new RegExp(name) }).first().click({ force: true })
-      await expect(dialog).toBeHidden()
+      // Click the "変更" button to open the character selector
+      const changeButtons = page.getByRole('button', { name: '変更' })
+      const changeButton = changeButtons.nth(slotIndex)
+      await expect(changeButton).toBeVisible()
+      await changeButton.click()
+      
+      // Wait for dialog title to appear
+      await expect(page.getByText('オペレーター選択')).toBeVisible({ timeout: 5000 })
+      
+      // Find the character button and click it
+      await page.getByRole('button', { name: new RegExp(name) }).first().click()
+      
+      // Wait for dialog to disappear
+      await expect(page.getByText('オペレーター選択')).toBeHidden()
     }
     
     // Set combo name
@@ -101,14 +125,26 @@ test.describe('Endfield Combo Builder', () => {
 
   test('should allow clearing combos', async ({ page }) => {
     await page.goto('/')
-    const dialog = page.getByRole('dialog', { name: 'オペレーター選択' })
+    await page.waitForLoadState('networkidle')
+    
+    // Wait for the delete mode button to be visible (indicates component is fully hydrated)
+    await expect(page.getByRole('button', { name: /削除モード/i })).toBeVisible()
+    
     const selectCharacter = async (slotIndex: number, name: string) => {
-      const slotButton = page.getByTestId(`character-slot-${slotIndex}`)
-      await expect(slotButton).toBeVisible()
-      await slotButton.click({ force: true })
-      await expect(dialog).toBeVisible()
-      await dialog.getByRole('button', { name: new RegExp(name) }).first().click({ force: true })
-      await expect(dialog).toBeHidden()
+      // Click the "変更" button to open the character selector
+      const changeButtons = page.getByRole('button', { name: '変更' })
+      const changeButton = changeButtons.nth(slotIndex)
+      await expect(changeButton).toBeVisible()
+      await changeButton.click()
+      
+      // Wait for dialog title to appear
+      await expect(page.getByText('オペレーター選択')).toBeVisible({ timeout: 5000 })
+      
+      // Find the character button and click it
+      await page.getByRole('button', { name: new RegExp(name) }).first().click()
+      
+      // Wait for dialog to disappear
+      await expect(page.getByText('オペレーター選択')).toBeHidden()
     }
     
     // Select a character
@@ -129,14 +165,26 @@ test.describe('Endfield Combo Builder', () => {
 
   test('should display cold infusion and cryo stacks from Last Rite', async ({ page }) => {
     await page.goto('/')
-    const dialog = page.getByRole('dialog', { name: 'オペレーター選択' })
+    await page.waitForLoadState('networkidle')
+    
+    // Wait for the delete mode button to be visible (indicates component is fully hydrated)
+    await expect(page.getByRole('button', { name: /削除モード/i })).toBeVisible()
+    
     const selectCharacter = async (slotIndex: number, name: string) => {
-      const slotButton = page.getByTestId(`character-slot-${slotIndex}`)
-      await expect(slotButton).toBeVisible()
-      await slotButton.click({ force: true })
-      await expect(dialog).toBeVisible()
-      await dialog.getByRole('button', { name: new RegExp(name) }).first().click({ force: true })
-      await expect(dialog).toBeHidden()
+      // Click the "変更" button to open the character selector
+      const changeButtons = page.getByRole('button', { name: '変更' })
+      const changeButton = changeButtons.nth(slotIndex)
+      await expect(changeButton).toBeVisible()
+      await changeButton.click()
+      
+      // Wait for dialog title to appear
+      await expect(page.getByText('オペレーター選択')).toBeVisible({ timeout: 5000 })
+      
+      // Find the character button and click it
+      await page.getByRole('button', { name: new RegExp(name) }).first().click()
+      
+      // Wait for dialog to disappear
+      await expect(page.getByText('オペレーター選択')).toBeHidden()
     }
 
     // Select Last Rite as character
