@@ -26,7 +26,7 @@ export class ComboBuilderPage {
   constructor(page: Page) {
     this.page = page
 
-    this.comboNameInput = page.getByRole('textbox')
+    this.comboNameInput = page.getByTestId('combo-name-input')
     this.saveButton = page.getByRole('button', { name: '保存' })
     this.loadButton = page.getByRole('button', { name: '読込' }).first()
     this.exportButton = page.getByRole('button', { name: '画像エクスポート' })

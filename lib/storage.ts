@@ -65,7 +65,11 @@ export const generateShareUrl = (combo: ComboState): string => {
   const jsonStr = JSON.stringify(combo)
   const utf8Bytes = new TextEncoder().encode(jsonStr)
   const base64 = btoa(Array.from(utf8Bytes, b => String.fromCharCode(b)).join(''))
-  return `${window.location.origin}${window.location.pathname}?combo=${base64}`
+  
+  // URL encode the base64 to handle special characters like + and /
+  const encodedBase64 = encodeURIComponent(base64)
+  
+  return `${window.location.origin}${window.location.pathname}?combo=${encodedBase64}`
 }
 
 export const loadComboFromUrl = (): ComboState | null => {
