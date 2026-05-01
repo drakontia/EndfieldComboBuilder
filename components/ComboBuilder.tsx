@@ -17,6 +17,7 @@ import { SpTimelineChart } from '@/components/SpTimelineChart'
 import { TimelineScale } from '@/components/TimelineScale'
 import ControlPanel from '@/components/ControlPanel'
 import LoadDialog from '@/components/LoadDialog'
+import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useComboActions } from '@/hooks/useComboActions'
 import { useComboCharacters } from '@/hooks/useComboCharacters'
@@ -230,6 +231,15 @@ export const ComboBuilder = () => {
       <div className="bg-gray-800 p-4 rounded-lg mb-4">
         <div className="text-sm font-medium text-gray-200 mb-3">{t('timeline.settingsTitle')}</div>
         <div className="flex flex-wrap items-end gap-3">
+          <Button
+            type="button"
+            variant={deleteMode ? 'destructive' : 'outline'}
+            size="sm"
+            onClick={() => setDeleteMode((prev) => !prev)}
+            className="h-10"
+          >
+            {deleteMode ? t('actions.deleteModeOn') : t('actions.deleteModeOff')}
+          </Button>
           <div className="flex flex-col gap-2 w-[190px]">
             <label className="text-xs text-gray-300" htmlFor="timeline-duration">
               {t('timeline.durationLabel')}
@@ -390,8 +400,6 @@ export const ComboBuilder = () => {
               onCharacterSelect={handleCharacterSelect}
               onCharacterReorder={handleCharacterReorder}
               deleteMode={deleteMode}
-              onToggleDeleteMode={() => setDeleteMode((prev) => !prev)}
-              deleteModeLabel={deleteMode ? t('actions.deleteModeOn') : t('actions.deleteModeOff')}
             />
             <TimelineColumn
               characters={characters}
