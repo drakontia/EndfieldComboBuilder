@@ -54,6 +54,7 @@ function CharacterSlotItem({
       ref={setNodeRef}
       style={style}
       className={`flex items-center gap-2 px-3 py-2 bg-gray-700 rounded h-10 ${deleteMode ? '' : 'hover:bg-gray-600'} ${isDragging ? 'z-50' : ''}`}
+      data-testid={`character-slot-${index}`}
     >
       <div className="flex-1 min-w-0 cursor-grab active:cursor-grabbing" {...attributes} {...listeners}>
         <p className="text-sm font-medium text-gray-100 truncate">
