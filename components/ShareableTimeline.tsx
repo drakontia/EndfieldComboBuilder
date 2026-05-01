@@ -24,7 +24,7 @@ interface ShareableTimelineProps {
   timelineDurationMs: number
 }
 
-const TIMELINE_ROW_HEIGHT_PX = 120
+const TIMELINE_ROW_HEIGHT_PX = 56
 
 export default function ShareableTimeline({
   characters,
@@ -84,7 +84,7 @@ export default function ShareableTimeline({
 
               {/* Timeline content */}
               <div
-                className="h-full flex flex-col gap-2 bg-black/20 flex-1 rounded p-2"
+                className="h-full flex flex-row gap-2 bg-black/20 flex-1 rounded p-2"
                 style={{ height: TIMELINE_ROW_HEIGHT_PX }}
               >
                 {getSkillTypesForCharacter().map((type) => (
