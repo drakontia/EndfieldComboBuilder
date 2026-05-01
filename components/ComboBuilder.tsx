@@ -96,12 +96,6 @@ export const ComboBuilder = () => {
   }, [setActions, setCharacters, setComboName, setInitialTeamSp, setInitialUltimateCharges, setTimelineDurationMs, setInitialEnemyStaggerMeter])
 
   useEffect(() => {
-    if (!comboName) {
-      setComboName(t('dialog.comboNamePlaceholder'))
-    }
-  }, [comboName, setComboName, t])
-
-  useEffect(() => {
     const comboFromUrl = loadComboFromUrl()
     if (comboFromUrl) loadComboState(comboFromUrl)
   }, [loadComboState])

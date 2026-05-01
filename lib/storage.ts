@@ -63,9 +63,16 @@ export const exportComboAsJson = (combo: ComboState): void => {
 
 export const generateShareUrl = (combo: ComboState): string => {
   const jsonStr = JSON.stringify(combo)
+  // Convert string to base64 using a modern approach
+  // TextEncoder produces UTF-8 bytes, then we convert to base64
   const utf8Bytes = new TextEncoder().encode(jsonStr)
-  const base64 = btoa(Array.from(utf8Bytes, b => String.fromCharCode(b)).join(''))
-  return `${window.location.origin}${window.location.pathname}?combo=${base64}`
+  let base64 = ''
+  for (let i = 0; i < utf8Bytes.length; i++) {
+    base64 += String.fromCharCode(utf8Bytes[i])
+  }
+  const encodedBase64 = btoa(base64)
+  // URL-encode the base64 string to preserve + and / characters
+  return `${window.location.origin}${window.location.pathname}?combo=${encodeURIComponent(encodedBase64)}`
 }
 
 export const loadComboFromUrl = (): ComboState | null => {
@@ -75,10 +82,13 @@ export const loadComboFromUrl = (): ComboState | null => {
     
     if (!comboData) return null
     
-    // Properly decode Unicode characters from base64
-    const decoded = atob(comboData)
-    const utf8Array = Uint8Array.from(decoded, c => c.charCodeAt(0))
-    const jsonStr = new TextDecoder().decode(utf8Array)
+    // Decode from base64
+    const decodedStr = atob(comboData)
+    
+    // Convert bytes back to UTF-8 string
+    const utf8Bytes = Uint8Array.from(decodedStr, c => c.charCodeAt(0))
+    const jsonStr = new TextDecoder().decode(utf8Bytes)
+    
     return JSON.parse(jsonStr)
   } catch (error) {
     console.error('Failed to load combo from URL:', error)

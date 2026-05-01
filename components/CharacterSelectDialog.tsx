@@ -57,7 +57,7 @@ export default function CharacterSelectDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => (!open ? onClose() : undefined)}>
-      <DialogContent className="bg-gray-800 text-white max-w-2xl w-1/2">
+      <DialogContent data-testid="character-select-dialog" className="bg-gray-800 text-white max-w-2xl w-1/2">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold">{t('team.selectTitle')}</DialogTitle>
         </DialogHeader>
