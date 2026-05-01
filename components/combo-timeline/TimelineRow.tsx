@@ -87,10 +87,12 @@ const DraggableAction = ({
     opacity: 1,
   }
 
+  const skillLabel = SKILL_TYPE_LABELS[type] || ''
+
   return (
     <div
       ref={setNodeRef}
-      className={`absolute top-1 z-20 h-10 ${SKILL_TYPE_COLORS[type]} rounded px-2 text-xs flex items-center gap-2 hover:opacity-80 overflow-hidden ${deleteMode ? 'cursor-pointer' : 'cursor-grab'}`}
+      className={`absolute top-1 z-20 h-10 ${SKILL_TYPE_COLORS[type]} rounded px-2 text-xs flex items-center justify-center gap-2 hover:opacity-80 overflow-hidden ${deleteMode ? 'cursor-pointer' : 'cursor-grab'}`}
       data-action-id={action.id}
       {...attributes}
       {...listeners}
@@ -105,8 +107,10 @@ const DraggableAction = ({
         padding: '0 8px',
         display: 'flex',
         alignItems: 'center',
+        justifyContent: 'center',
         color: '#ffffff',
         touchAction: 'none',
+        fontWeight: '500',
         ...style,
       }}
       onClick={(event) => {
@@ -116,8 +120,7 @@ const DraggableAction = ({
         }
       }}
     >
-      <span className="flex-1 truncate">{action.timing / 1000}s</span>
-      {statusEffect && <span className="text-yellow-300">⚡</span>}
+      <span className="flex-1 truncate text-center">{skillLabel}</span>
     </div>
   )
 }

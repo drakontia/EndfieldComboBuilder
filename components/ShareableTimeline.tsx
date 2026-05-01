@@ -96,11 +96,7 @@ export default function ShareableTimeline({
                 {actions
                   .filter((a) => character && a.characterId === character.name)
                   .sort((a, b) => a.timing - b.timing)
-                  .map((action, actionIndex) => {
-                    const statusEffect = getStatusEffectForAction(
-                      getOperatorKey(character),
-                      action.type
-                    )
+                  .map((action) => {
                     const left = getActionPosition(action.timing)
                     const skillLabel = SKILL_TYPE_LABELS[action.type] || ''
 
@@ -109,16 +105,15 @@ export default function ShareableTimeline({
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <div
-                              className={`absolute top-1 z-20 h-7 ${SKILL_TYPE_BG_COLORS[action.type]} rounded px-2 text-xs flex items-center gap-1 pointer-events-none overflow-hidden border-l-2`}
+                              className={`absolute top-1 z-20 h-7 ${SKILL_TYPE_BG_COLORS[action.type]} rounded px-2 text-xs flex items-center justify-center pointer-events-none overflow-hidden border-l-2 font-medium`}
                               style={{
                                 left: `${left}px`,
                                 width: '50px',
                                 borderLeftColor: SKILL_TYPE_ACCENT_COLORS[action.type],
                               }}
-                              title={`${skillLabel} ${action.timing / 1000}s`}
+                              title={skillLabel}
                             >
-                              <span className="truncate text-xs font-medium">{action.timing / 1000}s</span>
-                              {statusEffect && <span className="text-yellow-300 text-xs">⚡</span>}
+                              <span className="truncate text-xs">{skillLabel}</span>
                             </div>
                           </TooltipTrigger>
                           {operatorKey && (
