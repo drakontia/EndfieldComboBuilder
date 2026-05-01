@@ -13,9 +13,6 @@ interface ControlPanelProps {
   onExportImage: () => void
   onShare: () => void
   onClear: () => void
-  deleteMode: boolean
-  onToggleDeleteMode: () => void
-  deleteModeLabel: string
 }
 
 export default function ControlPanel({
@@ -26,9 +23,6 @@ export default function ControlPanel({
   onExportImage,
   onShare,
   onClear,
-  deleteMode,
-  onToggleDeleteMode,
-  deleteModeLabel,
 }: ControlPanelProps) {
   return (
     <div className="bg-gray-800 p-4 rounded-lg mb-4">
@@ -40,18 +34,6 @@ export default function ControlPanel({
           placeholder="コンボ名を入力..."
           className="flex-1 min-w-50 px-4 py-2 bg-gray-700 text-white rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-
-        <Button
-          onClick={onToggleDeleteMode}
-          className={
-            deleteMode
-              ? 'gap-1.5 px-3 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded transition'
-              : 'gap-1.5 px-3 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded transition'
-          }
-        >
-          <Pencil size={15} />
-          {deleteModeLabel}
-        </Button>
 
         <Button
           onClick={onSave}

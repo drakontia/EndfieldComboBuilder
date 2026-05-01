@@ -4,6 +4,7 @@ import { type MouseEvent, useCallback, useEffect, useMemo, useState } from 'reac
 import { useTranslations } from 'next-intl'
 import CharacterColumn from '@/components/CharacterColumn'
 import TimelineColumn from '@/components/TimelineColumn'
+import ShareableTimeline from '@/components/ShareableTimeline'
 import {
   SKILL_TYPE_BG_COLORS,
   SKILL_TYPE_COLORS,
@@ -219,9 +220,12 @@ export const ComboBuilder = () => {
         onExportImage={handleExportImage}
         onShare={handleShare}
         onClear={handleClear}
-        deleteMode={deleteMode}
-        onToggleDeleteMode={() => setDeleteMode((prev) => !prev)}
-        deleteModeLabel={deleteMode ? t('actions.deleteModeOn') : t('actions.deleteModeOff')}
+      />
+
+      <ShareableTimeline
+        characters={characters}
+        actions={actions}
+        timelineDurationMs={timelineDurationMs}
       />
 
       <div className="bg-gray-800 p-4 rounded-lg mb-4">
@@ -386,6 +390,9 @@ export const ComboBuilder = () => {
               characters={characters}
               onCharacterSelect={handleCharacterSelect}
               onCharacterReorder={handleCharacterReorder}
+              deleteMode={deleteMode}
+              onToggleDeleteMode={() => setDeleteMode((prev) => !prev)}
+              deleteModeLabel={deleteMode ? t('actions.deleteModeOn') : t('actions.deleteModeOff')}
             />
             <TimelineColumn
               characters={characters}
