@@ -11,6 +11,10 @@ export const CHARGE_SEGMENT_WIDTH = 10
 export const ULTIMATE_CHARGE_COLOR_RGB = '239, 68, 68'
 export const ULTIMATE_CHARGE_OPACITY_MULTIPLIER = 0.3
 export const TIMELINE_ROW_HEIGHT_PX = 160
+export const TIMELINE_CHART_Y_AXIS_WIDTH = 24
+export const TIMELINE_CHART_RIGHT_MARGIN = 12
+export const TIMELINE_CHART_CANVAS_WIDTH =
+  TIMELINE_WIDTH + TIMELINE_CHART_Y_AXIS_WIDTH + TIMELINE_CHART_RIGHT_MARGIN
 export const getSecondMarkerWidthPx = (durationMs: number) => {
   return TIMELINE_WIDTH / (durationMs / 1000)
 }

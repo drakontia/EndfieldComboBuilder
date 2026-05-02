@@ -5,7 +5,6 @@ import { useTranslations } from 'next-intl'
 
 import {
   TIMELINE_WIDTH,
-  getSecondMarkerWidthPx,
   STATUS_EFFECT_COLORS,
   LONG_STATUS_EFFECT_DURATION_MS,
 } from '@/lib/timeline'
@@ -41,7 +40,7 @@ export const OperatorStatusTimeline = ({
   showHeader = true,
 }: OperatorStatusTimelineProps) => {
   const t = useTranslations()
-  const secondMarkerWidthPx = getSecondMarkerWidthPx(timelineDurationMs)
+  const totalSeconds = Math.round(timelineDurationMs / 1000)
   
   const getActionPosition = (timing: number) => {
     return (timing / timelineDurationMs) * TIMELINE_WIDTH
@@ -150,9 +149,13 @@ export const OperatorStatusTimeline = ({
         <div className="flex items-center">
           <div className="w-40 text-sm font-semibold text-gray-200">自操作キャラ</div>
           <div className="w-24 shrink-0" />
-          <div className="text-xs text-gray-500" style={{ width: `${TIMELINE_WIDTH}px` }}>
-            {Array.from({ length: Math.ceil(timelineDurationMs / 1000) }, (_, i) => (
-              <span key={i} style={{ display: 'inline-block', width: `${secondMarkerWidthPx}px`, textAlign: 'center' }}>
+          <div className="relative h-6 text-xs text-gray-500" style={{ width: `${TIMELINE_WIDTH}px` }}>
+            {Array.from({ length: totalSeconds + 1 }, (_, i) => (
+              <span
+                key={i}
+                className="absolute"
+                style={{ left: `${(i / totalSeconds) * TIMELINE_WIDTH}px` }}
+              >
                 {i}s
               </span>
             ))}
